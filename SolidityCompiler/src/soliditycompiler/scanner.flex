@@ -114,7 +114,7 @@ years {lexeme=yytext(); return Units;}
 "<" {return MenorQue;}
 ">=" {return MayorOIgualQue;}
 ">" {return MayorQue;}
-"&" {return And;}
+"&" {return And;} 
 "|" {return Or;}
 "~" {return Not;} //No estoy seguro por favor revisar
 "%" {return Porcentaje;} //No estoy seguro por favor revisar
@@ -131,7 +131,7 @@ years {lexeme=yytext(); return Units;}
 ":" {return DosPuntos;} //No estoy seguro por favor revisar
 ";" {return PuntoYComa;}
 "," {return Coma;}
-"=" {return Igual;}
+"=" {return Asignacion;}
 "+" {return Suma;}
 "-" {return Resta;}
 "*" {return Multiplicacion;}

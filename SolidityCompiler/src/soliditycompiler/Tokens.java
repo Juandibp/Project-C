@@ -41,7 +41,7 @@ public enum Tokens {
     DosPuntos,
     PuntoYComa,
     Coma,
-    Igual,
+    Asignacion,
     Suma,
     Resta,
     Multiplicacion,

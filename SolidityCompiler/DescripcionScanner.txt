@@ -1,101 +1,104 @@
+Los marcados con y ya estan listos en el scanner
+
 IDENTIFICADORES:
-    definidos por nosotros
+    definidos por nosotros  y
 OPERADORES:
-    ! 
-    && 
-    || 
-    == 
-    != 
-    <= 
-    >= 
-    < 
-    > 
-    ^
-    &
-    |
-    ~
-    +
-    -
-    *
-    /
-    %
-    **
-    <<
-    >>
-    =
-    ,
-    ;
+    !                       y
+    &&                      y
+    ||                      y 
+    ==                      y
+    !=                      y
+    <=                      y
+    >=                      y
+    <                       y
+    >                       y
+    ^                       y
+    &                       y
+    |                       y
+    ~                       y
+    +                       y
+    -                       y
+    *                       y
+    /                       y
+    %                       y
+    **                      y
+    <<                      y
+    >>                      y
+    =                       y
+    ,                       y
+    ;                       y
     .
-    (
-    )
-    [
-    ]
+    (                       y
+    )                       y
+    [                       y
+    ]                       y
     {
     }
-    :
-    ?
-    +=
-    -=
-    *=
-    /=
+    :                       y
+    ?                       y
+    +=                      y
+    -=                      y
+    *=                      y
+    /=                      y
 RESERVADAS:
-    address
-    as 
-    bool 
-    byte8, 16, 32...
-    bytes8, 16, 32...
-    constructor
-    continue
-    contract
-    delete
-    do 
-    else
-    enum 
-    false 
-    for
-    from
-    function 
-    hex
+    address                 y
+    as                      y
+    bool                    y
+    break                   y
+    byte8, 16, 32...        y
+    bytes8, 16, 32...       y
+    constructor             y
+    continue                y
+    contract                y
+    delete                  y
+    do                      y
+    else                    y
+    enum                    y
+    false                   y
+    for                     y
+    from                    y
+    function                y
+    hex                     y
     if 
-    import
-    int8, 16, 32...
-    internal
-    mapping
-    modifier
-    payable
-    Pragma
-    private
-    public
-    return
-    returns 
-    solidity
-    string
-    struct
-    this
-    true
-    ufixed
-    uint8, 16, 32...
-    var
-    view
-    while
+    import                  y
+    int8, 16, 32...         y
+    internal                y
+    mapping                 y
+    modifier                y
+    payable                 y
+    Pragma                  y
+    private                 y
+    public                  y
+    return                  y
+    returns                 y
+    solidity                y
+    string                  y
+    struct                  y
+    this                    y
+    true                    y
+    ufixed                  y
+    uint8, 16, 32...        y
+    var                     y
+    view                    y
+    while                   y
 TRANSAC:
-    balance
-    call
-    callcode
-    delegatecall
-    send
-    transfer
+    balance                 y
+    call                    y
+    callcode                y
+    delegatecall            y
+    send                    y
+    transfer                y
 UNIDADES:
-    days
-    ether
-    finney
-    hours
-    minutes
-    seconds
-    szabo
-    weeks
-    wei 
-    years
+    days                    y
+    ether                   y
+    finney                  y
+    hours                   y
+    minutes                 y
+    seconds                 y
+    szabo                   y
+    weeks                   y
+    wei                     y
+    years                   y
 LITERALES: permiten enteros, flotantes, caracteres y strings
     Enteros y reales que se representan con facilidad
         Fraccionales decimales que son formados por un . y al menos un numero en algun lado
