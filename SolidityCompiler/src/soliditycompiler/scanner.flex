@@ -127,10 +127,13 @@ years {lexeme=yytext(); return Units;}
 ")" {return CierraParentesis;}
 "[" {return AbreCorchete;}
 "]" {return CierraCorchete;}
+"{" {return AbreLlave;}
+"}" {return CierraLlave;}
 "?" {return Interrogacion;} //No estoy seguro por favor revisar
 ":" {return DosPuntos;} //No estoy seguro por favor revisar
 ";" {return PuntoYComa;}
 "," {return Coma;}
+"." {return Punto;}
 "=" {return Asignacion;}
 "+" {return Suma;}
 "-" {return Resta;}

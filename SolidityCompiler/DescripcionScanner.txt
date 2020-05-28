@@ -27,13 +27,13 @@ OPERADORES:
     =                       y
     ,                       y
     ;                       y
-    .
+    .                       y
     (                       y
     )                       y
     [                       y
     ]                       y
-    {
-    }
+    {                       y
+    }                       y
     :                       y
     ?                       y
     +=                      y
