@@ -1,0 +1,107 @@
+IDENTIFICADORES:
+    definidos por nosotros
+OPERADORES:
+    ! 
+    && 
+    || 
+    == 
+    != 
+    <= 
+    >= 
+    < 
+    > 
+    ^
+    &
+    |
+    ~
+    +
+    -
+    *
+    /
+    %
+    **
+    <<
+    >>
+    =
+    ,
+    ;
+    .
+    (
+    )
+    [
+    ]
+    {
+    }
+    :
+    ?
+    +=
+    -=
+    *=
+    /=
+RESERVADAS:
+    address
+    as 
+    bool 
+    byte8, 16, 32...
+    bytes8, 16, 32...
+    constructor
+    continue
+    contract
+    delete
+    do 
+    else
+    enum 
+    false 
+    for
+    from
+    function 
+    hex
+    if 
+    import
+    int8, 16, 32...
+    internal
+    mapping
+    modifier
+    payable
+    Pragma
+    private
+    public
+    return
+    returns 
+    solidity
+    string
+    struct
+    this
+    true
+    ufixed
+    uint8, 16, 32...
+    var
+    view
+    while
+TRANSAC:
+    balance
+    call
+    callcode
+    delegatecall
+    send
+    transfer
+UNIDADES:
+    days
+    ether
+    finney
+    hours
+    minutes
+    seconds
+    szabo
+    weeks
+    wei 
+    years
+LITERALES: permiten enteros, flotantes, caracteres y strings
+    Enteros y reales que se representan con facilidad
+        Fraccionales decimales que son formados por un . y al menos un numero en algun lado
+        numeros en notacion cientifica
+    strings representados con doble comilla o comilla simple
+        strings literales soportan caracteres de escape "\n" "\xNN" ...
+    cadenas hexadecimales con prefijo hex y encerradas por comillas ej: hex"FFBA76"
+    octales y ceros a la izquierda no son validos
+
