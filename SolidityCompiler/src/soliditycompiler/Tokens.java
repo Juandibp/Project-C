@@ -49,5 +49,9 @@ public enum Tokens {
     Division,
     Identificador,
     Numero,
+    Comillas,
+    String,
+    Hexadecimal,
+    Cientifico,
     ERROR
 }

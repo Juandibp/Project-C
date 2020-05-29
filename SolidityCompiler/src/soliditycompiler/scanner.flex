@@ -100,6 +100,7 @@ szabo |
 weeks |
 wei |
 years {lexeme=yytext(); return Units;}
+({D}+ | "(-"{D}+")"| "(-" {D}+ "." {D}* ")" | "(-." {D}+ ")" | {D}* "." {D}+ | {D}+ "." {D}*) "e" ("-"{D}+|{D}+) {return Cientifico;}
 ("(-"{D}+"."{D}*")")| ("(-."{D}+")")| {D}*"."{D}+ | {D}+"."{D}* {lexeme=yytext(); return Flotante;}
 "//".* {/*Ignore*/}
 "!" {return Not;}
@@ -132,13 +133,18 @@ years {lexeme=yytext(); return Units;}
 "?" {return Interrogacion;} //No estoy seguro por favor revisar
 ":" {return DosPuntos;} //No estoy seguro por favor revisar
 ";" {return PuntoYComa;}
-"," {return Coma;}
 "." {return Punto;}
 "=" {return Asignacion;}
 "+" {return Suma;}
 "-" {return Resta;}
 "*" {return Multiplicacion;}
 "/" {return Division;}
+"\"" ({L}|{D})* "\"" {return String;}
+"'" ({L}|{D})* "'" {return String;}
+"hex\"" ({D}|"A"|"B"|"C"|"D"|"E"|"F")+ "\"" {return Hexadecimal;}
+"hex'" ({D}|"A"|"B"|"C"|"D"|"E"|"F")+ "'" {return Hexadecimal;}
+"'" {return Comillas;}
+"\"" {return Comillas;}
 {L}({L}|{D})* {lexeme=yytext(); return Identificador;}
 ("(-"{D}+")")|{D}+ {lexeme=yytext(); return Numero;}
  . {return ERROR;}
