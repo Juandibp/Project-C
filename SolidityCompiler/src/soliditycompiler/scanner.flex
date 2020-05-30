@@ -105,33 +105,33 @@ years {lexeme=yytext(); return Units;}
 "//".* {/*Ignore*/}
 "!" {return Not;}
 "&&" {return And;}
-"^" {return Potencia;} //No estoy seguro por favor revisar
+"^" {return Potencia;} //Revisado, funciona
 "==" {return Comparacion;}
 "!=" {return Diferencia;}
-"||" {return Or;} //No me acuerdo por favor revisar
+"||" {return Or;} //Revisado, funciona
 "<=" {return MenorOIgualQue;}
-"<<"  {return CorrerALaIzquierda;} //No estoy seguro por favor revisar
-">>" {return CorrerALaDerecha;} //No estoy seguro por favor revisar
+"<<"  {return CorrerALaIzquierda;} //Revisado, funciona
+">>" {return CorrerALaDerecha;} //Revisado, funciona
 "<" {return MenorQue;}
 ">=" {return MayorOIgualQue;}
 ">" {return MayorQue;}
 "&" {return And;} 
 "|" {return Or;}
-"~" {return Not;} //No estoy seguro por favor revisar
-"%" {return Porcentaje;} //No estoy seguro por favor revisar
+"~" {return Not;} //Revisado, funciona
+"%" {return Porcentaje;} //Revisado, funciona
 "**"  {return Potencia;}
-"+="  {return Sume;} //No estoy seguro por favor revisar
-"-=" {return Reste;} //No estoy seguro por favor revisar
-"*=" {return Multiplique;} //No estoy seguro por favor revisar
-"/=" {return Divida;} //No estoy seguro por favor revisar
+"+="  {return Sume;} //Revisado, funciona
+"-=" {return Reste;} //Revisado, funciona
+"*=" {return Multiplique;} //Revisado, funciona
+"/=" {return Divida;} //Revisado, funciona
 "(" {return AbreParentesis;}
 ")" {return CierraParentesis;}
 "[" {return AbreCorchete;}
 "]" {return CierraCorchete;}
 "{" {return AbreLlave;}
 "}" {return CierraLlave;}
-"?" {return Interrogacion;} //No estoy seguro por favor revisar
-":" {return DosPuntos;} //No estoy seguro por favor revisar
+"?" {return Interrogacion;} //Revisado, funciona
+":" {return DosPuntos;} //Revisado, funciona
 ";" {return PuntoYComa;}
 "." {return Punto;}
 "=" {return Asignacion;}
@@ -147,5 +147,5 @@ years {lexeme=yytext(); return Units;}
 "'" {return Comillas;}
 "\"" {return Comillas;}
 {L}({L}|{D})* {lexeme=yytext(); return Identificador;}
-("(-"{D}+")")|{D}+ {lexeme=yytext(); return Numero;}
+{D}+ {lexeme=yytext(); return Numero;}
  . {return ERROR;}

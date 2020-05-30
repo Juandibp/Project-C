@@ -18,6 +18,7 @@ public class main {
      */
     public static void main(String[] args) {
         String path = "D:/GitHub/Project-C/SolidityCompiler/src/soliditycompiler/scanner.flex";
+        System.out.println(path);
         generarLexer(path);
     }
     public static void generarLexer(String path){
