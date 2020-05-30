@@ -53,5 +53,6 @@ public enum Tokens {
     String,
     Hexadecimal,
     Cientifico,
+    Escape,
     ERROR
 }

@@ -139,10 +139,11 @@ years {lexeme=yytext(); return Units;}
 "-" {return Resta;}
 "*" {return Multiplicacion;}
 "/" {return Division;}
-"\"" ({L}|{D})* "\"" {return String;}
-"'" ({L}|{D})* "'" {return String;}
+"\"" ({L}|{D} | "\\n" | "\\xNN" | "\\uNNNN" | "\\xNN" )* "\"" {return String;}
+"'" ({L}|{D} | "\\n" | "\\xNN" | "\\uNNNN" | "\\xNN")* "'" {return String;}
 "hex\"" ({D}|"A"|"B"|"C"|"D"|"E"|"F")+ "\"" {return Hexadecimal;}
 "hex'" ({D}|"A"|"B"|"C"|"D"|"E"|"F")+ "'" {return Hexadecimal;}
+"\\n" | "\\xNN" | "\\uNNNN" | "\\xNN" {return Escape;}
 "'" {return Comillas;}
 "\"" {return Comillas;}
 {L}({L}|{D})* {lexeme=yytext(); return Identificador;}
