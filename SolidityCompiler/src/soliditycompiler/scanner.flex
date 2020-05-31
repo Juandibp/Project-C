@@ -147,7 +147,7 @@ years {lexeme=yytext(); return Units;}
 "hex'" ({D}|"A"|"B"|"C"|"D"|"E"|"F")+ "'" {return Hexadecimal;}
 "\\n" | "\\xNN" | "\\uNNNN" | "\\xNN" {return Escape;}
 {D}({L}|{D})* {lexeme=yytext(); return Error;}
-{L}*.*{L}* {lexeme=yytext(); return Error;}
+{L}*(.|{L})* {lexeme=yytext(); return Error;}
 {L}({L}|{D})* {lexeme=yytext(); return Identificador;}
 {D}+ {lexeme=yytext(); return Numero;}
  . {return ERROR;}
