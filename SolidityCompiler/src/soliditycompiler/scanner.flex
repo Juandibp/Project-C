@@ -6,10 +6,12 @@ import static soliditycompiler.Tokens.*;
 L=[a-zA-Z_]+
 D=[0-9]+
 espacio=[ ,\t,\r,\n]+
+simbolo=[\\,/,!,;,#,$,%,=,?,¡,¿,|,_,-]+
 %{
     public String lexeme;
 %}
 %%
+
 int |
 int2 |
 int4 |
@@ -54,7 +56,6 @@ false |
 for |
 from |
 function |
-hex |
 import |
 internal |
 mapping |
@@ -101,9 +102,9 @@ weeks |
 wei |
 years {lexeme=yytext(); return Units;}
 "/**" (.|"\n")* "*/" {return ComentarioBloque;}
-"/**" (.|"\n")*  {return Error;}
-({D}+ | "(-"{D}+")"| "(-" {D}+ "." {D}* ")" | "(-." {D}+ ")" | {D}* "." {D}+ | {D}+ "." {D}*) "e" ("-"{D}+|{D}+) {return Cientifico;}
-("(-"{D}+"."{D}*")")| ("(-."{D}+")")| {D}*"."{D}+ | {D}+"."{D}* {lexeme=yytext(); return Flotante;}
+"/**" (.|"\n")*  {return ERROR;}
+({D}+ | "."{D}+  | {D}* "." {D}+ | {D}+ "." {D}*) "e" ("-"{D}+|{D}+) {return Cientifico;}
+({D}+"."{D}*)| ({D}*"."{D}+)  {lexeme=yytext(); return Flotante;}
 "//".* {/*Ignore*/}
 "!" {return Not;}
 "&&" {return And;}
@@ -141,13 +142,13 @@ years {lexeme=yytext(); return Units;}
 "-" {return Resta;}
 "*" {return Multiplicacion;}
 "/" {return Division;}
-"\"" ({L}|{D} | {espacio} | "\\n" | "\\xNN" | "\\uNNNN" | "\\xNN" )* "\"" {return String;}
-"'" ({L}|{D} | {espacio} | "\\n" | "\\xNN" | "\\uNNNN" | "\\xNN")* "'" {return String;}
-"hex\"" ({D}|"A"|"B"|"C"|"D"|"E"|"F")+ "\"" {return Hexadecimal;}
-"hex'" ({D}|"A"|"B"|"C"|"D"|"E"|"F")+ "'" {return Hexadecimal;}
+("hex\""|"hex'") ( {D} | "A" | "B" | "C" | "D" | "E" | "F" )+ ("\""|"'")("\\n")* {return Hexadecimal;}
+("\""|"'") ({L}|{D} | "\\n" | "\\xNN" | "\\uNNNN" | {simbolo} | " ")* ("\""|"'") {return String;}
+("\""|"'") ({L}|{D} | "\\n" | "\\xNN" | "\\uNNNN" | "\\".| {simbolo} | " ")* ("\""|"'") { return ERROR;}
+("\""|"'") ({L}|{D} | "\\n" | "\\xNN" | "\\uNNNN" | {simbolo} | " ")* { return ERROR;}
 "\\n" | "\\xNN" | "\\uNNNN" | "\\xNN" {return Escape;}
-{D}({L}|{D})* {lexeme=yytext(); return Error;}
-{L}*(.|{L})* {lexeme=yytext(); return Error;}
-{L}({L}|{D})* {lexeme=yytext(); return Identificador;}
 {D}+ {lexeme=yytext(); return Numero;}
+{L}({L}|{D})* {lexeme=yytext(); return Identificador;}
+{D}({L}|{D})* { return ERROR;}
+{L}+ {simbolo} ( {simbolo}|{L})* { return ERROR;}
  . {return ERROR;}
