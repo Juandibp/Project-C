@@ -101,10 +101,9 @@ szabo |
 weeks |
 wei |
 years {lexeme=yytext(); return Units;}
-"/**" ("\n*"|.)* "*/" {return ComentarioBloque;}
-"/**" ("\n*"|.)* "\n*/" {return ComentarioBloque;}
-"/**" ("\n*"|.)* {return Error;}
-"/**" (.|"\n")*  {return ERROR;}
+"/**" ("\n*"|.)*( "*/"|"\n*/") {return ComentarioBloque;}
+"/**" ("\n"|.)*( "*/"|"\n*/") {return Error;}
+("/**") ("\n*"|{D}|{L}|" "|{simbolo})*  {return Error;}
 ({D}+ | "."{D}+  | {D}* "." {D}+ | {D}+ "." {D}*) "e" ("-"{D}+|{D}+) {return Cientifico;}
 ({D}+"."{D}*)| ({D}*"."{D}+)  {lexeme=yytext(); return Flotante;}
 "//".* {/*Ignore*/}
