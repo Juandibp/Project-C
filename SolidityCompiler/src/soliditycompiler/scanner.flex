@@ -100,6 +100,8 @@ szabo |
 weeks |
 wei |
 years {lexeme=yytext(); return Units;}
+"/**" (.|"\n")* "*/" {return ComentarioBloque;}
+"/**" (.|"\n")*  {return Error;}
 ({D}+ | "(-"{D}+")"| "(-" {D}+ "." {D}* ")" | "(-." {D}+ ")" | {D}* "." {D}+ | {D}+ "." {D}*) "e" ("-"{D}+|{D}+) {return Cientifico;}
 ("(-"{D}+"."{D}*")")| ("(-."{D}+")")| {D}*"."{D}+ | {D}+"."{D}* {lexeme=yytext(); return Flotante;}
 "//".* {/*Ignore*/}
@@ -139,13 +141,13 @@ years {lexeme=yytext(); return Units;}
 "-" {return Resta;}
 "*" {return Multiplicacion;}
 "/" {return Division;}
-"\"" ({L}|{D} | {espacio} | "\\n" | "\\xNN" | "\\uNNNN" | "\\xNN" )* "\"" {return String;} //no estoy seguro de que funcione completamente, revisar con archivos de prueba
+"\"" ({L}|{D} | {espacio} | "\\n" | "\\xNN" | "\\uNNNN" | "\\xNN" )* "\"" {return String;}
 "'" ({L}|{D} | {espacio} | "\\n" | "\\xNN" | "\\uNNNN" | "\\xNN")* "'" {return String;}
 "hex\"" ({D}|"A"|"B"|"C"|"D"|"E"|"F")+ "\"" {return Hexadecimal;}
 "hex'" ({D}|"A"|"B"|"C"|"D"|"E"|"F")+ "'" {return Hexadecimal;}
 "\\n" | "\\xNN" | "\\uNNNN" | "\\xNN" {return Escape;}
-"'" {return Comillas;}
-"\"" {return Comillas;}
+{D}({L}|{D})* {lexeme=yytext(); return Error;}
+{L}*.*{L}* {lexeme=yytext(); return Error;}
 {L}({L}|{D})* {lexeme=yytext(); return Identificador;}
 {D}+ {lexeme=yytext(); return Numero;}
  . {return ERROR;}
