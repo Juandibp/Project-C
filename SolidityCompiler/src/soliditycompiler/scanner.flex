@@ -139,8 +139,8 @@ years {lexeme=yytext(); return Units;}
 "-" {return Resta;}
 "*" {return Multiplicacion;}
 "/" {return Division;}
-"\"" ({L}|{D} | "\\n" | "\\xNN" | "\\uNNNN" | "\\xNN" )* "\"" {return String;}
-"'" ({L}|{D} | "\\n" | "\\xNN" | "\\uNNNN" | "\\xNN")* "'" {return String;}
+"\"" ({L}|{D} | {espacio} | "\\n" | "\\xNN" | "\\uNNNN" | "\\xNN" )* "\"" {return String;} //no estoy seguro de que funcione completamente, revisar con archivos de prueba
+"'" ({L}|{D} | {espacio} | "\\n" | "\\xNN" | "\\uNNNN" | "\\xNN")* "'" {return String;}
 "hex\"" ({D}|"A"|"B"|"C"|"D"|"E"|"F")+ "\"" {return Hexadecimal;}
 "hex'" ({D}|"A"|"B"|"C"|"D"|"E"|"F")+ "'" {return Hexadecimal;}
 "\\n" | "\\xNN" | "\\uNNNN" | "\\xNN" {return Escape;}

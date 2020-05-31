@@ -100,11 +100,17 @@ UNIDADES:
     wei                     y
     years                   y
 LITERALES: permiten enteros, flotantes, caracteres y strings					
-    Enteros y reales que se representan con facilidad						y
+    Enteros y reales que se representan con facilidad							y
         Fraccionales decimales que son formados por un . y al menos un numero en algun lado		y
-        numeros en notacion cientifica							y
-    strings representados con doble comilla o comilla simple					y
-        strings literales soportan caracteres de escape "\n" "\xNN" ...				y
+        numeros en notacion cientifica									y
+    strings representados con doble comilla o comilla simple						todavia fallan los strings
+        strings literales soportan caracteres de escape "\n" "\xNN" ...					y
     cadenas hexadecimales con prefijo hex y encerradas por comillas ej: hex"FFBA76"			y
     octales y ceros a la izquierda no son validos
+
+
+**IMPORTANTE**
+Todavía hay fallos en los archivos de prueba, algunas expresiones regulares no funcionan completamente
+Falta hacer la lista con los tokens, tipo y lineas en las que aparece(si aparece más de una vez en la linea se tiene que indicar
+								      cuantas veces entre parentesis)
 
