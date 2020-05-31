@@ -102,6 +102,7 @@ weeks |
 wei |
 years {lexeme=yytext(); return Units;}
 "/**" ("\n*"|.)* "*/" {return ComentarioBloque;}
+"/**" ("\n*"|.)* "\n*/" {return ComentarioBloque;}
 "/**" ("\n*"|.)* {return Error;}
 "/**" (.|"\n")*  {return ERROR;}
 ({D}+ | "."{D}+  | {D}* "." {D}+ | {D}+ "." {D}*) "e" ("-"{D}+|{D}+) {return Cientifico;}
