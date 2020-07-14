@@ -15,7 +15,7 @@ parser code
 }
 :};
 
-terminal ; //terminales
+terminal ; //tokens de terminales
 non terminal INICIO;
 
 start with INICIO;
