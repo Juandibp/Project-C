@@ -114,10 +114,10 @@ public class FormScanner extends javax.swing.JFrame {
                     return;
                 }
                 switch (tokens) {
-                    case ERROR:
+                    case Error:
                         resultado += "Simbolo no definido." + "\t | Linea: " + (lexer.line +1) + " \tColumna: "+ (lexer.column +1) +"\n";
                         break;
-                    case Identificador: case Numero: case Reservadas: case String: case Hexadecimal: case Flotante: case Cientifico: case Units: case Transac:
+                    case Identificador: case Numero: case Cadena: case Hexadecimal: case Flotante: case Cientifico: 
                         resultado += lexer.lexeme + ": \t | " + tokens + "\t | Linea: " + (lexer.line +1) + " \tColumna: "+ (lexer.column +1) + "\n";
                         break;
                     default:
