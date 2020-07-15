@@ -17,7 +17,8 @@ public class main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        String path = "D:/GitHub/Project-C/SolidityCompiler/src/soliditycompiler/scanner.flex";
+        //String path = "D:/GitHub/Project-C/SolidityCompiler/src/soliditycompiler/scanner.flex";
+        String path = "C:/Users/U1/Documents/GitHub/Project-C/SolidityCompiler/src/soliditycompiler/scanner.flex";
         System.out.println(path);
         generarLexer(path);
     }
@@ -25,5 +26,4 @@ public class main {
         File file = new File(path);
         JFlex.Main.generate(file);
     }
-    
 }
