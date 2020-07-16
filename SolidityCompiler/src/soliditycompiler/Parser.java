@@ -6,7 +6,7 @@
 package soliditycompiler;
 
 import java_cup.runtime.Symbol;
-import soliditycompiler.Lexer.*;
+import soliditycompiler.LexerC.*;
 import java.util.LinkedList;
 import java_cup.runtime.XMLElement;
 
@@ -114,20 +114,32 @@ public class Parser extends java_cup.runtime.lr_parser {
 
 
 
-    public static LinkedList<SError> SEList = new LinkedList<SError>();
+    public static LinkedList<SError> SEList = new LinkedList<SError>(); //SYNTAX ERROR LIST
     public static String ultimoToken;
     private Symbol s;
 
-    public Parser (Lexer scanner) {
+    public Parser (LexerC scanner) {
         super(scanner);
     }
 
+    //metodo de llamado automatico al error que es recuperable
     public void syntax_error(Symbol s){
         this.s = s;
         String lexeme = s.value.toString();
         int line = s.right;
         int column = s.left;
         SError dato = new SError(lexeme, line, column, "Error Sintáctico", "Token inválido después de "); //FALTA HACER EL LOOKAHEAD HACIA ATRAS
+        SEList.add(dato);
+    }
+
+    //metodo que se llama cuando ya no es recuperable
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
+    {
+        this.s = s;
+        String lexeme = s.value.toString();
+        int line = s.right;
+        int column = s.left;
+        SError dato = new SError(lexeme, line, column, "Error Sintáctico", "Token no esperado"); 
         SEList.add(dato);
     }
     

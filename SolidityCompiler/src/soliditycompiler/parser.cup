@@ -2,7 +2,7 @@
 package soliditycompiler;
 
 import java_cup.runtime.Symbol;
-import soliditycompiler.Lexer.*;
+import soliditycompiler.LexerC.*;
 import java.util.LinkedList;
 
 parser code
@@ -11,7 +11,7 @@ parser code
     public static String ultimoToken;
     private Symbol s;
 
-    public Parser (Lexer scanner) {
+    public Parser (LexerC scanner) {
         super(scanner);
     }
 

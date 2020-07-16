@@ -23,34 +23,51 @@ public class main {
         //String path = "D:/GitHub/Project-C/SolidityCompiler/src/soliditycompiler/scanner.flex";
         //String path = "C:/Users/U1/Documents/GitHub/Project-C/SolidityCompiler/src/soliditycompiler/scanner.flex";
         
-        //pathS es del scanner y pathP del parser
-        String pathS = "C:\\Users\\adria\\Documents\\OneDrive - Estudiantes ITCR\\I SEMESTRE 2020\\COMPI\\Proyecto\\Project-C\\SolidityCompiler\\src\\soliditycompiler\\scanner.flex";
-        String[] pathP = {"-parser","Parser","C:\\Users\\adria\\Documents\\OneDrive - Estudiantes ITCR\\I SEMESTRE 2020\\COMPI\\Proyecto\\Project-C\\SolidityCompiler\\src\\soliditycompiler\\parser.cup"};        
-        generar(pathS,pathP);
+        //STRINGS DE LAS RUTAS
+        String pathPackage = "C:\\Users\\adria\\Documents\\OneDrive - Estudiantes ITCR\\I SEMESTRE 2020\\COMPI\\Proyecto\\Project-C\\SolidityCompiler\\src\\soliditycompiler\\";
+        String pathJavaCup = "C:\\Users\\adria\\Documents\\OneDrive - Estudiantes ITCR\\I SEMESTRE 2020\\COMPI\\Proyecto\\Project-C\\SolidityCompiler\\";
+        
+        //pathSC es del scanner para cup, pathSF es del scanner normal de flex para mostrar el analisis lexico y pathP del parser
+        String pathSC = pathPackage + "ScannerC.flex";
+        String pathSF = pathPackage + "ScannerF.flex";
+        String[] pathP = {"-parser","Parser", pathPackage + "parser.cup"};        
+        generar(pathSF ,pathSC ,pathP, pathPackage, pathJavaCup); //llama generar con el path del scanner normal de flex, el del scanner flex para cup, el path de cup, el path del paquete y el path de donde deja los archivos el cup
     }
-    public static void generar(String pathScanner, String[] pathParser) throws IOException, Exception{
-        File file = new File(pathScanner);  
-        JFlex.Main.generate(file);      //genera el codigo del scaner en Lexer.java
+    /**
+     * @param pathScannerF ruta del scanner con tokens.java normal de flex
+     * @param pathScannerC ruta del scanner para cup
+     * @param pathParser    ruta del parser
+     * @param pathPackage   ruta del package
+     * @param pathJavaCup   ruta de donde se generan los archivos del .cup
+     * @throws IOException
+     * @throws Exception 
+     */
+    public static void generar(String pathScannerF, String pathScannerC, String[] pathParser, String pathPackage, String pathJavaCup) throws IOException, Exception{
+        File file = new File(pathScannerF);
+        JFlex.Main.generate(file);      //genera el codigo del scaner en LexerF.java
+        file = new File(pathScannerC);  
+        JFlex.Main.generate(file);      //genera el codigo del scaner en LexerC.java
+     
         java_cup.Main.main(pathParser); //genera el codigo del parser en sym.java (simbolos) y Sintax.java 
         //ESTOS ARCHIVOS SE GENERAN AFUERA DE src/SolidityCompiler por lo que hay que pasarlos a la carpeta del package con el siguiente codigo:
         
         //OPTIENE EL PATH QUE TENDRIA EL ARCHIVO sym.java DENTRO DEL PACKAGE
-        Path pathSymbols = Paths.get("C:\\Users\\adria\\Documents\\OneDrive - Estudiantes ITCR\\I SEMESTRE 2020\\COMPI\\Proyecto\\Project-C\\SolidityCompiler\\src\\soliditycompiler\\sym.java");
+        Path pathSymbols = Paths.get(pathPackage + "sym.java");
         if (Files.exists(pathSymbols)) { 
             Files.delete(pathSymbols);  //SI YA EXISTE ESE PATH LO BORRA PARA QUE EL Files.move() PUEDA PEGAR EL ARCHIVO NUEVO DE SIMMBOLOS
         }
         Files.move(                 //MUEVE EL ARCHIVO
-                Paths.get("C:\\Users\\adria\\Documents\\OneDrive - Estudiantes ITCR\\I SEMESTRE 2020\\COMPI\\Proyecto\\Project-C\\SolidityCompiler\\sym.java"), 
-                Paths.get("C:\\Users\\adria\\Documents\\OneDrive - Estudiantes ITCR\\I SEMESTRE 2020\\COMPI\\Proyecto\\Project-C\\SolidityCompiler\\src\\soliditycompiler\\sym.java")
+                Paths.get(pathJavaCup+"sym.java"), 
+                Paths.get(pathPackage+"sym.java")
         );
         //OPTIENE EL PATH QUE TENDRIA EL ARCHIVO Sintax.java DENTRO DEL PACKAGE
-        Path pathSintax = Paths.get("C:\\Users\\adria\\Documents\\OneDrive - Estudiantes ITCR\\I SEMESTRE 2020\\COMPI\\Proyecto\\Project-C\\SolidityCompiler\\src\\soliditycompiler\\Parser.java");
+        Path pathSintax = Paths.get(pathPackage+"Parser.java");
         if (Files.exists(pathSintax)) {
             Files.delete(pathSintax);  //SI YA EXISTE ESE PATH LO BORRA PARA QUE EL Files.move() PUEDA PEGAR EL ARCHIVO NUEVO DE SINTAXIS
         }
         Files.move(                 //MUEVE EL ARCHIVO
-                Paths.get("C:\\Users\\adria\\Documents\\OneDrive - Estudiantes ITCR\\I SEMESTRE 2020\\COMPI\\Proyecto\\Project-C\\SolidityCompiler\\Parser.java"), 
-                Paths.get("C:\\Users\\adria\\Documents\\OneDrive - Estudiantes ITCR\\I SEMESTRE 2020\\COMPI\\Proyecto\\Project-C\\SolidityCompiler\\src\\soliditycompiler\\Parser.java")
+                Paths.get(pathJavaCup+"Parser.java"), 
+                Paths.get(pathPackage+"Parser.java")
         );
         
     }

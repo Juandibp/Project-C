@@ -9,7 +9,7 @@ import soliditycompiler.SError;
     //y ademas lo agrega a la lista antes de retornarlo.
     public static LinkedList<SError> ListaErrores = new LinkedList<SError>(); 
 %}
-%class Lexer
+%class LexerC
 %type java_cup.runtime.Symbol
 %cup
 %full
