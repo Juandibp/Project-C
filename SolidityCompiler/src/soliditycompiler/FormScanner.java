@@ -15,6 +15,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java_cup.runtime.Symbol;
 import javax.swing.JFileChooser;
 
 
@@ -149,22 +150,23 @@ public class FormScanner extends javax.swing.JFrame {
             Lexer lexer = new Lexer(lector);
             String resultado = "";
             while (true) {
-                Tokens tokens = lexer.yylex();
+                Symbol tokens = lexer.next_token();
                 if (tokens == null) {
                     resultado += "FIN";
                     txtResultado.setText(resultado);
                     return;
                 }
-                switch (tokens) {
-                    case Error:
-                        resultado += "Simbolo no definido." + "\t | Linea: " + (lexer.line +1) + " \tColumna: "+ (lexer.column +1) +"\n";
-                        break;
-                    case Identificador: case Numero: case Cadena: case Hexadecimal: case Flotante: case Cientifico: 
-                        resultado += lexer.lexeme + ": \t | " + tokens + "\t | Linea: " + (lexer.line +1) + " \tColumna: "+ (lexer.column +1) + "\n";
-                        break;
-                    default:
-                        resultado += "Token: " + tokens + "\t\t | Linea: " + (lexer.line +1) + " \tColumna: "+ (lexer.column +1)+ "\n";
-                        break;
+                else if (tokens.equals(sym.Error)){
+                    resultado += "Simbolo no definido." + "\t | Linea: " + (lexer.line +1) + " \tColumna: "+ (lexer.column +1) +"\n";
+                    break;
+                }
+                else if(tokens.equals(sym.Identificador) || tokens.equals(sym.Numero)|| tokens.equals(sym.Cadena)|| tokens.equals(sym.Hexadecimal)|| tokens.equals(sym.Flotante)|| tokens.equals(sym.Cientifico)){
+                    resultado += lexer.lexeme + ": \t | " + tokens + "\t | Linea: " + (lexer.line +1) + " \tColumna: "+ (lexer.column +1) + "\n";
+                    break;
+                }
+                else{
+                    resultado += "Token: " + tokens + "\t\t | Linea: " + (lexer.line +1) + " \tColumna: "+ (lexer.column +1)+ "\n";
+                    break;
                 }
             }
         } catch (FileNotFoundException ex) {
@@ -182,14 +184,23 @@ public class FormScanner extends javax.swing.JFrame {
   private void buttonSintacticoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSintacticoActionPerformed
     // TODO add your handling code here:
     //CODIGO SINTACTICO
-        //String ST=txtResultado.getText();
-        //Sintax s=new Sintax(new codigo.LexerCup(new StringReader(ST)));
+        JFileChooser seleccionador = new JFileChooser(); //crea el file chooser
+        seleccionador.showOpenDialog(null);
+        Parser s;
         try{
-          //s.parse();
-          txtResultadoSintactico.setText("Analisis realizado correctamente");
+            Reader lector = new BufferedReader(new FileReader(seleccionador.getSelectedFile()));
+            Lexer lexer = new Lexer(lector);
+            s=new Parser(lexer);
+            s.parse();
+            txtResultadoSintactico.setText("Analisis realizado correctamente");
+            try {
+                
+            } catch (Exception e) {
+                Symbol sym=s.getS();
+                txtResultadoSintactico.setText("Error de sintaxis. Linea: "+(sym.right+1)+" Columna: "+(sym.left + 1)+", Texto: "+sym.value);
+            }
         }catch (Exception ex){
-          //Symbol sym=s.getS();
-          //txtResultadoSintactico.setText("Error de sintaxis. Linea: "+(sym.right+1)+" Columna: "+(sym.left + 1)+", Texto: "+sym.value);
+            
         }
   }//GEN-LAST:event_buttonSintacticoActionPerformed
 

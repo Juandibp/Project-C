@@ -1,10 +1,20 @@
 package soliditycompiler;
-import static soliditycompiler.Tokens.*;
+import java_cup.runtime.Symbol;
+import java.util.LinkedList;
+import soliditycompiler.SError;
 %%
+%{
+    //una lista para manejar los errores, esto tambien se aplica en el .cup
+    //notese que cuando se encuentra un error, crea un SError, le asigna los detalles (entre ellos la especificacion del error)
+    //y ademas lo agrega a la lista antes de retornarlo.
+    public static LinkedList<SError> ListaErrores = new LinkedList<SError>(); 
+%}
 %class Lexer
+%type java_cup.runtime.Symbol
+%cup
+%full
 %line
-%column
-%type Tokens
+%char
 L=[a-zA-Z_]+
 D=[0-9]+
 espacio=[ ,\t,\r,\n]+
@@ -14,146 +24,154 @@ simbolo=[\\,/,!,;,#,$,%,=,?,¡,¿,|,_,-]+
     public int line;
     public int column;
 %}
+%{
+    private Symbol symbol(int type, Object value){
+        return new Symbol(type, yyline, yycolumn, value);
+    }
+    private Symbol symbol(int type){
+        return new Symbol(type, yyline, yycolumn);
+    }
+%}
 %%
 
 
 {espacio} {/*Ignore*/}
-int {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Int;}
-int2 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Int2;}
-int4 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Int4;}
-int8 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Int8;}
-int16 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Int16;}
-int32 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Int32;}
-int64 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Int64;}
-int128 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Int128;}
-int256 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Int256;}
-if {line = yyline; column = yycolumn; lexeme=yytext(); return Res_If;}
-else {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Else;}
-address {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Address;}
-as {line = yyline; column = yycolumn; lexeme=yytext(); return Res_As;}
-bool {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Bool;}
-break {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Break;}
-bytes {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Bytes;}
-bytes2 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Bytes2;}
-bytes4 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Bytes4;}
-bytes8 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Bytes8;}
-bytes16 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Bytes16;}
-bytes32 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Bytes32;}
-bytes64 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Bytes64;}
-bytes128 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Bytes128;}
-bytes256 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Bytes256;}
-byte {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Byte;}
-byte2 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Byte2;}
-byte4 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Byte4;}
-byte8 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Byte8;}
-byte16 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Byte16;}
-byte32 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Byte32;}
-byte64 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Byte64;}
-byte128 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Byte128;}
-byte256 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Byte256;}
-constructor {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Constructor;}
-continue {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Continue;}
-contract {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Contract;}
-delete {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Delete;}
-do {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Do;}
-enum {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Enum;}
-false {line = yyline; column = yycolumn; lexeme=yytext(); return Res_False;}
-for {line = yyline; column = yycolumn; lexeme=yytext(); return Res_For;}
-from {line = yyline; column = yycolumn; lexeme=yytext(); return Res_From;}
-function {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Function;}
-import {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Import;}
-internal {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Internal;}
-mapping {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Mapping;}
-moddifier {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Moddifier;}
-payable {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Payable;}
-Pragma {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Pragma;}
-private {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Private;}
-public {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Public;}
-return {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Return;}
-returns {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Returns;}
-solidity {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Solidity;}
-string {line = yyline; column = yycolumn; lexeme=yytext(); return Res_String;}
-struct {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Struct;}
-this {line = yyline; column = yycolumn; lexeme=yytext(); return Res_This;}
-true {line = yyline; column = yycolumn; lexeme=yytext(); return Res_True;}
-ufixed {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Ufixed;}
-uint {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Uint;}
-uint2 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Uint2;}
-uint4 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Uint4;}
-uint8 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Uint8;}
-uint16 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Uint16;}
-uint32 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Uint32;}
-uint64 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Uint64;}
-uint128 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Uint128;}
-uint256 {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Uint256;}
-var {line = yyline; column = yycolumn; lexeme=yytext(); return Res_Var;}
-view {line = yyline; column = yycolumn; lexeme=yytext(); return Res_View;}
-while {line = yyline; column = yycolumn; lexeme=yytext(); return Res_While;}
-balance {line = yyline; column = yycolumn; lexeme=yytext(); return Trans_Balance;}
-call {line = yyline; column = yycolumn; lexeme=yytext(); return Trans_Call;}
-callcode {line = yyline; column = yycolumn; lexeme=yytext(); return Trans_Callcode;}
-delgatecall {line = yyline; column = yycolumn; lexeme=yytext(); return Trans_Delgatecall;}
-send {line = yyline; column = yycolumn; lexeme=yytext(); return Trans_Send;}
-transfer {line = yyline; column = yycolumn; lexeme=yytext(); return Trans_Transfer;}
-days {line = yyline; column = yycolumn; lexeme=yytext(); return Unit_Days;}
-ether {line = yyline; column = yycolumn; lexeme=yytext(); return Unit_Ether;}
-finney {line = yyline; column = yycolumn; lexeme=yytext(); return Unit_Finney;}
-hours {line = yyline; column = yycolumn; lexeme=yytext(); return Unit_Hours;}
-minutes {line = yyline; column = yycolumn; lexeme=yytext(); return Unit_Minutes;}
-seconds {line = yyline; column = yycolumn; lexeme=yytext(); return Unit_Seconds;}
-szabo {line = yyline; column = yycolumn; lexeme=yytext(); return Unit_Szabo;}
-weeks {line = yyline; column = yycolumn; lexeme=yytext(); return Unit_Weeks;}
-wei {line = yyline; column = yycolumn; lexeme=yytext(); return Unit_Wei;}
-years {line = yyline; column = yycolumn; lexeme=yytext(); return Unit_Years;}
-"/**" ("\n*"|.)*( "*/"|"\n*/") {line = yyline; column = yycolumn; return ComentarioBloque;}
-"/**" ("\n"|.)*( "*/"|"\n*/") {line = yyline; column = yycolumn; return Error;}
-("/**") ("\n*"|{D}|{L}|" "|{simbolo})*  {line = yyline; column = yycolumn; return Error;}
-({D}+ | "."{D}+  | {D}* "." {D}+ | {D}+ "." {D}*) "e" ("-"{D}+|{D}+) {line = yyline; column = yycolumn; lexeme = yytext(); return Cientifico;}
-({D}+"."{D}*)| ({D}*"."{D}+)  {line = yyline; column = yycolumn; lexeme=yytext(); return Flotante;}
+int {return new Symbol(sym.Res_Int, yychar, yyline, yytext());}
+int2 {return new Symbol(sym.Res_Int2, yychar, yyline, yytext());}
+int4 {return new Symbol(sym.Res_Int4, yychar, yyline, yytext());}
+int8 {return new Symbol(sym.Res_Int8, yychar, yyline, yytext());}
+int16 {return new Symbol(sym.Res_Int16, yychar, yyline, yytext());}
+int32 {return new Symbol(sym.Res_Int32, yychar, yyline, yytext());}
+int64 {return new Symbol(sym.Res_Int64, yychar, yyline, yytext());}
+int128 {return new Symbol(sym.Res_Int128, yychar, yyline, yytext());}
+int256 {return new Symbol(sym.Res_Int256, yychar, yyline, yytext());}
+if {return new Symbol(sym.Res_If, yychar, yyline, yytext());}
+else {return new Symbol(sym.Res_Else, yychar, yyline, yytext());}
+address {return new Symbol(sym.Res_Address, yychar, yyline, yytext());}
+as {return new Symbol(sym.Res_As, yychar, yyline, yytext());}
+bool {return new Symbol(sym.Res_Bool, yychar, yyline, yytext());}
+break {return new Symbol(sym.Res_Break, yychar, yyline, yytext());}
+bytes {return new Symbol(sym.Res_Bytes, yychar, yyline, yytext());}
+bytes2 {return new Symbol(sym.Res_Bytes2, yychar, yyline, yytext());}
+bytes4 {return new Symbol(sym.Res_Bytes4, yychar, yyline, yytext());}
+bytes8 {return new Symbol(sym.Res_Bytes8, yychar, yyline, yytext());}
+bytes16 {return new Symbol(sym.Res_Bytes16, yychar, yyline, yytext());}
+bytes32 {return new Symbol(sym.Res_Bytes32, yychar, yyline, yytext());}
+bytes64 {return new Symbol(sym.Res_Bytes64, yychar, yyline, yytext());}
+bytes128 {return new Symbol(sym.Res_Bytes128, yychar, yyline, yytext());}
+bytes256 {return new Symbol(sym.Res_Bytes256, yychar, yyline, yytext());}
+byte {return new Symbol(sym.Res_Byte, yychar, yyline, yytext());}
+byte2 {return new Symbol(sym.Res_Byte2, yychar, yyline, yytext());}
+byte4 {return new Symbol(sym.Res_Byte4, yychar, yyline, yytext());}
+byte8 {return new Symbol(sym.Res_Byte8, yychar, yyline, yytext());}
+byte16 {return new Symbol(sym.Res_Byte16, yychar, yyline, yytext());}
+byte32 {return new Symbol(sym.Res_Byte32, yychar, yyline, yytext());}
+byte64 {return new Symbol(sym.Res_Byte64, yychar, yyline, yytext());}
+byte128 {return new Symbol(sym.Res_Byte128, yychar, yyline, yytext());}
+byte256 {return new Symbol(sym.Res_Byte256, yychar, yyline, yytext());}
+constructor {return new Symbol(sym.Res_Constructor, yychar, yyline, yytext());}
+continue {return new Symbol(sym.Res_Continue, yychar, yyline, yytext());}
+contract {return new Symbol(sym.Res_Contract, yychar, yyline, yytext());}
+delete {return new Symbol(sym.Res_Delete, yychar, yyline, yytext());}
+do {return new Symbol(sym.Res_Do, yychar, yyline, yytext());}
+enum {return new Symbol(sym.Res_Enum, yychar, yyline, yytext());}
+false {return new Symbol(sym.Res_False, yychar, yyline, yytext());}
+for {return new Symbol(sym.Res_For, yychar, yyline, yytext());}
+from {return new Symbol(sym.Res_From, yychar, yyline, yytext());}
+function {return new Symbol(sym.Res_Function, yychar, yyline, yytext());}
+import {return new Symbol(sym.Res_Import, yychar, yyline, yytext());}
+internal {return new Symbol(sym.Res_Internal, yychar, yyline, yytext());}
+mapping {return new Symbol(sym.Res_Mapping, yychar, yyline, yytext());}
+moddifier {return new Symbol(sym.Res_Moddifier, yychar, yyline, yytext());}
+payable {return new Symbol(sym.Res_Payable, yychar, yyline, yytext());}
+Pragma {return new Symbol(sym.Res_Pragma, yychar, yyline, yytext());}
+private {return new Symbol(sym.Res_Private, yychar, yyline, yytext());}
+public {return new Symbol(sym.Res_Public, yychar, yyline, yytext());}
+return {return new Symbol(sym.Res_Return, yychar, yyline, yytext());}
+returns {return new Symbol(sym.Res_Returns, yychar, yyline, yytext());}
+solidity {return new Symbol(sym.Res_Solidity, yychar, yyline, yytext());}
+string {return new Symbol(sym.Res_String, yychar, yyline, yytext());}
+struct {return new Symbol(sym.Res_Struct, yychar, yyline, yytext());}
+this {return new Symbol(sym.Res_This, yychar, yyline, yytext());}
+true {return new Symbol(sym.Res_True, yychar, yyline, yytext());}
+ufixed {return new Symbol(sym.Res_Ufixed, yychar, yyline, yytext());}
+uint {return new Symbol(sym.Res_Uint, yychar, yyline, yytext());}
+uint2 {return new Symbol(sym.Res_Uint2, yychar, yyline, yytext());}
+uint4 {return new Symbol(sym.Res_Uint4, yychar, yyline, yytext());}
+uint8 {return new Symbol(sym.Res_Uint8, yychar, yyline, yytext());}
+uint16 {return new Symbol(sym.Res_Uint16, yychar, yyline, yytext());}
+uint32 {return new Symbol(sym.Res_Uint32, yychar, yyline, yytext());}
+uint64 {return new Symbol(sym.Res_Uint64, yychar, yyline, yytext());}
+uint128 {return new Symbol(sym.Res_Uint128, yychar, yyline, yytext());}
+uint256 {return new Symbol(sym.Res_Uint256, yychar, yyline, yytext());}
+var {return new Symbol(sym.Res_Var, yychar, yyline, yytext());}
+view {return new Symbol(sym.Res_View, yychar, yyline, yytext());}
+while {return new Symbol(sym.Res_While, yychar, yyline, yytext());}
+balance {return new Symbol(sym.Trans_Balance, yychar, yyline, yytext());}
+call {return new Symbol(sym.Trans_Call, yychar, yyline, yytext());}
+callcode {return new Symbol(sym.Trans_Callcode, yychar, yyline, yytext());}
+delgatecall {return new Symbol(sym.Trans_Delgatecall, yychar, yyline, yytext());}
+send {return new Symbol(sym.Trans_Send, yychar, yyline, yytext());}
+transfer {return new Symbol(sym.Trans_Transfer, yychar, yyline, yytext());}
+days {return new Symbol(sym.Unit_Days, yychar, yyline, yytext());}
+ether {return new Symbol(sym.Unit_Ether, yychar, yyline, yytext());}
+finney {return new Symbol(sym.Unit_Finney, yychar, yyline, yytext());}
+hours {return new Symbol(sym.Unit_Hours, yychar, yyline, yytext());}
+minutes {return new Symbol(sym.Unit_Minutes, yychar, yyline, yytext());}
+seconds {return new Symbol(sym.Unit_Seconds, yychar, yyline, yytext());}
+szabo {return new Symbol(sym.Unit_Szabo, yychar, yyline, yytext());}
+weeks {return new Symbol(sym.Unit_Weeks, yychar, yyline, yytext());}
+wei {return new Symbol(sym.Unit_Wei, yychar, yyline, yytext());}
+years {return new Symbol(sym.Unit_Years, yychar, yyline, yytext());}
+"/**" ("\n*"|.)*( "*/"|"\n*/") {return new Symbol(sym.ComentarioBloque, yychar, yyline, yytext());}
+"/**" ("\n"|.)*( "*/"|"\n*/") {SError dato = new SError(yytext(), yyline, yycolumn, "Error Léxico", "Comentario de bloque incorrecto"); ListaErrores.add(dato) ; return new Symbol(sym.Error, yychar, yyline, yytext());}
+("/**") ("\n*"|{D}|{L}|" "|{simbolo})*  {SError dato = new SError(yytext(), yyline, yycolumn, "Error Léxico", "Comentario de bloque incorrecto"); ListaErrores.add(dato) ; return new Symbol(sym.Error, yychar, yyline, yytext());}
+({D}+ | "."{D}+  | {D}* "." {D}+ | {D}+ "." {D}*) "e" ("-"{D}+|{D}+) {return new Symbol(sym.Cientifico, yychar, yyline, yytext());}
+({D}+"."{D}*)| ({D}*"."{D}+)  {return new Symbol(sym.Flotante, yychar, yyline, yytext());}
 "//".* {/*Ignore*/}
-"!" {line = yyline; column = yycolumn; return NotLogico;}
-"&&" {line = yyline; column = yycolumn; return AndLogico;}
-"^" {line = yyline; column = yycolumn; return Potencia;} //Revisado, funciona
-"==" {line = yyline; column = yycolumn; return Comparacion;}
-"!=" {line = yyline; column = yycolumn; return Diferencia;}
-"||" {line = yyline; column = yycolumn;return OrLogico;} //Revisado, funciona
-"<=" {line = yyline; column = yycolumn; return MenorOIgualQue;}
-"<<"  {line = yyline; column = yycolumn; return CorrerALaIzquierda;} //Revisado, funciona
-">>" {line = yyline; column = yycolumn; return CorrerALaDerecha;} //Revisado, funciona
-"<" {line = yyline; column = yycolumn; return MenorQue;}
-">=" {line = yyline; column = yycolumn; return MayorOIgualQue;}
-">" {line = yyline; column = yycolumn; return MayorQue;}
-"&" {line = yyline; column = yycolumn; return AndBits;} 
-"|" {line = yyline; column = yycolumn; return OrBits;}
-"~" {line = yyline; column = yycolumn; return NotBits;} //Revisado, funciona
-"%" {line = yyline; column = yycolumn; return Porcentaje;} //Revisado, funciona
-"**"  {line = yyline; column = yycolumn; return Potencia;}
-"+="  {line = yyline; column = yycolumn; return Sume;} //Revisado, funciona
-"-=" {line = yyline; column = yycolumn; return Reste;} //Revisado, funciona
-"*=" {line = yyline; column = yycolumn; return Multiplique;} //Revisado, funciona
-"/=" {line = yyline; column = yycolumn; return Divida;} //Revisado, funciona
-"(" {line = yyline; column = yycolumn; return AbreParentesis;}
-")" {line = yyline; column = yycolumn; return CierraParentesis;}
-"[" {line = yyline; column = yycolumn; return AbreCorchete;}
-"]" {line = yyline; column = yycolumn; return CierraCorchete;}
-"{" {line = yyline; column = yycolumn; return AbreLlave;}
-"}" {line = yyline; column = yycolumn; return CierraLlave;}
-"?" {line = yyline; column = yycolumn; return Interrogacion;} //Revisado, funciona
-":" {line = yyline; column = yycolumn; return DosPuntos;} //Revisado, funciona
-";" {line = yyline; column = yycolumn; return PuntoYComa;}
-"." {line = yyline; column = yycolumn; return Punto;}
-"=" {line = yyline; column = yycolumn; return Asignacion;}
-"+" {line = yyline; column = yycolumn; return Suma;}
-"-" {line = yyline; column = yycolumn; return Resta;}
-"*" {line = yyline; column = yycolumn; return Multiplicacion;}
-"/" {line = yyline; column = yycolumn; return Division;}
-("hex\""|"hex'") ( {D} | "A" | "B" | "C" | "D" | "E" | "F" )+ ("\""|"'")("\\n")* {line = yyline; column = yycolumn; lexeme = yytext(); return Hexadecimal;}
-("\""|"'") ({L}|{D} | "\\n" | "\\xNN" | "\\uNNNN" | {simbolo} | " ")* ("\""|"'") {line = yyline; column = yycolumn; lexeme = yytext();return Cadena;} //string
-("\""|"'") ({L}|{D} | "\\n" | "\\xNN" | "\\uNNNN" | "\\".| {simbolo} | " ")* ("\""|"'") {line = yyline; column = yycolumn; lexeme = yytext(); return Error;}
-("\""|"'") ({L}|{D} | "\\n" | "\\xNN" | "\\uNNNN" | {simbolo} | " ")* {line = yyline; column = yycolumn;  return Error;}
-"\\n" | "\\xNN" | "\\uNNNN" | "\\xNN" {line = yyline; column = yycolumn; return Escape;}
-{D}+ {line = yyline; column = yycolumn; lexeme=yytext(); return Numero;}
-{L}({L}|{D})* {line = yyline; column = yycolumn; lexeme=yytext(); return Identificador;}
-{D}({L}|{D})* {line = yyline; column = yycolumn;  return Error;}
-{L}+ {simbolo} ( {simbolo}|{L})* {line = yyline; column = yycolumn;  return Error;}
- . {line = yyline; column = yycolumn; return Error;}
+"!" {return new Symbol(sym.NotLogico, yychar, yyline, yytext());}
+"&&" {return new Symbol(sym.AndLogico, yychar, yyline, yytext());}
+"^" {return new Symbol(sym.Potencia, yychar, yyline, yytext());} //Revisado, funciona
+"==" {return new Symbol(sym.Comparacion, yychar, yyline, yytext());}
+"!=" {return new Symbol(sym.Diferencia, yychar, yyline, yytext());}
+"||" {return new Symbol(sym.OrLogico, yychar, yyline, yytext());} //Revisado, funciona
+"<=" {return new Symbol(sym.MenorOIgualQue, yychar, yyline, yytext());}
+"<<"  {return new Symbol(sym.CorrerALaIzquierda, yychar, yyline, yytext());} //Revisado, funciona
+">>" {return new Symbol(sym.CorrerALaDerecha, yychar, yyline, yytext());} //Revisado, funciona
+"<" {return new Symbol(sym.MenorQue, yychar, yyline, yytext());}
+">=" {return new Symbol(sym.MayorOIgualQue, yychar, yyline, yytext());}
+">" {return new Symbol(sym.MayorQue, yychar, yyline, yytext());}
+"&" {return new Symbol(sym.AndBits, yychar, yyline, yytext());}
+"|" {return new Symbol(sym.OrBits, yychar, yyline, yytext());}
+"~" {return new Symbol(sym.NotBits, yychar, yyline, yytext());} //Revisado, funciona
+"%" {return new Symbol(sym.Porcentaje, yychar, yyline, yytext());} //Revisado, funciona
+"**"  {return new Symbol(sym.Potencia, yychar, yyline, yytext());}
+"+="  {return new Symbol(sym.Sume, yychar, yyline, yytext());} //Revisado, funciona
+"-=" {return new Symbol(sym.Reste, yychar, yyline, yytext());} //Revisado, funciona
+"*=" {return new Symbol(sym.Multiplique, yychar, yyline, yytext());} //Revisado, funciona
+"/=" {return new Symbol(sym.Divida, yychar, yyline, yytext());} //Revisado, funciona
+"(" {return new Symbol(sym.AbreParentesis, yychar, yyline, yytext());}
+")" {return new Symbol(sym.CierraParentesis, yychar, yyline, yytext());}
+"[" {return new Symbol(sym.AbreCorchete, yychar, yyline, yytext());}
+"]" {return new Symbol(sym.CierraCorchete, yychar, yyline, yytext());}
+"{" {return new Symbol(sym.AbreLlave, yychar, yyline, yytext());}
+"}" {return new Symbol(sym.CierraLlave, yychar, yyline, yytext());}
+"?" {return new Symbol(sym.Interrogacion, yychar, yyline, yytext());} //Revisado, funciona
+":" {return new Symbol(sym.DosPuntos, yychar, yyline, yytext());} //Revisado, funciona
+";" {return new Symbol(sym.PuntoYComa, yychar, yyline, yytext());}
+"." {return new Symbol(sym.Punto, yychar, yyline, yytext());}
+"=" {return new Symbol(sym.Asignacion, yychar, yyline, yytext());}
+"+" {return new Symbol(sym.Suma, yychar, yyline, yytext());}
+"-" {return new Symbol(sym.Resta, yychar, yyline, yytext());}
+"*" {return new Symbol(sym.Multiplicacion, yychar, yyline, yytext());}
+"/" {return new Symbol(sym.Division, yychar, yyline, yytext());}
+("hex\""|"hex'") ( {D} | "A" | "B" | "C" | "D" | "E" | "F" )+ ("\""|"'")("\\n")* {return new Symbol(sym.Hexadecimal, yychar, yyline, yytext());}
+("\""|"'") ({L}|{D} | "\\n" | "\\xNN" | "\\uNNNN" | {simbolo} | " ")* ("\""|"'") {return new Symbol(sym.Cadena, yychar, yyline, yytext());} //string
+("\""|"'") ({L}|{D} | "\\n" | "\\xNN" | "\\uNNNN" | "\\".| {simbolo} | " ")* ("\""|"'") {SError dato = new SError(yytext(), yyline, yycolumn, "Error Léxico", "String no válido"); ListaErrores.add(dato) ; return new Symbol(sym.Error, yychar, yyline, yytext());}
+("\""|"'") ({L}|{D} | "\\n" | "\\xNN" | "\\uNNNN" | {simbolo} | " ")* {SError dato = new SError(yytext(), yyline, yycolumn, "Error Léxico", "String no válido"); ListaErrores.add(dato) ; return new Symbol(sym.Error, yychar, yyline, yytext());}
+"\\n" | "\\xNN" | "\\uNNNN" | "\\xNN" {return new Symbol(sym.Escape, yychar, yyline, yytext());}
+{D}+ {return new Symbol(sym.Numero, yychar, yyline, yytext());}
+{L}({L}|{D})* {return new Symbol(sym.Identificador, yychar, yyline, yytext());}
+{D}({L}|{D})* {SError dato = new SError(yytext(), yyline, yycolumn, "Error Léxico", "Identificador inválido"); ListaErrores.add(dato) ; return new Symbol(sym.Error, yychar, yyline, yytext());}
+{L}+ {simbolo} ( {simbolo}|{L})* {SError dato = new SError(yytext(), yyline, yycolumn, "Error Léxico", "Identificador inválido"); ListaErrores.add(dato) ; return new Symbol(sym.Error, yychar, yyline, yytext());}
+ . {SError dato = new SError(yytext(), yyline, yycolumn, "Error Léxico", "token inválido"); ListaErrores.add(dato) ; return new Symbol(sym.Error, yychar, yyline, yytext());}

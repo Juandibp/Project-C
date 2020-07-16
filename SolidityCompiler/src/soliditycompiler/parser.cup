@@ -1,20 +1,48 @@
+/*CODIGO DE LA CLASE*/
 package soliditycompiler;
 
 import java_cup.runtime.Symbol;
+import soliditycompiler.Lexer.*;
+import java.util.LinkedList;
 
 parser code
 {:
+    public static LinkedList<SError> SEList = new LinkedList<SError>(); //SYNTAX ERROR LIST
+    public static String ultimoToken;
     private Symbol s;
-    
-    public void syntax_error(Symbol s){
-        this.s = s;
+
+    public Parser (Lexer scanner) {
+        super(scanner);
     }
 
+    //metodo de llamado automatico al error que es recuperable
+    public void syntax_error(Symbol s){
+        this.s = s;
+        String lexeme = s.value.toString();
+        int line = s.right;
+        int column = s.left;
+        SError dato = new SError(lexeme, line, column, "Error Sintáctico", "Token inválido después de "); //FALTA HACER EL LOOKAHEAD HACIA ATRAS
+        SEList.add(dato);
+    }
+
+    //metodo que se llama cuando ya no es recuperable
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
+    {
+        this.s = s;
+        String lexeme = s.value.toString();
+        int line = s.right;
+        int column = s.left;
+        SError dato = new SError(lexeme, line, column, "Error Sintáctico", "Token no esperado"); 
+        SEList.add(dato);
+    }
+    
     public Symbol getS(){
         return this.s;
-}
+    }
 :};
 
+
+/*DEFINICION TERMINALES*/
 terminal Res_Int, Res_Int2, Res_Int4, Res_Int8, Res_Int16, Res_Int32, Res_Int64, Res_Int128, Res_Int256, Res_If, Res_Else, Res_Address, Res_As, Res_Bool, Res_Break,
         Res_Bytes, Res_Bytes2, Res_Bytes4, Res_Bytes8, Res_Bytes16, Res_Bytes32, Res_Bytes64, Res_Bytes128, Res_Bytes256, Res_Byte, Res_Byte2, Res_Byte4, Res_Byte8,
         Res_Byte16, Res_Byte32, Res_Byte64, Res_Byte128, Res_Byte256, Res_Constructor, Res_Continue, Res_Contract, Res_Delete, Res_Do, Res_Enum, Res_False, Res_For,
@@ -26,11 +54,14 @@ terminal Res_Int, Res_Int2, Res_Int4, Res_Int8, Res_Int16, Res_Int32, Res_Int64,
         Porcentaje, Sume, Reste, Multiplique, Divida, AbreParentesis, CierraParentesis, AbreLlave, CierraLlave, Interrogacion, AbreCorchete, CierraCorchete, DosPuntos,
         PuntoYComa, Coma, Punto, Asignacion, Suma, Resta, Multiplicacion, Division, Hexadecimal, Cadena, Identificador, Numero, Comillas, Escape, Error; 
 
+/*DEFINICION NO TERMINALES*/
 non terminal java_cup.runtime.symbol empty;
 
 non terminal INICIO, CUERPO_CONTRATO, ENUM, SENTENCIA, ESTRUCTURA, FUNCION, CUERPO_ENUM, CUERPO_ENUM_AUX;
 
 start with INICIO;
+
+/*REGLAS*/
 
 INICIO ::= Res_Pragma Res_Solidity Potencia Flotante Flotante PuntoYComa
                 Res_Contract Identificador AbreLlave CUERPO_CONTRATO CierraLlave

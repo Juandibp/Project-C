@@ -25,7 +25,7 @@ public class main {
         
         //pathS es del scanner y pathP del parser
         String pathS = "C:\\Users\\adria\\Documents\\OneDrive - Estudiantes ITCR\\I SEMESTRE 2020\\COMPI\\Proyecto\\Project-C\\SolidityCompiler\\src\\soliditycompiler\\scanner.flex";
-        String[] pathP = {"-parser","Sintax","C:\\Users\\adria\\Documents\\OneDrive - Estudiantes ITCR\\I SEMESTRE 2020\\COMPI\\Proyecto\\Project-C\\SolidityCompiler\\src\\soliditycompiler\\parser.cup"};        
+        String[] pathP = {"-parser","Parser","C:\\Users\\adria\\Documents\\OneDrive - Estudiantes ITCR\\I SEMESTRE 2020\\COMPI\\Proyecto\\Project-C\\SolidityCompiler\\src\\soliditycompiler\\parser.cup"};        
         generar(pathS,pathP);
     }
     public static void generar(String pathScanner, String[] pathParser) throws IOException, Exception{
@@ -44,13 +44,13 @@ public class main {
                 Paths.get("C:\\Users\\adria\\Documents\\OneDrive - Estudiantes ITCR\\I SEMESTRE 2020\\COMPI\\Proyecto\\Project-C\\SolidityCompiler\\src\\soliditycompiler\\sym.java")
         );
         //OPTIENE EL PATH QUE TENDRIA EL ARCHIVO Sintax.java DENTRO DEL PACKAGE
-        Path pathSintax = Paths.get("C:\\Users\\adria\\Documents\\OneDrive - Estudiantes ITCR\\I SEMESTRE 2020\\COMPI\\Proyecto\\Project-C\\SolidityCompiler\\src\\soliditycompiler\\Sintax.java");
+        Path pathSintax = Paths.get("C:\\Users\\adria\\Documents\\OneDrive - Estudiantes ITCR\\I SEMESTRE 2020\\COMPI\\Proyecto\\Project-C\\SolidityCompiler\\src\\soliditycompiler\\Parser.java");
         if (Files.exists(pathSintax)) {
             Files.delete(pathSintax);  //SI YA EXISTE ESE PATH LO BORRA PARA QUE EL Files.move() PUEDA PEGAR EL ARCHIVO NUEVO DE SINTAXIS
         }
         Files.move(                 //MUEVE EL ARCHIVO
-                Paths.get("C:\\Users\\adria\\Documents\\OneDrive - Estudiantes ITCR\\I SEMESTRE 2020\\COMPI\\Proyecto\\Project-C\\SolidityCompiler\\Sintax.java"), 
-                Paths.get("C:\\Users\\adria\\Documents\\OneDrive - Estudiantes ITCR\\I SEMESTRE 2020\\COMPI\\Proyecto\\Project-C\\SolidityCompiler\\src\\soliditycompiler\\Sintax.java")
+                Paths.get("C:\\Users\\adria\\Documents\\OneDrive - Estudiantes ITCR\\I SEMESTRE 2020\\COMPI\\Proyecto\\Project-C\\SolidityCompiler\\Parser.java"), 
+                Paths.get("C:\\Users\\adria\\Documents\\OneDrive - Estudiantes ITCR\\I SEMESTRE 2020\\COMPI\\Proyecto\\Project-C\\SolidityCompiler\\src\\soliditycompiler\\Parser.java")
         );
         
     }
