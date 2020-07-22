@@ -57,24 +57,31 @@ terminal Res_Int, Res_Int2, Res_Int4, Res_Int8, Res_Int16, Res_Int32, Res_Int64,
 /*DEFINICION NO TERMINALES*/
 non terminal java_cup.runtime.symbol empty;
 
-non terminal INICIO, CUERPO_CONTRATO, ENUM, SENTENCIA, ESTRUCTURA, FUNCION, CUERPO_ENUM, CUERPO_ENUM_AUX;
+non terminal INICIO, CONTRACT_INICIO, CONTRACT, CUERPO_CONTRATO, ENUM, SENTENCIA, ESTRUCTURA, FUNCION, CUERPO_ENUM, CUERPO_ENUM_AUX, VARIABLE, VAR_TYPE,
+             ASSIGNMENT, PRIVACY, BYTE_TYPE, INT_TYPE, UINT_TYPE, BYTE_TYPES, BLOQUE, SENTENCIA_BLOQUE, SENTENCIA, IF_SENTENCIA, WHILE_SENTENCIA, 
+             DOWHILE_SENTENCIA, FOR_SENTENCIA, CONTINUE_SENTENCIA, BREAK_SENTENCIA, RETURN_SENTENCIA, EXPRESSION, ELSE, SENTENCIA_BASE, EXPRESSION_SENTENCIA,
+             BOOLEAN_EXPRESSION, EXPRESSION_AUX, ARGUMENTS, 
+;
 
 start with INICIO;
 
 /*REGLAS*/
 
-INICIO ::= Res_Pragma Res_Solidity Potencia Flotante Flotante PuntoYComa CONTRACT
-                
+INICIO ::= Res_Pragma Res_Solidity Potencia Flotante Flotante PuntoYComa CONTRACT_INICIO
 ;
 
-CONTRACT ::= Res_Contract Identificador AbreLlave CUERPO_CONTRATO CierraLlave
-
+CONTRACT_INICIO ::= CONTRACT CONTRACT_INICIO | 
+                    empty
 ;
 
-CUERPO_CONTRATO ::= ENUM |
-                    SENTENCIA |
-                    ESTRUCTURA |
-                    FUNCION
+CONTRACT ::= Res_Contract Identificador AbreLlave CUERPO_CONTRATO CierraLlave 
+;
+
+CUERPO_CONTRATO ::= ENUM CUERPO_CONTRATO|
+                    SENTENCIA CUERPO_CONTRATO|
+                    ESTRUCTURA CUERPO_CONTRATO|
+                    FUNCION CUERPO_CONTRATO |
+                    empty
 ;
 
 ENUM ::= Res_Enum Identificador AbreLlave CUERPO_ENUM CierraLlave
@@ -86,19 +93,99 @@ CUERPO_ENUM ::= Identificador CUERPO_ENUM_AUX
 CUERPO_ENUM_AUX ::= Coma Identificador CUERPO_ENUM_AUX | empty
 ;
 
-VARIABLE ::= VAR_TYPE PRIVACY Identificador PuntoYComa |VAR_TYPE PRIVACY ASSIGNMENT PuntoYComa | VAR_TYPE AbreCorchete CierraCorchete Identificador PuntoYComa | VAR_TYPE AbreCorchete CierraCorchete ASSIGNMENT PuntoYComa;
-
-VAR_TYPE ::=  Res_Bool | BYTE_TYPE | BYTE_TYPES | Res_Address | INT_TYPE | UINT_TYPE | Res_String | Res_Ufixed
+BLOQUE ::= AbreLlave SENTENCIA_BLOQUE CierraLlave PuntoYComa
 ;
 
-/*Asignaciones faltan las expresiones*/
+SENTENCIA_BLOQUE ::= SENTENCIA SENTENCIA_BLOQUE | empty
+;
 
-ASSIGNMENT::= Identificador Asignacion Identificador; /*| Identificador Asignacion EXPRESSION*/
+SENTENCIA ::= IF_SENTENCIA | 
+              WHILE_SENTENCIA | 
+              DOWHILE_SENTENCIA | 
+              FOR_SENTENCIA |
+              CONTINUE_SENTENCIA |
+              BREAK_SENTENCIA |
+              RETURN_SENTENCIA |
+              SENTENCIA_BASE
+;
+
+IF_SENTENCIA ::= Res_If AbreParentesis EXPRESSION CierraParentesis SENTENCIA ELSE
+;
+
+ELSE ::= Res_Else SENTENCIA | 
+         empty
+;
+
+WHILE_SENTENCIA ::= Res_While AbreParentesis EXPRESSION CierraParentesis SENTENCIA
+;
+
+DOWHILE_SENTENCIA ::= Res_Do SENTENCIA Res_While AbreParentesis EXPRESSION CierraParentesis PuntoYComa
+;
+
+FOR_SENTENCIA ::= Res_For AbreParentesis  
+;
+
+SENTENCIA_BASE ::= VARIABLE |
+                   EXPRESSION_SENTENCIA
+;
+
+EXPRESSION_SENTENCIA ::=  EXPRESSION PuntoYComa
+;
+
+VARIABLE ::= VAR_TYPE PRIVACY Identificador PuntoYComa |
+             VAR_TYPE PRIVACY ASSIGNMENT PuntoYComa | 
+             VAR_TYPE AbreCorchete CierraCorchete Identificador PuntoYComa | 
+             VAR_TYPE AbreCorchete CierraCorchete ASSIGNMENT PuntoYComa
+             ;
+
+VAR_TYPE ::=  Res_Bool | 
+                BYTE_TYPE | 
+                BYTE_TYPES | 
+                Res_Address | 
+                INT_TYPE | 
+                UINT_TYPE | 
+                Res_String | 
+                Res_Ufixed
+;
+
+ASSIGNMENT::= Identificador Asignacion Identificador | Identificador Asignacion EXPRESSION
+;
 
 
-PRIVACY::= Res_Public | Res_Private;
+PRIVACY::= Res_Public | 
+            Res_Private;
 
 BYTE_TYPE::= Res_Byte|Res_Byte2|Res_Byte4|Res_Byte8|Res_Byte16|Res_Byte32|Res_Byte64|Res_Byte128|Res_Byte256;
 INT_TYPE::= Res_Int|Res_Int2|Res_Int4|Res_Int8|Res_Int16|Res_Int32|Res_Int64|Res_Int128|Res_Int256;
 UINT_TYPE::= Res_Uint|Res_Uint2|Res_Uint4|Res_Uint8|Res_Uint16|Res_Uint32|Res_Uint64|Res_Uint128|Res_Uint256;
 BYTE_TYPES::=Res_Bytes|Res_Bytes2|Res_Bytes4|Res_Bytes8|Res_Bytes16|Res_Bytes32|Res_Bytes64|Res_Bytes128|Res_Bytes256;
+
+EXPRESSION ::= EXPRESSION AbreCorchete EXPRESSION_AUX CierraCorchete |
+                EXPRESSION AbreCorchete EXPRESSION_AUX DosPuntos EXPRESSION_AUX CierraCorchete |
+                EXPRESSION Punto Identificador |
+                EXPRESSION AbreParentesis ARGUMENTS CierraParentesis |
+                AbreParentesis EXPRESSION CierraParentesis |
+                NotLogico EXPRESSION |
+                NotBits EXPRESSION |
+                EXPRESSION Potencia EXPRESSION |
+                EXPRESSION Multiplicacion EXPRESSION |
+                EXPRESSION Division EXPRESSION |
+                EXPRESSION Porcentaje EXPRESSION |
+                EXPRESSION Suma EXPRESSION |
+                EXPRESSION Resta EXPRESSION |
+                EXPRESSION CorrerALaIzquierda EXPRESSION |
+                EXPRESSION CorrerALaDerecha EXPRESSION |
+                EXPRESSION AndBits EXPRESSION |
+                EXPRESSION OrBits EXPRESSION |
+                EXPRESSION MenorQue EXPRESSION |
+                EXPRESSION MayorQue EXPRESSION |
+                EXPRESSION MenorOIgualQue EXPRESSION |
+                EXPRESSION MayorOIgualQue EXPRESSION |
+                EXPRESSION Comparacion EXPRESSION |
+                EXPRESSION Diferencia EXPRESSION |
+                
+;
+
+EXPRESSION_AUX ::= EXPRESSION AbreCorchete EXPRESSION_AUX CierraCorchete | 
+                    empty
+;
