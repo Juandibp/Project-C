@@ -162,6 +162,12 @@ VARIABLE ::= VAR_TYPE PRIVACY Identificador PuntoYComa |
              VAR_TYPE AbreCorchete CierraCorchete ASSIGNMENT PuntoYComa
              ;
 
+VARIABLE_PARAMS ::= VAR_TYPE PRIVACY Identificador |
+             VAR_TYPE PRIVACY ASSIGNMENT  | 
+             VAR_TYPE AbreCorchete CierraCorchete Identificador  | 
+             VAR_TYPE AbreCorchete CierraCorchete ASSIGNMENT 
+             ;
+
 VAR_TYPE ::=  Res_Bool | 
                 BYTE_TYPE | 
                 BYTE_TYPES | 
@@ -283,3 +289,33 @@ LITERAL_NUMERICO_AUX ::= Unit_Days |
                         empty
 ;
                         
+
+
+STRUCT ::= Res_Struct Identificador AbreLlave VARIABLE STRUCT_AUX CierraLlave
+;
+
+STRUCT_AUX ::= VARIABLE STRUCT_AUX | empty
+;
+
+FUNCION ::= Res_Function Identificador AbreParentesis PARAM_LIST CierraParentesis MODS RETURNS_FUNCTION
+            AbreLlave VAR_LIST RETURN_SENTENCIA CierraLlave
+; /*FALTA CUERPO DE LA FUNCION*/
+
+PARAM_LIST::= VARIABLE_PARAMS PARAM_LIST | empty
+;
+
+VAR_LIST::= VARIABLE VAR_LIST | empty
+;
+
+MODS::= MOD_LIST | empty
+;
+
+MOD_LIST ::= Res_Payable | PRIVACY | Res_Internal
+;
+
+
+RETURNS_FUNCTION ::= RETURNS_FUNCTION_AUX | empty
+;
+
+RETURNS_FUNCTION_AUX ::= Res_Returns AbreParentesis VAR_TYPE Identificador CierraParentesis
+;
