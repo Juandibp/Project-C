@@ -270,7 +270,7 @@ LITERAL_NUMERICO ::= Numero LITERAL_NUMERICO_AUX |
                     Flotante LITERAL_NUMERICO_AUX
 ;
 
-LITERAL_NUMERICO_AUX := Unit_Days |
+LITERAL_NUMERICO_AUX ::= Unit_Days |
                         Unit_Ether |
                         Unit_Finney |
                         Unit_Hours |
