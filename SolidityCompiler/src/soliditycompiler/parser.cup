@@ -63,8 +63,12 @@ start with INICIO;
 
 /*REGLAS*/
 
-INICIO ::= Res_Pragma Res_Solidity Potencia Flotante Flotante PuntoYComa
-                Res_Contract Identificador AbreLlave CUERPO_CONTRATO CierraLlave
+INICIO ::= Res_Pragma Res_Solidity Potencia Flotante Flotante PuntoYComa CONTRACT
+                
+;
+
+CONTRACT ::= Res_Contract Identificador AbreLlave CUERPO_CONTRATO CierraLlave
+
 ;
 
 CUERPO_CONTRATO ::= ENUM |
@@ -81,3 +85,20 @@ CUERPO_ENUM ::= Identificador CUERPO_ENUM_AUX
 
 CUERPO_ENUM_AUX ::= Coma Identificador CUERPO_ENUM_AUX | empty
 ;
+
+VARIABLE ::= VAR_TYPE PRIVACY Identificador PuntoYComa |VAR_TYPE PRIVACY ASSIGNMENT PuntoYComa | VAR_TYPE AbreCorchete CierraCorchete Identificador PuntoYComa | VAR_TYPE AbreCorchete CierraCorchete ASSIGNMENT PuntoYComa;
+
+VAR_TYPE ::=  Res_Bool | BYTE_TYPE | BYTE_TYPES | Res_Address | INT_TYPE | UINT_TYPE | Res_String | Res_Ufixed
+;
+
+/*Asignaciones faltan las expresiones*/
+
+ASSIGNMENT::= Identificador Asignacion Identificador; /*| Identificador Asignacion EXPRESSION*/
+
+
+PRIVACY::= Res_Public | Res_Private;
+
+BYTE_TYPE::= Res_Byte|Res_Byte2|Res_Byte4|Res_Byte8|Res_Byte16|Res_Byte32|Res_Byte64|Res_Byte128|Res_Byte256;
+INT_TYPE::= Res_Int|Res_Int2|Res_Int4|Res_Int8|Res_Int16|Res_Int32|Res_Int64|Res_Int128|Res_Int256;
+UINT_TYPE::= Res_Uint|Res_Uint2|Res_Uint4|Res_Uint8|Res_Uint16|Res_Uint32|Res_Uint64|Res_Uint128|Res_Uint256;
+BYTE_TYPES::=Res_Bytes|Res_Bytes2|Res_Bytes4|Res_Bytes8|Res_Bytes16|Res_Bytes32|Res_Bytes64|Res_Bytes128|Res_Bytes256;
