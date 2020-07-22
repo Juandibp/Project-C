@@ -59,8 +59,9 @@ non terminal java_cup.runtime.symbol empty;
 
 non terminal INICIO, CONTRACT_INICIO, CONTRACT, CUERPO_CONTRATO, ENUM, SENTENCIA, ESTRUCTURA, FUNCION, CUERPO_ENUM, CUERPO_ENUM_AUX, VARIABLE, VAR_TYPE,
              ASSIGNMENT, PRIVACY, BYTE_TYPE, INT_TYPE, UINT_TYPE, BYTE_TYPES, BLOQUE, SENTENCIA_BLOQUE, SENTENCIA, IF_SENTENCIA, WHILE_SENTENCIA, 
-             DOWHILE_SENTENCIA, FOR_SENTENCIA, CONTINUE_SENTENCIA, BREAK_SENTENCIA, RETURN_SENTENCIA, EXPRESSION, ELSE, SENTENCIA_BASE, EXPRESSION_SENTENCIA,
-             BOOLEAN_EXPRESSION, EXPRESSION_AUX, ARGUMENTS, 
+             DOWHILE_SENTENCIA, FOR_SENTENCIA, ASSIGNMENT_FOR, EXPRESSION_FOR_UNO, CONTINUE_SENTENCIA, BREAK_SENTENCIA, RETURN_SENTENCIA, RETURN_SENTENCIA_AUX, EXPRESSION, ELSE, SENTENCIA_BASE, EXPRESSION_SENTENCIA,
+             BOOLEAN_EXPRESSION, EXPRESSION_AUX, ARGUMENTS_EXPRESSION, ASSIGNMENT_AUX, EXPRESSION_PRIMARIA, EXPRESSION_PRIMARIA_AUX, OP_ARITMETICO_PRIMER_ORDEN, 
+             OP_ARITMETICO_SEGUNDO_ORDEN, OP_ARITMETICO_TERCER_ORDEN, OP_BOOLEANO, LITERAL_BOOLEANO, LITERAL_NUMERICO, LITERAL_NUMERICO_AUX
 ;
 
 start with INICIO;
@@ -93,7 +94,7 @@ CUERPO_ENUM ::= Identificador CUERPO_ENUM_AUX
 CUERPO_ENUM_AUX ::= Coma Identificador CUERPO_ENUM_AUX | empty
 ;
 
-BLOQUE ::= AbreLlave SENTENCIA_BLOQUE CierraLlave PuntoYComa
+BLOQUE ::= AbreLlave SENTENCIA_BLOQUE CierraLlave
 ;
 
 SENTENCIA_BLOQUE ::= SENTENCIA SENTENCIA_BLOQUE | empty
@@ -109,20 +110,30 @@ SENTENCIA ::= IF_SENTENCIA |
               SENTENCIA_BASE
 ;
 
-IF_SENTENCIA ::= Res_If AbreParentesis EXPRESSION CierraParentesis SENTENCIA ELSE
+IF_SENTENCIA ::= Res_If AbreParentesis BOOLEAN_EXPRESSION CierraParentesis BLOQUE ELSE 
 ;
 
-ELSE ::= Res_Else SENTENCIA | 
+ELSE ::= Res_Else BLOQUE | 
          empty
 ;
 
-WHILE_SENTENCIA ::= Res_While AbreParentesis EXPRESSION CierraParentesis SENTENCIA
+WHILE_SENTENCIA ::= Res_While AbreParentesis BOOLEAN_EXPRESSION CierraParentesis BLOQUE 
 ;
 
-DOWHILE_SENTENCIA ::= Res_Do SENTENCIA Res_While AbreParentesis EXPRESSION CierraParentesis PuntoYComa
+DOWHILE_SENTENCIA ::= Res_Do BLOQUE Res_While AbreParentesis BOOLEAN_EXPRESSION CierraParentesis PuntoYComa
 ;
 
-FOR_SENTENCIA ::= Res_For AbreParentesis  
+FOR_SENTENCIA ::= Res_For AbreParentesis ASSIGNMENT_FOR EXPRESSION_FOR_UNO EXPRESSION_FOR_DOS CierraParentesis BLOQUE
+;
+
+ASSIGNMENT_FOR ::= SENTENCIA_BASE | PuntoYComa
+;
+
+EXPRESSION_FOR_UNO ::= EXPRESSION_SENTENCIA | PuntoYComa
+;
+
+EXPRESSION_FOR_DOS ::= EXPRESSION |
+                        empty
 ;
 
 SENTENCIA_BASE ::= VARIABLE |
@@ -130,6 +141,19 @@ SENTENCIA_BASE ::= VARIABLE |
 ;
 
 EXPRESSION_SENTENCIA ::=  EXPRESSION PuntoYComa
+;
+
+CONTINUE_SENTENCIA ::= Res_Continue PuntoYComa
+;
+
+BREAK_SENTENCIA ::= Res_Break PuntoYComa
+;
+ 
+RETURN_SENTENCIA ::= Res_Return RETURN_SENTENCIA_AUX PuntoYComa
+;
+
+RETURN_SENTENCIA_AUX ::= EXPRESSION | 
+                        empty
 ;
 
 VARIABLE ::= VAR_TYPE PRIVACY Identificador PuntoYComa |
@@ -148,12 +172,21 @@ VAR_TYPE ::=  Res_Bool |
                 Res_Ufixed
 ;
 
-ASSIGNMENT::= Identificador Asignacion Identificador | Identificador Asignacion EXPRESSION
+ASSIGNMENT::= Identificador ASSIGNMENT_AUX Identificador | 
+              Identificador ASSIGNMENT_AUX EXPRESSION
 ;
 
 
+ASSIGNMENT_AUX ::= Asignacion | 
+                    Sume | 
+                    Reste | 
+                    Multiplique | 
+                    Divida
+;
+
 PRIVACY::= Res_Public | 
-            Res_Private;
+            Res_Private
+;
 
 BYTE_TYPE::= Res_Byte|Res_Byte2|Res_Byte4|Res_Byte8|Res_Byte16|Res_Byte32|Res_Byte64|Res_Byte128|Res_Byte256;
 INT_TYPE::= Res_Int|Res_Int2|Res_Int4|Res_Int8|Res_Int16|Res_Int32|Res_Int64|Res_Int128|Res_Int256;
@@ -167,25 +200,86 @@ EXPRESSION ::= EXPRESSION AbreCorchete EXPRESSION_AUX CierraCorchete |
                 AbreParentesis EXPRESSION CierraParentesis |
                 NotLogico EXPRESSION |
                 NotBits EXPRESSION |
-                EXPRESSION Potencia EXPRESSION |
-                EXPRESSION Multiplicacion EXPRESSION |
-                EXPRESSION Division EXPRESSION |
-                EXPRESSION Porcentaje EXPRESSION |
-                EXPRESSION Suma EXPRESSION |
-                EXPRESSION Resta EXPRESSION |
+                EXPRESSION OP_ARITMETICO_PRIMER_ORDEN EXPRESSION |
                 EXPRESSION CorrerALaIzquierda EXPRESSION |
                 EXPRESSION CorrerALaDerecha EXPRESSION |
                 EXPRESSION AndBits EXPRESSION |
                 EXPRESSION OrBits EXPRESSION |
-                EXPRESSION MenorQue EXPRESSION |
-                EXPRESSION MayorQue EXPRESSION |
-                EXPRESSION MenorOIgualQue EXPRESSION |
-                EXPRESSION MayorOIgualQue EXPRESSION |
-                EXPRESSION Comparacion EXPRESSION |
-                EXPRESSION Diferencia EXPRESSION |
-                
+                EXPRESSION OP_BOOLEANO EXPRESSION |
+                EXPRESSION Interrogacion EXPRESSION DosPuntos EXPRESSION |
+                EXPRESSION ASSIGNMENT_AUX EXPRESSION |
+                EXPRESSION_PRIMARIA
 ;
 
 EXPRESSION_AUX ::= EXPRESSION AbreCorchete EXPRESSION_AUX CierraCorchete | 
                     empty
 ;
+
+OP_ARITMETICO_PRIMER_ORDEN ::= Potencia | 
+                                OP_ARITMETICO_SEGUNDO_ORDEN
+;
+
+OP_ARITMETICO_SEGUNDO_ORDEN ::= Multiplicacion | 
+                                Division | 
+                                Porcentaje | 
+                                OP_ARITMETICO_TERCER_ORDEN
+;
+
+OP_ARITMETICO_TERCER_ORDEN ::= Suma | Resta
+;
+
+OP_BOOLEANO ::= MenorQue | 
+                MayorQue | 
+                MenorOIgualQue | 
+                MayorOIgualQue | 
+                Comparacion | 
+                Diferencia | 
+                AndLogico | 
+                OrLogico
+;
+
+ARGUMENTS_EXPRESSION ::= Identificador |
+                        EXPRESSION |
+                        ARGUMENTS_EXPRESSION_AUX
+;
+
+ARGUMENTS_EXPRESSION_AUX ::= Coma Identificador ARGUMENTS_EXPRESSION_AUX |
+                            Coma EXPRESSION ARGUMENTS_EXPRESSION_AUX |
+                            empty
+;
+
+EXPRESSION_PRIMARIA ::= LITERAL_BOOLEANO |
+                        LITERAL_NUMERICO |
+                        Cientifico |
+                        Hexadecimal |
+                        Cadena |
+                        Identificador EXPRESSION_PRIMARIA_AUX
+;
+
+EXPRESSION_PRIMARIA_AUX ::= AbreCorchete CierraCorchete |
+                            empty
+;
+
+LITERAL_BOOLEANO ::= Res_True | 
+                    Res_False
+;
+
+LITERAL_NUMERICO ::= Numero LITERAL_NUMERICO_AUX | 
+                    Hexadecimal LITERAL_NUMERICO_AUX | 
+                    Cientifico LITERAL_NUMERICO_AUX | 
+                    Flotante LITERAL_NUMERICO_AUX
+;
+
+LITERAL_NUMERICO_AUX := Unit_Days |
+                        Unit_Ether |
+                        Unit_Finney |
+                        Unit_Hours |
+                        Unit_Minutes |
+                        Unit_Seconds |
+                        Unit_Szabo |
+                        Unit_Weeks |
+                        Unit_Wei | 
+                        Unit_Years |
+                        empty
+;
+                        
