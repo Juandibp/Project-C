@@ -8,7 +8,7 @@ import java.util.LinkedList;
 parser code
 {:
     public static LinkedList<SError> SEList = new LinkedList<SError>(); //SYNTAX ERROR LIST
-    public static String ultimoToken;
+    //public static String ultimoToken;
     private Symbol s;
 
     public Parser (LexerC scanner) {
@@ -21,7 +21,12 @@ parser code
         String lexeme = s.value.toString();
         int line = s.right;
         int column = s.left;
-        SError dato = new SError(lexeme, line, column, "Error Sintáctico", "Token inválido después de "); //FALTA HACER EL LOOKAHEAD HACIA ATRAS
+
+        if((column - lexeme.length())<=0){
+            column = 0;
+        }
+
+        SError dato = new SError(lexeme, line, column, "Error Sintáctico", "Token inválido después de linea: " + line.toString() + " Columna: "+ column.toString());
         SEList.add(dato);
     }
 
@@ -57,7 +62,7 @@ terminal Res_Int, Res_Int2, Res_Int4, Res_Int8, Res_Int16, Res_Int32, Res_Int64,
 /*DEFINICION NO TERMINALES*/
 non terminal java_cup.runtime.symbol empty;
 
-non terminal INICIO, CONTRACT_INICIO, CONTRACT, CUERPO_CONTRATO, ENUM, SENTENCIA, ESTRUCTURA, FUNCION, CUERPO_ENUM, CUERPO_ENUM_AUX, VARIABLE, VAR_TYPE,
+non terminal INICIO, CONTRACT_INICIO, CONTRACT, CUERPO_CONTRATO, ENUM, SENTENCIA, STRUCT, FUNCION, CUERPO_ENUM, CUERPO_ENUM_AUX, VARIABLE, VAR_TYPE,
              ASSIGNMENT, PRIVACY, BYTE_TYPE, INT_TYPE, UINT_TYPE, BYTE_TYPES, BLOQUE, SENTENCIA_BLOQUE, SENTENCIA, IF_SENTENCIA, WHILE_SENTENCIA, 
              DOWHILE_SENTENCIA, FOR_SENTENCIA, ASSIGNMENT_FOR, EXPRESSION_FOR_UNO, CONTINUE_SENTENCIA, BREAK_SENTENCIA, RETURN_SENTENCIA, RETURN_SENTENCIA_AUX, EXPRESSION, ELSE, SENTENCIA_BASE, EXPRESSION_SENTENCIA,
              BOOLEAN_EXPRESSION, EXPRESSION_AUX, ARGUMENTS_EXPRESSION, ASSIGNMENT_AUX, EXPRESSION_PRIMARIA, EXPRESSION_PRIMARIA_AUX, OP_ARITMETICO_PRIMER_ORDEN, 
@@ -75,7 +80,7 @@ CONTRACT_INICIO ::= CONTRACT CONTRACT_INICIO |
                     empty
 ;
 
-CONTRACT ::= Res_Contract Identificador AbreLlave CUERPO_CONTRATO CierraLlave 
+CONTRACT ::= Res_Contract IDENT AbreLlave CUERPO_CONTRATO CierraLlave 
 ;
 
 CUERPO_CONTRATO ::= ENUM CUERPO_CONTRATO|
@@ -85,13 +90,20 @@ CUERPO_CONTRATO ::= ENUM CUERPO_CONTRATO|
                     empty
 ;
 
-ENUM ::= Res_Enum Identificador AbreLlave CUERPO_ENUM CierraLlave
+IDENT::=  Identificador 
+        | Identificador Punto Identificador 
+        | Res_This Punto Identificador 
+        | Identificador Punto Identificador AbreParentesis CierraParentesis 
+        | Res_This Punto Identificador AbreParentesis CierraParentesis
 ;
 
-CUERPO_ENUM ::= Identificador CUERPO_ENUM_AUX
+ENUM ::= Res_Enum IDENT AbreLlave CUERPO_ENUM CierraLlave
 ;
 
-CUERPO_ENUM_AUX ::= Coma Identificador CUERPO_ENUM_AUX | empty
+CUERPO_ENUM ::= IDENT CUERPO_ENUM_AUX
+;
+
+CUERPO_ENUM_AUX ::= Coma IDENT CUERPO_ENUM_AUX | empty
 ;
 
 BLOQUE ::= AbreLlave SENTENCIA_BLOQUE CierraLlave
@@ -156,10 +168,16 @@ RETURN_SENTENCIA_AUX ::= EXPRESSION |
                         empty
 ;
 
-VARIABLE ::= VAR_TYPE PRIVACY Identificador PuntoYComa |
+VARIABLE ::= VAR_TYPE PRIVACY IDENT PuntoYComa |
              VAR_TYPE PRIVACY ASSIGNMENT PuntoYComa | 
-             VAR_TYPE AbreCorchete CierraCorchete Identificador PuntoYComa | 
+             VAR_TYPE AbreCorchete CierraCorchete IDENT PuntoYComa | 
              VAR_TYPE AbreCorchete CierraCorchete ASSIGNMENT PuntoYComa
+             ;
+
+VARIABLE_PARAMS ::= VAR_TYPE PRIVACY IDENT |
+             VAR_TYPE PRIVACY ASSIGNMENT  | 
+             VAR_TYPE AbreCorchete CierraCorchete IDENT  | 
+             VAR_TYPE AbreCorchete CierraCorchete ASSIGNMENT 
              ;
 
 VAR_TYPE ::=  Res_Bool | 
@@ -172,7 +190,7 @@ VAR_TYPE ::=  Res_Bool |
                 Res_Ufixed
 ;
 
-ASSIGNMENT::= Identificador ASSIGNMENT_AUX Identificador | 
+ASSIGNMENT::= Identificador ASSIGNMENT_AUX IDENT | 
               Identificador ASSIGNMENT_AUX EXPRESSION
 ;
 
@@ -195,7 +213,7 @@ BYTE_TYPES::=Res_Bytes|Res_Bytes2|Res_Bytes4|Res_Bytes8|Res_Bytes16|Res_Bytes32|
 
 EXPRESSION ::= EXPRESSION AbreCorchete EXPRESSION_AUX CierraCorchete |
                 EXPRESSION AbreCorchete EXPRESSION_AUX DosPuntos EXPRESSION_AUX CierraCorchete |
-                EXPRESSION Punto Identificador |
+                EXPRESSION Punto IDENT |
                 EXPRESSION AbreParentesis ARGUMENTS CierraParentesis |
                 AbreParentesis EXPRESSION CierraParentesis |
                 NotLogico EXPRESSION |
@@ -238,12 +256,12 @@ OP_BOOLEANO ::= MenorQue |
                 OrLogico
 ;
 
-ARGUMENTS_EXPRESSION ::= Identificador |
+ARGUMENTS_EXPRESSION ::= IDENT |
                         EXPRESSION |
                         ARGUMENTS_EXPRESSION_AUX
 ;
 
-ARGUMENTS_EXPRESSION_AUX ::= Coma Identificador ARGUMENTS_EXPRESSION_AUX |
+ARGUMENTS_EXPRESSION_AUX ::= Coma IDENT ARGUMENTS_EXPRESSION_AUX |
                             Coma EXPRESSION ARGUMENTS_EXPRESSION_AUX |
                             empty
 ;
@@ -253,7 +271,7 @@ EXPRESSION_PRIMARIA ::= LITERAL_BOOLEANO |
                         Cientifico |
                         Hexadecimal |
                         Cadena |
-                        Identificador EXPRESSION_PRIMARIA_AUX
+                        IDENT EXPRESSION_PRIMARIA_AUX
 ;
 
 EXPRESSION_PRIMARIA_AUX ::= AbreCorchete CierraCorchete |
@@ -270,7 +288,7 @@ LITERAL_NUMERICO ::= Numero LITERAL_NUMERICO_AUX |
                     Flotante LITERAL_NUMERICO_AUX
 ;
 
-LITERAL_NUMERICO_AUX := Unit_Days |
+LITERAL_NUMERICO_AUX ::= Unit_Days |
                         Unit_Ether |
                         Unit_Finney |
                         Unit_Hours |
@@ -283,3 +301,49 @@ LITERAL_NUMERICO_AUX := Unit_Days |
                         empty
 ;
                         
+
+
+STRUCT ::= Res_Struct IDENT AbreLlave VARIABLE STRUCT_AUX CierraLlave
+;
+
+STRUCT_AUX ::= Coma VARIABLE STRUCT_AUX | empty
+;
+
+FUNCION ::= Res_Function IDENT AbreParentesis PARAM_LIST CierraParentesis MODS RETURNS_FUNCTION
+            AbreLlave VAR_LIST CUERPO_FUNCION RETURN_SENTENCIA CierraLlave
+; /*FALTA CUERPO DE LA FUNCION*/
+
+CUERPO_FUNCION::= SENTENCIA CUERPO_FUNCION | empty
+;
+
+PARAM_LIST::= PARAM_LIST_AUX | empty
+;
+
+PARAM_LIST_AUX ::= VARIABLE_PARAMS | PARAM_LIST_AUX_HELP
+;
+
+PARAM_LIST_AUX_HELP ::= Coma VARIABLE_PARAMS PARAM_LIST_AUX_HELP | empty
+;
+
+
+VAR_LIST::= VAR_LIST_AUX | empty
+;
+
+VAR_LIST_AUX::= VARIABLE | VAR_LIST_AUX_HELP
+;
+
+VAR_LIST_AUX_HELP::= Coma VARIABLE VAR_LIST_AUX_HELP | empty
+;
+
+MODS::= MOD_LIST | empty
+;
+
+MOD_LIST ::= Res_Payable | PRIVACY | Res_Internal
+;
+
+
+RETURNS_FUNCTION ::= RETURNS_FUNCTION_AUX | empty
+;
+
+RETURNS_FUNCTION_AUX ::= Res_Returns AbreParentesis VAR_TYPE IDENT CierraParentesis
+;
