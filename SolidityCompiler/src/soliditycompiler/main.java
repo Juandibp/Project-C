@@ -24,8 +24,8 @@ public class main {
         //String path = "C:/Users/U1/Documents/GitHub/Project-C/SolidityCompiler/src/soliditycompiler/scanner.flex";
         
         //STRINGS DE LAS RUTAS
-        String pathPackage = "C:\\Users\\adria\\Documents\\OneDrive - Estudiantes ITCR\\I SEMESTRE 2020\\COMPI\\Proyecto\\Project-C\\SolidityCompiler\\src\\soliditycompiler\\";
-        String pathJavaCup = "C:\\Users\\adria\\Documents\\OneDrive - Estudiantes ITCR\\I SEMESTRE 2020\\COMPI\\Proyecto\\Project-C\\SolidityCompiler\\";
+        String pathPackage = "D:\\GitHub\\Project-C\\SolidityCompiler\\src\\soliditycompiler\\";
+        String pathJavaCup = "D:\\GitHub\\Project-C\\SolidityCompiler\\";
         
         //pathSC es del scanner para cup, pathSF es del scanner normal de flex para mostrar el analisis lexico y pathP del parser
         String pathSC = pathPackage + "ScannerC.flex";
@@ -48,7 +48,7 @@ public class main {
         file = new File(pathScannerC);  
         JFlex.Main.generate(file);      //genera el codigo del scaner en LexerC.java
      
-        java_cup.Main.main(pathParser); //genera el codigo del parser en sym.java (simbolos) y Sintax.java 
+        java_cup.Main.main(pathParser); //genera el codigo del parser en sym.java (simbolos) y Syntax.java 
         //ESTOS ARCHIVOS SE GENERAN AFUERA DE src/SolidityCompiler por lo que hay que pasarlos a la carpeta del package con el siguiente codigo:
         
         //OPTIENE EL PATH QUE TENDRIA EL ARCHIVO sym.java DENTRO DEL PACKAGE

@@ -48,25 +48,26 @@ parser code
 
 
 /*DEFINICION TERMINALES*/
-terminal Res_Int, Res_Int2, Res_Int4, Res_Int8, Res_Int16, Res_Int32, Res_Int64, Res_Int128, Res_Int256, Res_If, Res_Else, Res_Address, Res_As, Res_Bool, Res_Break,
+terminal Res_Int, Res_Int2, Res_Int4, Res_Int8, Res_Int16, Res_Int32, Res_Int64, Res_Int128, Res_Int256, Res_If, Res_Else, Res_Address, Res_Bool, Res_Break,
         Res_Bytes, Res_Bytes2, Res_Bytes4, Res_Bytes8, Res_Bytes16, Res_Bytes32, Res_Bytes64, Res_Bytes128, Res_Bytes256, Res_Byte, Res_Byte2, Res_Byte4, Res_Byte8,
-        Res_Byte16, Res_Byte32, Res_Byte64, Res_Byte128, Res_Byte256, Res_Constructor, Res_Continue, Res_Contract, Res_Delete, Res_Do, Res_Enum, Res_False, Res_For,
-        Res_From, Res_Function, Res_Import, Res_Internal, Res_Mapping, Res_Moddifier, Res_Payable, Res_Pragma, Res_Private, Res_Public, Res_Return, Res_Returns,
+        Res_Byte16, Res_Byte32, Res_Byte64, Res_Byte128, Res_Byte256, Res_Continue, Res_Contract, Res_Do, Res_Enum, Res_False, Res_For, Res_Function, Res_Internal, Res_Payable, Res_Pragma, Res_Private, Res_Public, Res_Return, Res_Returns,
         Res_Solidity, Res_String, Res_Struct, Res_This, Res_True, Res_Ufixed, Res_Uint, Res_Uint2, Res_Uint4, Res_Uint8, Res_Uint16, Res_Uint32, Res_Uint64, Res_Uint128,
-        Res_Uint256, Res_Var, Res_View, Res_While, Trans_Balance, Trans_Call, Trans_Callcode, Trans_Delgatecall, Trans_Send, Trans_Transfer, Unit_Days, Unit_Ether,
-        Unit_Finney, Unit_Hours, Unit_Minutes, Unit_Seconds, Unit_Szabo, Unit_Weeks, Unit_Wei, Unit_Years, ComentarioBloque, Cientifico, Flotante, NotLogico, AndLogico,
+        Res_Uint256, Res_While, Unit_Days, Unit_Ether,
+        Unit_Finney, Unit_Hours, Unit_Minutes, Unit_Seconds, Unit_Szabo, Unit_Weeks, Unit_Wei, Unit_Years, Cientifico, Flotante, NotLogico, AndLogico,
         Potencia, Comparacion, Diferencia, OrLogico, MenorOIgualQue, CorrerALaIzquierda, CorrerALaDerecha, MenorQue, MayorOIgualQue, MayorQue, AndBits, OrBits, NotBits,
         Porcentaje, Sume, Reste, Multiplique, Divida, AbreParentesis, CierraParentesis, AbreLlave, CierraLlave, Interrogacion, AbreCorchete, CierraCorchete, DosPuntos,
-        PuntoYComa, Coma, Punto, Asignacion, Suma, Resta, Multiplicacion, Division, Hexadecimal, Cadena, Identificador, Numero, Comillas, Escape, Error; 
+        PuntoYComa, Coma, Punto, Asignacion, Suma, Resta, Multiplicacion, Division, Hexadecimal, Cadena, Identificador, Numero; 
 
 /*DEFINICION NO TERMINALES*/
 non terminal java_cup.runtime.symbol empty;
 
-non terminal INICIO, CONTRACT_INICIO, CONTRACT, CUERPO_CONTRATO, ENUM, SENTENCIA, STRUCT, FUNCION, CUERPO_ENUM, CUERPO_ENUM_AUX, VARIABLE, VAR_TYPE,
-             ASSIGNMENT, PRIVACY, BYTE_TYPE, INT_TYPE, UINT_TYPE, BYTE_TYPES, BLOQUE, SENTENCIA_BLOQUE, SENTENCIA, IF_SENTENCIA, WHILE_SENTENCIA, 
+non terminal INICIO, CONTRACT_INICIO, CONTRACT, CUERPO_CONTRATO,IDENT, ENUM, SENTENCIA, STRUCT, FUNCION, CUERPO_ENUM, CUERPO_ENUM_AUX, VARIABLE, VAR_TYPE,
+             ASSIGNMENT, PRIVACY, BYTE_TYPE, INT_TYPE, UINT_TYPE, BYTE_TYPES, BLOQUE, SENTENCIA_BLOQUE, IF_SENTENCIA, WHILE_SENTENCIA, 
              DOWHILE_SENTENCIA, FOR_SENTENCIA, ASSIGNMENT_FOR, EXPRESSION_FOR_UNO, CONTINUE_SENTENCIA, BREAK_SENTENCIA, RETURN_SENTENCIA, RETURN_SENTENCIA_AUX, EXPRESSION, ELSE, SENTENCIA_BASE, EXPRESSION_SENTENCIA,
              BOOLEAN_EXPRESSION, EXPRESSION_AUX, ARGUMENTS_EXPRESSION, ASSIGNMENT_AUX, EXPRESSION_PRIMARIA, EXPRESSION_PRIMARIA_AUX, OP_ARITMETICO_PRIMER_ORDEN, 
-             OP_ARITMETICO_SEGUNDO_ORDEN, OP_ARITMETICO_TERCER_ORDEN, OP_BOOLEANO, LITERAL_BOOLEANO, LITERAL_NUMERICO, LITERAL_NUMERICO_AUX
+             OP_ARITMETICO_SEGUNDO_ORDEN, OP_ARITMETICO_TERCER_ORDEN, OP_BOOLEANO, LITERAL_BOOLEANO, LITERAL_NUMERICO, LITERAL_NUMERICO_AUX, STRUCT_AUX, CUERPO_FUNCION, PARAM_LIST, PARAM_LIST_AUX, PARAM_LIST_AUX_HELP,
+             VAR_LIST, VAR_LIST_AUX, VAR_LIST_AUX_HELP, MODS, MOD_LIST, RETURNS_FUNCTION, RETURNS_FUNCTION_AUX, EXPRESSION_FOR_DOS,VARIABLE_PARAMS, IDENT_AUX, IDENT_AUX2, IDENT_AUX3, IDENT_AUX_THIS,
+             ARGUMENTS_EXPRESSION_AUX
 ;
 
 start with INICIO;
@@ -85,17 +86,34 @@ CONTRACT ::= Res_Contract IDENT AbreLlave CUERPO_CONTRATO CierraLlave
 
 CUERPO_CONTRATO ::= ENUM CUERPO_CONTRATO|
                     SENTENCIA CUERPO_CONTRATO|
-                    ESTRUCTURA CUERPO_CONTRATO|
+                    STRUCT CUERPO_CONTRATO|
                     FUNCION CUERPO_CONTRATO |
                     empty
 ;
 
+IDENT::= Identificador IDENT_AUX | Res_This IDENT_AUX_THIS
+;
+
+IDENT_AUX::= Punto IDENT_AUX2 | empty
+;
+
+IDENT_AUX2::= Identificador IDENT_AUX3
+;
+
+IDENT_AUX3::= AbreParentesis CierraParentesis | empty
+;
+
+IDENT_AUX_THIS::= Punto IDENT_AUX2
+;
+
+/*
 IDENT::=  Identificador 
         | Identificador Punto Identificador 
         | Res_This Punto Identificador 
         | Identificador Punto Identificador AbreParentesis CierraParentesis 
         | Res_This Punto Identificador AbreParentesis CierraParentesis
-;
+;*/
+
 
 ENUM ::= Res_Enum IDENT AbreLlave CUERPO_ENUM CierraLlave
 ;
@@ -214,7 +232,7 @@ BYTE_TYPES::=Res_Bytes|Res_Bytes2|Res_Bytes4|Res_Bytes8|Res_Bytes16|Res_Bytes32|
 EXPRESSION ::= EXPRESSION AbreCorchete EXPRESSION_AUX CierraCorchete |
                 EXPRESSION AbreCorchete EXPRESSION_AUX DosPuntos EXPRESSION_AUX CierraCorchete |
                 EXPRESSION Punto IDENT |
-                EXPRESSION AbreParentesis ARGUMENTS CierraParentesis |
+                EXPRESSION AbreParentesis ARGUMENTS_EXPRESSION CierraParentesis |
                 AbreParentesis EXPRESSION CierraParentesis |
                 NotLogico EXPRESSION |
                 NotBits EXPRESSION |
@@ -228,6 +246,7 @@ EXPRESSION ::= EXPRESSION AbreCorchete EXPRESSION_AUX CierraCorchete |
                 EXPRESSION ASSIGNMENT_AUX EXPRESSION |
                 EXPRESSION_PRIMARIA
 ;
+
 
 EXPRESSION_AUX ::= EXPRESSION AbreCorchete EXPRESSION_AUX CierraCorchete | 
                     empty
@@ -256,10 +275,9 @@ OP_BOOLEANO ::= MenorQue |
                 OrLogico
 ;
 
-ARGUMENTS_EXPRESSION ::= IDENT |
-                        EXPRESSION |
-                        ARGUMENTS_EXPRESSION_AUX
-;
+ARGUMENTS_EXPRESSION ::= IDENT ARGUMENTS_EXPRESSION_AUX|
+                        EXPRESSION ARGUMENTS_EXPRESSION_AUX | empty
+                        ;
 
 ARGUMENTS_EXPRESSION_AUX ::= Coma IDENT ARGUMENTS_EXPRESSION_AUX |
                             Coma EXPRESSION ARGUMENTS_EXPRESSION_AUX |
