@@ -19,11 +19,7 @@ L=[a-zA-Z_]+
 D=[0-9]+
 espacio=[ ,\t,\r,\n]+
 simbolo=[\\,/,!,;,#,$,%,=,?,¡,¿,|,_,-]+
-%{
-    public String lexeme;
-    public int line;
-    public int column;
-%}
+
 %{
     private Symbol symbol(int type, Object value){
         return new Symbol(type, yyline, yycolumn, value);

@@ -191,11 +191,26 @@ public class FormScanner extends javax.swing.JFrame {
             LexerC lexer = new LexerC(lector);
             s=new Parser(lexer);
             try {
-                s.parse();
-                txtResultadoSintactico.setText("Analisis realizado correctamente");
+                //while(true){
+                  s.parse();
+                  System.out.println("Parseo");
+                  System.out.println(Parser.SEList);
+                  System.out.println(Parser.SEList.isEmpty());
+                  if(!Parser.SEList.isEmpty()){
+                    txtResultadoSintactico.setText("Tiene error");
+                  }else{
+                    txtResultadoSintactico.setText("Analisis realizado exitosamente");
+                  }
+                //}
             } catch (Exception e) {
                 Symbol sym=s.getS();
-                txtResultadoSintactico.setText("Error de sintaxis. Linea: "+(sym.right+1)+" Columna: "+(sym.left + 1)+", Texto: "+sym.value);
+                if(sym.value!=null || !Parser.SEList.isEmpty()){
+                  System.out.println("Intento dar error");
+                  txtResultadoSintactico.setText("Error de sintaxis. Linea: "+(sym.right+1)+" Columna: "+(sym.left + 1)+", Texto: "+sym.value);
+                }else{
+                  System.out.println("No dio error");
+                  txtResultadoSintactico.setText("Analisis realizado exitosamente");
+                }
             }
         }catch (Exception ex){
             
