@@ -26,7 +26,7 @@ parser code
             column = 0;
         }
 
-        SError dato = new SError(lexeme, line, column, "Error Sintáctico", "Token inválido después de linea: " + line.toString() + " Columna: "+ column.toString());
+        SError dato = new SError(lexeme, line, column, "Error Sintáctico", "Token inválido después de linea: " + line + " Columna: "+ column);
         SEList.add(dato);
     }
 
@@ -53,6 +53,11 @@ terminal Res_Int, Res_Int2, Res_Int4, Res_Int8, Res_Int16, Res_Int32, Res_Int64,
         Res_Byte16, Res_Byte32, Res_Byte64, Res_Byte128, Res_Byte256, Res_Continue, Res_Contract, Res_Do, Res_Enum, Res_False, Res_For, Res_Function, Res_Internal, Res_Payable, Res_Pragma, Res_Private, Res_Public, Res_Return, Res_Returns,
         Res_Solidity, Res_String, Res_Struct, Res_This, Res_True, Res_Ufixed, Res_Uint, Res_Uint2, Res_Uint4, Res_Uint8, Res_Uint16, Res_Uint32, Res_Uint64, Res_Uint128,
         Res_Uint256, Res_While, Unit_Days, Unit_Ether,
+
+        Res_Moddifier,Res_Constructor,Trans_Callcode,Trans_Call,Trans_Send,Trans_Balance, Res_View, Res_Delete, Trans_Transfer, Trans_Delgatecall, Res_Mapping, Res_Import,
+        Res_As, Error, Comillas, ComentarioBloque, Res_Var, Res_From, Escape,
+
+
         Unit_Finney, Unit_Hours, Unit_Minutes, Unit_Seconds, Unit_Szabo, Unit_Weeks, Unit_Wei, Unit_Years, Cientifico, Flotante, NotLogico, AndLogico,
         Potencia, Comparacion, Diferencia, OrLogico, MenorOIgualQue, CorrerALaIzquierda, CorrerALaDerecha, MenorQue, MayorOIgualQue, MayorQue, AndBits, OrBits, NotBits,
         Porcentaje, Sume, Reste, Multiplique, Divida, AbreParentesis, CierraParentesis, AbreLlave, CierraLlave, Interrogacion, AbreCorchete, CierraCorchete, DosPuntos,
