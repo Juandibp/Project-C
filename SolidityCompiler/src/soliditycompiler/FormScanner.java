@@ -100,22 +100,20 @@ public class FormScanner extends javax.swing.JFrame {
         .addContainerGap()
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addGroup(layout.createSequentialGroup()
-            .addComponent(btnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addContainerGap())
-          .addGroup(layout.createSequentialGroup()
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
               .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
               .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-              .addComponent(jScrollPane2)
+              .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
               .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGap(12, 12, 12))
           .addGroup(layout.createSequentialGroup()
             .addComponent(btnAnalizar, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(buttonSintactico, javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE)
+            .addComponent(buttonSintactico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addContainerGap())))
+      .addComponent(btnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -124,16 +122,15 @@ public class FormScanner extends javax.swing.JFrame {
           .addComponent(jLabel1)
           .addComponent(jLabel2))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-          .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)
           .addComponent(jScrollPane2))
-        .addGap(18, 18, 18)
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-          .addComponent(btnAnalizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-          .addComponent(buttonSintactico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-        .addComponent(btnSalir)
-        .addContainerGap(13, Short.MAX_VALUE))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(btnAnalizar)
+          .addComponent(buttonSintactico))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(btnSalir))
     );
 
     pack();
@@ -183,32 +180,42 @@ public class FormScanner extends javax.swing.JFrame {
   private void buttonSintacticoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSintacticoActionPerformed
     // TODO add your handling code here:
     //CODIGO SINTACTICO
+        Parser.SEList.clear();
         JFileChooser seleccionador = new JFileChooser(); //crea el file chooser
         seleccionador.showOpenDialog(null);
+        Symbol j;
         Parser s;
         try{
             Reader lector = new BufferedReader(new FileReader(seleccionador.getSelectedFile()));
             LexerC lexer = new LexerC(lector);
             s=new Parser(lexer);
             try {
-                //while(true){
                   s.parse();
-                  System.out.println("Parseo");
-                  System.out.println(Parser.SEList);
-                  System.out.println(Parser.SEList.isEmpty());
                   if(!Parser.SEList.isEmpty()){
-                    txtResultadoSintactico.setText("Tiene error");
+                    String error="Errores:\n";
+                    for (SError SEList : Parser.SEList) {
+                      error+="Error: ";
+                      error+=SEList.getDescripcion();
+                      error+=", linea: ";
+                      error+=(SEList.getLine()+1);
+                      error+=", Columna: ";
+                      error+=SEList.getColumna();
+                      error+=", Simbolo: ";
+                      error+=SEList.getLexema();
+                      error+="\n";
+                    }
+                    txtResultadoSintactico.setText(error);
+                    
                   }else{
                     txtResultadoSintactico.setText("Analisis realizado exitosamente");
+                    
                   }
                 //}
             } catch (Exception e) {
                 Symbol sym=s.getS();
                 if(sym.value!=null || !Parser.SEList.isEmpty()){
-                  System.out.println("Intento dar error");
                   txtResultadoSintactico.setText("Error de sintaxis. Linea: "+(sym.right+1)+" Columna: "+(sym.left + 1)+", Texto: "+sym.value);
                 }else{
-                  System.out.println("No dio error");
                   txtResultadoSintactico.setText("Analisis realizado exitosamente");
                 }
             }

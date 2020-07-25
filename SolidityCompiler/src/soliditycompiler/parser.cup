@@ -26,7 +26,7 @@ parser code
             column = 0;
         }
 
-        SError dato = new SError(lexeme, line, column, "Error Sintáctico", "Token inválido después de linea: " + line + " Columna: "+ column);
+        SError dato = new SError(lexeme, line, column, "Error Sintáctico", "Token inválido");
         SEList.add(dato);
     }
 
@@ -48,6 +48,9 @@ parser code
 
 
 /*DEFINICION TERMINALES*/
+terminal java_cup.runtime.symbol empty;
+
+
 terminal Res_Int, Res_Int2, Res_Int4, Res_Int8, Res_Int16, Res_Int32, Res_Int64, Res_Int128, Res_Int256, Res_If, Res_Else, Res_Address, Res_Bool, Res_Break,
         Res_Bytes, Res_Bytes2, Res_Bytes4, Res_Bytes8, Res_Bytes16, Res_Bytes32, Res_Bytes64, Res_Bytes128, Res_Bytes256, Res_Byte, Res_Byte2, Res_Byte4, Res_Byte8,
         Res_Byte16, Res_Byte32, Res_Byte64, Res_Byte128, Res_Byte256, Res_Continue, Res_Contract, Res_Do, Res_Enum, Res_False, Res_For, Res_Function, Res_Internal, Res_Payable, Res_Pragma, Res_Private, Res_Public, Res_Return, Res_Returns,
@@ -64,7 +67,6 @@ terminal Res_Int, Res_Int2, Res_Int4, Res_Int8, Res_Int16, Res_Int32, Res_Int64,
         PuntoYComa, Coma, Punto, Asignacion, Suma, Resta, Multiplicacion, Division, Hexadecimal, Cadena, Identificador, Numero; 
 
 /*DEFINICION NO TERMINALES*/
-non terminal java_cup.runtime.symbol empty;
 
 non terminal INICIO, CONTRACT_INICIO, CONTRACT, CUERPO_CONTRATO,IDENT, ENUM, SENTENCIA, STRUCT, FUNCION, CUERPO_ENUM, CUERPO_ENUM_AUX, VARIABLE, VAR_TYPE,
              ASSIGNMENT, PRIVACY, BYTE_TYPE, INT_TYPE, UINT_TYPE, BYTE_TYPES, BLOQUE, SENTENCIA_BLOQUE, IF_SENTENCIA, WHILE_SENTENCIA, 
@@ -334,10 +336,8 @@ ARGUMENTS_EXPRESSION_AUX ::= Coma IDENT ARGUMENTS_EXPRESSION_AUX |
 
 EXPRESSION_PRIMARIA ::= LITERAL_BOOLEANO |
                         LITERAL_NUMERICO |
-                        Cientifico |
-                        Hexadecimal |
                         Cadena |
-                        IDENT EXPRESSION_PRIMARIA_AUX /* AQUI ESTA EL ERROR*/
+                        IDENT EXPRESSION_PRIMARIA_AUX
 ;
 
 EXPRESSION_PRIMARIA_AUX ::= AbreCorchete CierraCorchete |

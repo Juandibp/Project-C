@@ -80,7 +80,7 @@ internal {return new Symbol(sym.Res_Internal, yychar, yyline, yytext());}
 mapping {return new Symbol(sym.Res_Mapping, yychar, yyline, yytext());}
 moddifier {return new Symbol(sym.Res_Moddifier, yychar, yyline, yytext());}
 payable {return new Symbol(sym.Res_Payable, yychar, yyline, yytext());}
-Pragma {return new Symbol(sym.Res_Pragma, yychar, yyline, yytext());}
+pragma {return new Symbol(sym.Res_Pragma, yychar, yyline, yytext());}
 private {return new Symbol(sym.Res_Private, yychar, yyline, yytext());}
 public {return new Symbol(sym.Res_Public, yychar, yyline, yytext());}
 return {return new Symbol(sym.Res_Return, yychar, yyline, yytext());}
