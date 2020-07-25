@@ -96,21 +96,6 @@ CUERPO_CONTRATO ::= ENUM CUERPO_CONTRATO|
                     FUNCION CUERPO_CONTRATO |
 ;
 
-IDENT::= Identificador IDENT_AUX | Res_This IDENT_AUX_THIS 
-;
-
-IDENT_AUX::= IDENT_AUX_THIS | 
-;
-
-IDENT_AUX2::= Identificador IDENT_AUX3
-;
-
-IDENT_AUX3::= AbreParentesis CierraParentesis | 
-;
-
-IDENT_AUX_THIS::= Punto IDENT_AUX2
-;
-
 ENUM ::= Res_Enum IDENT AbreLlave CUERPO_ENUM CierraLlave
 ;
 
@@ -369,4 +354,19 @@ RETURNS_FUNCTION ::= RETURNS_FUNCTION_AUX |
 ;
 
 RETURNS_FUNCTION_AUX ::= Res_Returns AbreParentesis VAR_TYPE IDENT CierraParentesis
+;
+
+IDENT::= Identificador IDENT_AUX | Res_This IDENT_AUX_THIS 
+;
+
+IDENT_AUX::= IDENT_AUX_THIS | 
+;
+
+IDENT_AUX2::= Identificador IDENT_AUX3
+;
+
+IDENT_AUX3::= AbreParentesis CierraParentesis | 
+;
+
+IDENT_AUX_THIS::= Punto IDENT_AUX2
 ;

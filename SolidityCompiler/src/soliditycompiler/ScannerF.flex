@@ -155,5 +155,5 @@ years {line = yyline; column = yycolumn; lexeme=yytext(); return Unit_Years;}
 {D}+ {line = yyline; column = yycolumn; lexeme=yytext(); return Numero;}
 {L}({L}|{D})* {line = yyline; column = yycolumn; lexeme=yytext(); return Identificador;}
 {D}({L}|{D})* {line = yyline; column = yycolumn;  return Error;}
-{L}+ {simbolo} ( {simbolo}|{L})* {line = yyline; column = yycolumn;  return Error;}
+{L}+ {simbolo} ( {simbolo}|{L})+ {line = yyline; column = yycolumn;  return Error;}
  . {line = yyline; column = yycolumn; return Error;}

@@ -169,5 +169,5 @@ years {return new Symbol(sym.Unit_Years, yychar, yyline, yytext());}
 {D}+ {return new Symbol(sym.Numero, yychar, yyline, yytext());}
 {L}({L}|{D})* {return new Symbol(sym.Identificador, yychar, yyline, yytext());}
 {D}({L}|{D})* {SError dato = new SError(yytext(), yyline, yycolumn, "Error Léxico", "Identificador inválido"); ListaErrores.add(dato) ; return new Symbol(sym.Error, yychar, yyline, yytext());}
-{L}+ {simbolo} ( {simbolo}|{L})* {SError dato = new SError(yytext(), yyline, yycolumn, "Error Léxico", "Identificador inválido"); ListaErrores.add(dato) ; return new Symbol(sym.Error, yychar, yyline, yytext());}
+{L}+ {simbolo} ( {simbolo}|{L})+ {SError dato = new SError(yytext(), yyline, yycolumn, "Error Léxico", "Identificador inválido"); ListaErrores.add(dato) ; return new Symbol(sym.Error, yychar, yyline, yytext());}
  . {SError dato = new SError(yytext(), yyline, yycolumn, "Error Léxico", "token inválido"); ListaErrores.add(dato) ; return new Symbol(sym.Error, yychar, yyline, yytext());}
