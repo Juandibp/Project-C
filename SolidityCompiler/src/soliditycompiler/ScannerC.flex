@@ -17,7 +17,7 @@ import soliditycompiler.SError;
 %char
 L=[a-zA-Z_]+
 D=[0-9]+
-espacio=[ ,\t,\r,\n]+
+espacio=[ \t \r \n]+
 simbolo=[\\,/,!,;,#,$,%,=,?,¡,¿,|,_,-]+
 
 %{
@@ -161,6 +161,7 @@ years {return new Symbol(sym.Unit_Years, yychar, yyline, yytext());}
 "-" {return new Symbol(sym.Resta, yychar, yyline, yytext());}
 "*" {return new Symbol(sym.Multiplicacion, yychar, yyline, yytext());}
 "/" {return new Symbol(sym.Division, yychar, yyline, yytext());}
+"," {return new Symbol(sym.Coma, yychar, yyline, yytext());}
 ("hex\""|"hex'") ( {D} | "A" | "B" | "C" | "D" | "E" | "F" )+ ("\""|"'")("\\n")* {return new Symbol(sym.Hexadecimal, yychar, yyline, yytext());}
 ("\""|"'") ({L}|{D} | "\\n" | "\\xNN" | "\\uNNNN" | {simbolo} | " ")* ("\""|"'") {return new Symbol(sym.Cadena, yychar, yyline, yytext());} //string
 ("\""|"'") ({L}|{D} | "\\n" | "\\xNN" | "\\uNNNN" | "\\".| {simbolo} | " ")* ("\""|"'") {SError dato = new SError(yytext(), yyline, yycolumn, "Error Léxico", "String no válido"); ListaErrores.add(dato) ; return new Symbol(sym.Error, yychar, yyline, yytext());}

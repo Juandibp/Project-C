@@ -7,7 +7,7 @@ import static soliditycompiler.Tokens.*;
 %type Tokens
 L=[a-zA-Z_]+
 D=[0-9]+
-espacio=[ ,\t,\r,\n]+
+espacio=[ \t \r \n]+
 simbolo=[\\,/,!,;,#,$,%,=,?,¡,¿,|,_,-]+
 %{
     public String lexeme;
@@ -147,6 +147,7 @@ years {line = yyline; column = yycolumn; lexeme=yytext(); return Unit_Years;}
 "-" {line = yyline; column = yycolumn; return Resta;}
 "*" {line = yyline; column = yycolumn; return Multiplicacion;}
 "/" {line = yyline; column = yycolumn; return Division;}
+"," {line = yyline; column = yycolumn; return Coma;}
 ("hex\""|"hex'") ( {D} | "A" | "B" | "C" | "D" | "E" | "F" )+ ("\""|"'")("\\n")* {line = yyline; column = yycolumn; lexeme = yytext(); return Hexadecimal;}
 ("\""|"'") ({L}|{D} | "\\n" | "\\xNN" | "\\uNNNN" | {simbolo} | " ")* ("\""|"'") {line = yyline; column = yycolumn; lexeme = yytext();return Cadena;} //string
 ("\""|"'") ({L}|{D} | "\\n" | "\\xNN" | "\\uNNNN" | "\\".| {simbolo} | " ")* ("\""|"'") {line = yyline; column = yycolumn; lexeme = yytext(); return Error;}

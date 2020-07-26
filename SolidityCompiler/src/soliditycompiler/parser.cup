@@ -167,45 +167,7 @@ RETURN_SENTENCIA ::= Res_Return RETURN_SENTENCIA_AUX PuntoYComa
 RETURN_SENTENCIA_AUX ::= EXPRESSION
 ;
 
-VARIABLE ::= VAR_TYPE VARIABLE_AUX
-;
 
-VARIABLE_AUX ::= VARIABLE_AUX_AUX | 
-                AbreCorchete CierraCorchete VARIABLE_AUX_AUX
-;
-
-VARIABLE_AUX_AUX ::= IDENT | ASSIGNMENT
-;
-
-VAR_TYPE ::=  Res_Bool | 
-                BYTE_TYPE | 
-                BYTE_TYPES | 
-                Res_Address | 
-                INT_TYPE | 
-                UINT_TYPE | 
-                Res_String | 
-                Res_Ufixed
-;
-
-ASSIGNMENT::= Identificador ASSIGNMENT_AUX EXPRESSION
-;
-
-
-ASSIGNMENT_AUX ::= Asignacion | 
-                    Sume | 
-                    Reste | 
-                    Multiplique | 
-                    Divida
-;
-
-PRIVACY::= Res_Public | 
-            Res_Private
-;
-
-BYTE_TYPE::= Res_Byte|Res_Byte2|Res_Byte4|Res_Byte8|Res_Byte16|Res_Byte32|Res_Byte64|Res_Byte128|Res_Byte256;
-INT_TYPE::= Res_Int|Res_Int2|Res_Int4|Res_Int8|Res_Int16|Res_Int32|Res_Int64|Res_Int128|Res_Int256;
-UINT_TYPE::= Res_Uint|Res_Uint2|Res_Uint4|Res_Uint8|Res_Uint16|Res_Uint32|Res_Uint64|Res_Uint128|Res_Uint256;
-BYTE_TYPES::=Res_Bytes|Res_Bytes2|Res_Bytes4|Res_Bytes8|Res_Bytes16|Res_Bytes32|Res_Bytes64|Res_Bytes128|Res_Bytes256;
 
 
 EXPRESSION ::= AbreParentesis EXP1 CierraParentesis | EXP1
@@ -214,14 +176,14 @@ EXPRESSION ::= AbreParentesis EXP1 CierraParentesis | EXP1
 EXP1::= NotLogico EXP2 | NotBits EXP2 | EXPRESSION_PRIMARIA EXP2 |
 ;
 
-EXP2 ::=    EXP3 AbreCorchete |
+EXP2 ::=    EXP3 |
             EXP4 |
-            EXP5 AbreParentesis |
-            EXP6 OP_ARITMETICO_PRIMER_ORDEN |
-            EXP7 OP_BIT|
-            EXP8 OP_BOOLEANO |
-            EXP9 Interrogacion |
-            EXP10 ASSIGNMENT_AUX
+            EXP5 |
+            EXP6 |
+            EXP7 |
+            EXP8 |
+            EXP9  |
+            EXP10 
             ;
 
 EXP3::= AbreCorchete EXPRESSION_AUX EXP3_2
@@ -355,6 +317,46 @@ RETURNS_FUNCTION ::= RETURNS_FUNCTION_AUX |
 
 RETURNS_FUNCTION_AUX ::= Res_Returns AbreParentesis VAR_TYPE IDENT CierraParentesis
 ;
+
+VARIABLE ::= VAR_TYPE VARIABLE_AUX
+;
+
+VARIABLE_AUX ::= VARIABLE_AUX_AUX | 
+                AbreCorchete CierraCorchete VARIABLE_AUX_AUX
+;
+
+VARIABLE_AUX_AUX ::= IDENT | ASSIGNMENT
+;
+
+VAR_TYPE ::=  Res_Bool | 
+                BYTE_TYPE | 
+                BYTE_TYPES | 
+                Res_Address | 
+                INT_TYPE | 
+                UINT_TYPE | 
+                Res_String | 
+                Res_Ufixed
+;
+
+ASSIGNMENT::= Identificador ASSIGNMENT_AUX EXPRESSION
+;
+
+
+ASSIGNMENT_AUX ::= Asignacion | 
+                    Sume | 
+                    Reste | 
+                    Multiplique | 
+                    Divida
+;
+
+PRIVACY::= Res_Public | 
+            Res_Private
+;
+
+BYTE_TYPE::= Res_Byte|Res_Byte2|Res_Byte4|Res_Byte8|Res_Byte16|Res_Byte32|Res_Byte64|Res_Byte128|Res_Byte256;
+INT_TYPE::= Res_Int|Res_Int2|Res_Int4|Res_Int8|Res_Int16|Res_Int32|Res_Int64|Res_Int128|Res_Int256;
+UINT_TYPE::= Res_Uint|Res_Uint2|Res_Uint4|Res_Uint8|Res_Uint16|Res_Uint32|Res_Uint64|Res_Uint128|Res_Uint256;
+BYTE_TYPES::=Res_Bytes|Res_Bytes2|Res_Bytes4|Res_Bytes8|Res_Bytes16|Res_Bytes32|Res_Bytes64|Res_Bytes128|Res_Bytes256;
 
 IDENT::= Identificador IDENT_AUX | Res_This IDENT_AUX_THIS 
 ;
