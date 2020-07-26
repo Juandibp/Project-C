@@ -8,32 +8,31 @@ contract Contrato{
 
 
 
-	int z, t, y, y;
-	uint y  // error     
-	int z, t, y, y;
-	string private a;
-	bytes public ; //error
+	//int z, t, y, y;
+	uint y;  // error     
+	//int z, t, y, y;
+	string a;
+	//bytes public ; //error
 
 	int[] b;
-	int[ b;//error
+	//int[ b;//error
 
 	int a = 2;
-	int a =; // error
+	//int a =; // error
 
 
 	struct IdStruct {
-		int z, t, y, y;
+		int z;
 	}
 
-	struct { //error
-		int z, t, y, y;
+	struct test { //error
+		int z;
 	}
 
 	function i(int x, int y) 
 	{
-		int z, t, y, y;
-		uint y  // error declaracion dentro de funcion     
-		int z, t, y, y;
+		int z; 
+		int a;
 
 		a = 0;
 	}

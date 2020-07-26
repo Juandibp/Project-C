@@ -7,7 +7,7 @@ int a;
 
 	function fi(int x, int y) returns (int a ) { 
 	
-		if () {  // error no tiene la expresion
+		if (a > 3) {  // error no tiene la expresion
 			a= a+b;
 		} 
 		else {
@@ -28,11 +28,9 @@ int a;
 		else {
 			a= a+b;
 		} 
-		else{  // doble else
-			a= a+b;
-		} 
+
         
-		for (x=0; x<4;) {
+		for (x=0; x<4;x+1) {
 			a= a+b;
 		} //error pues falta una expresion
         
@@ -42,16 +40,14 @@ int a;
 			break;
 		}
 
-        	while () {  // error no tiene la expresion
+        	while (a > 3) {  // error no tiene la expresion
 			a= a+b;
 		} 
        
-		while ((!f)||(x<2)) {
-			x= a+b;
-		}  // aceptarlo correctamente
+
 
 		
-		x=(x<2)?  :b; //error
+		//x=(x<2)?  :b; //error
 		
 		x=(x<2)? a:b;
 

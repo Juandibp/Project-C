@@ -8,7 +8,7 @@ contract Contrato{
 int a;
 
 	function fi(int x, int y) returns (int a ) {
-		int b;
+		//int b;
 
 		if (a > 3) {
 			int asd;
@@ -18,11 +18,11 @@ int a;
 			a= 1;
 		}
 		
-		int ww;             //se espera que de error por declaracion de variable local posterior  a cuerpo de la funcion  
+		//int ww;             //se espera que de error por declaracion de variable local posterior  a cuerpo de la funcion  
 	}
 	
 	function fi(int x, int y) returns (int a ) {
-
+		int b;
 		a= a+b;
 	// error porque no hay cierre de funcion
 
