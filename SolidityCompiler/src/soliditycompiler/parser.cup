@@ -77,6 +77,8 @@ non terminal INICIO, CONTRACT_INICIO, CONTRACT, CUERPO_CONTRATO,IDENT, ENUM, SEN
              VARIABLE_AUX_AUX, IDENT_AUX, IDENT_AUX2, IDENT_AUX3, IDENT_AUX_THIS, ARGUMENTS_EXPRESSION_AUX, OP_BIT, EXP1,EXP2,EXP3,EXP3_2,EXP4,EXP5,EXP6,EXP7,EXP8,EXP9,EXP10
 ;
 
+precedence left AbreCorchete;
+
 start with INICIO;
 
 /*REGLAS*/
@@ -173,7 +175,7 @@ RETURN_SENTENCIA_AUX ::= EXPRESSION
 EXPRESSION ::= AbreParentesis EXP1 CierraParentesis | EXP1
 ;
 
-EXP1::= NotLogico EXP2 | NotBits EXP2 | EXPRESSION_PRIMARIA EXP2 |
+EXP1::= NotLogico EXP2 | NotBits EXP2 | EXPRESSION_PRIMARIA EXP2
 ;
 
 EXP2 ::=    EXP3 |
@@ -183,7 +185,7 @@ EXP2 ::=    EXP3 |
             EXP7 |
             EXP8 |
             EXP9  |
-            EXP10 
+            EXP10 |
             ;
 
 EXP3::= AbreCorchete EXPRESSION_AUX EXP3_2
@@ -282,7 +284,7 @@ FUNCION ::= Res_Function Identificador AbreParentesis PARAM_LIST CierraParentesi
 ;
 /* Cambio IDENT a identificador*/ 
 
-CUERPO_FUNCION::= SENTENCIA CUERPO_FUNCION 
+CUERPO_FUNCION::= SENTENCIA CUERPO_FUNCION
 ;
 
 PARAM_LIST::= PARAM_LIST_AUX | 

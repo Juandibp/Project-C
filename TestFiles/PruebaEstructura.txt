@@ -5,29 +5,30 @@ pragma solidity ^0.4.0;
 
 contract Contrato{
 
-int a ;
+int a;
 
-	function fi(int x) returns (int a ) {
-		int b ;
+	function fi(int x, int y) returns (int a ) {
+		int b;
 
 		if (a > 3) {
-			a + b ;
+			int asd;
 		} 
 		else {
-			a = a+b
+			int asd;
+			a= 1;
 		}
 		
-		int ww;                 //se espera que de error por declaracion de variable local posterior  a cuerpo de la funcion  
+		int ww;             //se espera que de error por declaracion de variable local posterior  a cuerpo de la funcion  
 	}
 	
-	function fi(int x) returns (int a ) {
+	function fi(int x, int y) returns (int a ) {
 
-		a= a+b
+		a= a+b;
 	// error porque no hay cierre de funcion
 
-	function fi(int x) returns (int a ) {
+	function fi(int x, int y) returns (int a ) {
 
-		a= a+b
+		a= a+b;
 	}
 
         	
