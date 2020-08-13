@@ -9,8 +9,6 @@ package TraduccionSemantica;
  *
  * @author adria
  */
-public class RS {
-
-    public RS() {
-    }
+public enum TIPO_DO {
+    CONST, DIR
 }
