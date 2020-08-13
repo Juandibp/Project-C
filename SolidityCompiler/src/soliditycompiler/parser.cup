@@ -8,8 +8,12 @@ import java.util.LinkedList;
 parser code
 {:
     public static LinkedList<SError> SEList = new LinkedList<SError>(); //SYNTAX ERROR LIST
-    public static LinkedList<String> tablSimbolos = new LinkedList<String>();
+    public static LinkedList<String> tablaSimbolos = new LinkedList<String>();
     public static String type="";
+    public static boolean anadirSimbolo(String simbolo){
+        tablaSimbolos.add(simbolo);
+        return true;
+    }
     //public static String ultimoToken;
     private Symbol s;
 
@@ -158,13 +162,13 @@ SENTENCIA_BASE ::= SENTENCIA_VARIABLE |
                    EXPRESSION_SENTENCIA
 ;
 
-SENTENCIA_VARIABLE ::= VAR_TYPE Identificador:e ASSIGNMENT_AUX EXPRESSION PuntoYComa {: System.out.println(e.toString()); :} 
-                        | VAR_TYPE Identificador:e Coma SENTENCIA_VARIABLE_AUX {: System.out.println(e.toString()); :} 
-                        | VAR_TYPE Identificador:e PuntoYComa {: System.out.println(e.toString()); :}
+SENTENCIA_VARIABLE ::= VAR_TYPE Identificador:e ASSIGNMENT_AUX EXPRESSION PuntoYComa {: Parser.anadirSimbolo(e.toString()); :} 
+                        | VAR_TYPE Identificador:e Coma SENTENCIA_VARIABLE_AUX {: Parser.anadirSimbolo(e.toString()); :} 
+                        | VAR_TYPE Identificador:e PuntoYComa {: Parser.anadirSimbolo(e.toString()); :}
 ;
 
-SENTENCIA_VARIABLE_AUX ::= Identificador:e PuntoYComa {: System.out.println(e.toString()); :} 
-                            | Identificador:e Coma SENTENCIA_VARIABLE_AUX {: System.out.println(e.toString()); :}
+SENTENCIA_VARIABLE_AUX ::= Identificador:e PuntoYComa {: Parser.anadirSimbolo(e.toString()); :} 
+                            | Identificador:e Coma SENTENCIA_VARIABLE_AUX {: Parser.anadirSimbolo(e.toString()); :}
 ;
 
 EXPRESSION_SENTENCIA ::=  EXPRESSION PuntoYComa
