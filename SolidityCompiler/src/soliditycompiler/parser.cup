@@ -4,15 +4,19 @@ package soliditycompiler;
 import java_cup.runtime.Symbol;
 import soliditycompiler.LexerC.*;
 import java.util.LinkedList;
+import java.util.HashMap;
 
 parser code
 {:
     public static LinkedList<SError> SEList = new LinkedList<SError>(); //SYNTAX ERROR LIST
-    public static LinkedList<String> tablaSimbolos = new LinkedList<String>();
+    public static HashMap<String,String> tablaSimbolos = new HashMap<>();
     public static String type="";
     public static boolean anadirSimbolo(String simbolo){
-        tablaSimbolos.add(simbolo);
-        return true;
+        if(!tablaSimbolos.containsKey(simbolo)){
+            tablaSimbolos.put(simbolo,Parser.type);
+            return true;
+        }
+        return false;
     }
     //public static String ultimoToken;
     private Symbol s;
