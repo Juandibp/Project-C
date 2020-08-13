@@ -8,6 +8,8 @@ import java.util.LinkedList;
 parser code
 {:
     public static LinkedList<SError> SEList = new LinkedList<SError>(); //SYNTAX ERROR LIST
+    public static LinkedList<String> tablSimbolos = new LinkedList<String>();
+    public static String type="";
     //public static String ultimoToken;
     private Symbol s;
 
@@ -68,7 +70,7 @@ terminal Res_Int, Res_Int2, Res_Int4, Res_Int8, Res_Int16, Res_Int32, Res_Int64,
 
 /*DEFINICION NO TERMINALES*/
 
-non terminal INICIO, CONTRACT_INICIO, CONTRACT, CUERPO_CONTRATO,IDENT, ENUM, SENTENCIA, STRUCT, FUNCION, CUERPO_ENUM, CUERPO_ENUM_AUX, VARIABLE, VAR_TYPE,
+non terminal String INICIO, CONTRACT_INICIO, CONTRACT, CUERPO_CONTRATO,IDENT, ENUM, SENTENCIA, STRUCT, FUNCION, CUERPO_ENUM, CUERPO_ENUM_AUX, VARIABLE, VAR_TYPE,
              ASSIGNMENT, PRIVACY, BYTE_TYPE, INT_TYPE, UINT_TYPE, BYTE_TYPES, BLOQUE, SENTENCIA_BLOQUE, IF_SENTENCIA, WHILE_SENTENCIA, 
              DOWHILE_SENTENCIA, FOR_SENTENCIA, ASSIGNMENT_FOR, EXPRESSION_FOR_UNO, CONTINUE_SENTENCIA, BREAK_SENTENCIA, RETURN_SENTENCIA, RETURN_SENTENCIA_AUX, EXPRESSION, ELSE, SENTENCIA_BASE, EXPRESSION_SENTENCIA,
              BOOLEAN_EXPRESSION, EXPRESSION_AUX, ARGUMENTS_EXPRESSION, ASSIGNMENT_AUX, EXPRESSION_PRIMARIA, EXPRESSION_PRIMARIA_AUX, OP_ARITMETICO_PRIMER_ORDEN, 
@@ -155,10 +157,14 @@ EXPRESSION_FOR_DOS ::= EXPRESSION
 SENTENCIA_BASE ::= SENTENCIA_VARIABLE |
                    EXPRESSION_SENTENCIA
 ;
-SENTENCIA_VARIABLE ::= VARIABLE PuntoYComa | VARIABLE Coma SENTENCIA_VARIABLE_AUX
+
+SENTENCIA_VARIABLE ::= VAR_TYPE Identificador:e ASSIGNMENT_AUX EXPRESSION PuntoYComa {: System.out.println(e.toString()); :} 
+                        | VAR_TYPE Identificador:e Coma SENTENCIA_VARIABLE_AUX {: System.out.println(e.toString()); :} 
+                        | VAR_TYPE Identificador:e PuntoYComa {: System.out.println(e.toString()); :}
 ;
 
-SENTENCIA_VARIABLE_AUX ::= IDENT PuntoYComa | IDENT Coma SENTENCIA_VARIABLE_AUX
+SENTENCIA_VARIABLE_AUX ::= Identificador:e PuntoYComa {: System.out.println(e.toString()); :} 
+                            | Identificador:e Coma SENTENCIA_VARIABLE_AUX {: System.out.println(e.toString()); :}
 ;
 
 EXPRESSION_SENTENCIA ::=  EXPRESSION PuntoYComa
@@ -346,14 +352,14 @@ VARIABLE_AUX ::= VARIABLE_AUX_AUX |
 VARIABLE_AUX_AUX ::= IDENT | ASSIGNMENT
 ;
 
-VAR_TYPE ::=  Res_Bool | 
+VAR_TYPE ::=  Res_Bool:e{: Parser.type=e.toString();  :} | 
                 BYTE_TYPE | 
                 BYTE_TYPES | 
-                Res_Address | 
+                Res_Address:e{: Parser.type=e.toString();  :} | 
                 INT_TYPE | 
                 UINT_TYPE | 
-                Res_String | 
-                Res_Ufixed
+                Res_String:e{: Parser.type=e.toString(); :} | 
+                Res_Ufixed:e{: Parser.type=e.toString();  :}
 ;
 
 ASSIGNMENT::= Identificador ASSIGNMENT_AUX EXPRESSION
@@ -371,10 +377,21 @@ PRIVACY::= Res_Public |
             Res_Private
 ;
 
-BYTE_TYPE::= Res_Byte|Res_Byte2|Res_Byte4|Res_Byte8|Res_Byte16|Res_Byte32|Res_Byte64|Res_Byte128|Res_Byte256;
-INT_TYPE::= Res_Int|Res_Int2|Res_Int4|Res_Int8|Res_Int16|Res_Int32|Res_Int64|Res_Int128|Res_Int256;
-UINT_TYPE::= Res_Uint|Res_Uint2|Res_Uint4|Res_Uint8|Res_Uint16|Res_Uint32|Res_Uint64|Res_Uint128|Res_Uint256;
-BYTE_TYPES::=Res_Bytes|Res_Bytes2|Res_Bytes4|Res_Bytes8|Res_Bytes16|Res_Bytes32|Res_Bytes64|Res_Bytes128|Res_Bytes256;
+BYTE_TYPE::= Res_Byte:e{: Parser.type=e.toString(); :}|Res_Byte2:e{: Parser.type=e.toString(); :}|Res_Byte4:e{: Parser.type=e.toString(); :}
+|Res_Byte8:e{: Parser.type=e.toString(); :}|Res_Byte16:e{: Parser.type=e.toString(); :}|Res_Byte32:e{: Parser.type=e.toString(); :}
+|Res_Byte64:e{: Parser.type=e.toString(); :}|Res_Byte128:e{: Parser.type=e.toString(); :}|Res_Byte256:e{: Parser.type=e.toString(); :};
+
+INT_TYPE::= Res_Int:e{: Parser.type=e.toString(); :}|Res_Int2:e{: Parser.type=e.toString(); :}|Res_Int4:e{: Parser.type=e.toString(); :}
+|Res_Int8:e{: Parser.type=e.toString(); :}|Res_Int16:e{: Parser.type=e.toString(); :}|Res_Int32:e{: Parser.type=e.toString(); :}
+|Res_Int64|Res_Int128:e{: Parser.type=e.toString(); :}|Res_Int256:e{: Parser.type=e.toString(); :};
+
+UINT_TYPE::= Res_Uint:e{: Parser.type=e.toString(); :}|Res_Uint2:e{: Parser.type=e.toString(); :}|Res_Uint4:e{: Parser.type=e.toString(); :}
+|Res_Uint8:e{: Parser.type=e.toString(); :}|Res_Uint16:e{: Parser.type=e.toString(); :}|Res_Uint32:e{: Parser.type=e.toString(); :}
+|Res_Uint64:e{: Parser.type=e.toString(); :}|Res_Uint128:e{: Parser.type=e.toString(); :}|Res_Uint256:e{: Parser.type=e.toString(); :};
+
+BYTE_TYPES::=Res_Bytes:e{: Parser.type=e.toString(); :}|Res_Bytes2:e{: Parser.type=e.toString(); :}|Res_Bytes4:e{: Parser.type=e.toString(); :}
+|Res_Bytes8:e{: Parser.type=e.toString(); :}|Res_Bytes16:e{: Parser.type=e.toString(); :}|Res_Bytes32:e{: Parser.type=e.toString(); :}
+|Res_Bytes64:e{: Parser.type=e.toString(); :}|Res_Bytes128:e{: Parser.type=e.toString(); :}|Res_Bytes256:e{: Parser.type=e.toString(); :};
 
 IDENT::= Identificador IDENT_AUX | Res_This IDENT_AUX_THIS 
 ;
