@@ -237,7 +237,7 @@ public class FormScanner extends javax.swing.JFrame {
                     
                   }else{
                     txtResultadoSintactico.setText("Analisis realizado exitosamente");
-                    System.out.println(AnalizadorSemantico.tablaSimbolos);
+                    System.out.println(AnalizadorSemantico.tablaSimbolos.keySet());
                     System.out.println(AnalizadorSemantico.type);
                   }
                 //}

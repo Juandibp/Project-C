@@ -18,7 +18,9 @@ public class AnalizadorSemantico {
     public static String type="";
     
     public static boolean anadirSimbolo(String simbolo,String scope){
+        System.out.println("1");
         if(!existsSimbolo(simbolo)){
+            System.out.println("2");
             LinkedList<String> listaCaract=new LinkedList<>();
             listaCaract.add(type);
             listaCaract.add(scope);
@@ -29,7 +31,7 @@ public class AnalizadorSemantico {
     }
     
     public static boolean existsSimbolo(String simbolo){
-        if(!tablaSimbolos.containsKey(simbolo)){
+        if(tablaSimbolos.containsKey(simbolo)){
             return true;
         }
         return false;
