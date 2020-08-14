@@ -4,20 +4,13 @@ package soliditycompiler;
 import java_cup.runtime.Symbol;
 import soliditycompiler.LexerC.*;
 import java.util.LinkedList;
-import java.util.HashMap;
+import TraduccionSemantica.AnalizadorSemantico;
+
 
 parser code
 {:
     public static LinkedList<SError> SEList = new LinkedList<SError>(); //SYNTAX ERROR LIST
-    public static HashMap<String,String> tablaSimbolos = new HashMap<>();
-    public static String type="";
-    public static boolean anadirSimbolo(String simbolo){
-        if(!tablaSimbolos.containsKey(simbolo)){
-            tablaSimbolos.put(simbolo,Parser.type);
-            return true;
-        }
-        return false;
-    }
+    
     //public static String ultimoToken;
     private Symbol s;
 
@@ -166,13 +159,13 @@ SENTENCIA_BASE ::= SENTENCIA_VARIABLE |
                    EXPRESSION_SENTENCIA
 ;
 
-SENTENCIA_VARIABLE ::= VAR_TYPE Identificador:e ASSIGNMENT_AUX EXPRESSION PuntoYComa {: Parser.anadirSimbolo(e.toString()); :} 
-                        | VAR_TYPE Identificador:e Coma SENTENCIA_VARIABLE_AUX {: Parser.anadirSimbolo(e.toString()); :} 
-                        | VAR_TYPE Identificador:e PuntoYComa {: Parser.anadirSimbolo(e.toString()); :}
+SENTENCIA_VARIABLE ::= VAR_TYPE Identificador:e ASSIGNMENT_AUX EXPRESSION PuntoYComa {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global"); :} 
+                        | VAR_TYPE Identificador:e Coma SENTENCIA_VARIABLE_AUX {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global"); :} 
+                        | VAR_TYPE Identificador:e PuntoYComa {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global"); :}
 ;
 
-SENTENCIA_VARIABLE_AUX ::= Identificador:e PuntoYComa {: Parser.anadirSimbolo(e.toString()); :} 
-                            | Identificador:e Coma SENTENCIA_VARIABLE_AUX {: Parser.anadirSimbolo(e.toString()); :}
+SENTENCIA_VARIABLE_AUX ::= Identificador:e PuntoYComa {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global"); :} 
+                            | Identificador:e Coma SENTENCIA_VARIABLE_AUX {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global"); :}
 ;
 
 EXPRESSION_SENTENCIA ::=  EXPRESSION PuntoYComa
@@ -320,10 +313,10 @@ SENTENCIAF::=   IF_SENTENCIA |
 PARAM_LIST::= PARAM_LIST_AUX | 
 ;
 
-PARAM_LIST_AUX ::= VARIABLE PARAM_LIST_AUX_HELP
+PARAM_LIST_AUX ::= VAR_TYPE Identificador:e PARAM_LIST_AUX_HELP {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Parametro"); :}
 ;
 
-PARAM_LIST_AUX_HELP ::= Coma VARIABLE PARAM_LIST_AUX_HELP |
+PARAM_LIST_AUX_HELP ::= Coma VAR_TYPE Identificador:e PARAM_LIST_AUX_HELP {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Parametro"); :} |
 ;
 
 
@@ -360,14 +353,14 @@ VARIABLE_AUX ::= VARIABLE_AUX_AUX |
 VARIABLE_AUX_AUX ::= IDENT | ASSIGNMENT
 ;
 
-VAR_TYPE ::=  Res_Bool:e{: Parser.type=e.toString();  :} | 
+VAR_TYPE ::=  Res_Bool:e{: AnalizadorSemantico.type=e.toString();  :} | 
                 BYTE_TYPE | 
                 BYTE_TYPES | 
-                Res_Address:e{: Parser.type=e.toString();  :} | 
+                Res_Address:e{: AnalizadorSemantico.type=e.toString();  :} | 
                 INT_TYPE | 
                 UINT_TYPE | 
-                Res_String:e{: Parser.type=e.toString(); :} | 
-                Res_Ufixed:e{: Parser.type=e.toString();  :}
+                Res_String:e{: AnalizadorSemantico.type=e.toString(); :} | 
+                Res_Ufixed:e{: AnalizadorSemantico.type=e.toString();  :}
 ;
 
 ASSIGNMENT::= Identificador ASSIGNMENT_AUX EXPRESSION
@@ -385,21 +378,21 @@ PRIVACY::= Res_Public |
             Res_Private
 ;
 
-BYTE_TYPE::= Res_Byte:e{: Parser.type=e.toString(); :}|Res_Byte2:e{: Parser.type=e.toString(); :}|Res_Byte4:e{: Parser.type=e.toString(); :}
-|Res_Byte8:e{: Parser.type=e.toString(); :}|Res_Byte16:e{: Parser.type=e.toString(); :}|Res_Byte32:e{: Parser.type=e.toString(); :}
-|Res_Byte64:e{: Parser.type=e.toString(); :}|Res_Byte128:e{: Parser.type=e.toString(); :}|Res_Byte256:e{: Parser.type=e.toString(); :};
+BYTE_TYPE::= Res_Byte:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Byte2:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Byte4:e{: AnalizadorSemantico.type=e.toString(); :}
+|Res_Byte8:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Byte16:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Byte32:e{: AnalizadorSemantico.type=e.toString(); :}
+|Res_Byte64:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Byte128:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Byte256:e{: AnalizadorSemantico.type=e.toString(); :};
 
-INT_TYPE::= Res_Int:e{: Parser.type=e.toString(); :}|Res_Int2:e{: Parser.type=e.toString(); :}|Res_Int4:e{: Parser.type=e.toString(); :}
-|Res_Int8:e{: Parser.type=e.toString(); :}|Res_Int16:e{: Parser.type=e.toString(); :}|Res_Int32:e{: Parser.type=e.toString(); :}
-|Res_Int64|Res_Int128:e{: Parser.type=e.toString(); :}|Res_Int256:e{: Parser.type=e.toString(); :};
+INT_TYPE::= Res_Int:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Int2:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Int4:e{: AnalizadorSemantico.type=e.toString(); :}
+|Res_Int8:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Int16:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Int32:e{: AnalizadorSemantico.type=e.toString(); :}
+|Res_Int64|Res_Int128:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Int256:e{: AnalizadorSemantico.type=e.toString(); :};
 
-UINT_TYPE::= Res_Uint:e{: Parser.type=e.toString(); :}|Res_Uint2:e{: Parser.type=e.toString(); :}|Res_Uint4:e{: Parser.type=e.toString(); :}
-|Res_Uint8:e{: Parser.type=e.toString(); :}|Res_Uint16:e{: Parser.type=e.toString(); :}|Res_Uint32:e{: Parser.type=e.toString(); :}
-|Res_Uint64:e{: Parser.type=e.toString(); :}|Res_Uint128:e{: Parser.type=e.toString(); :}|Res_Uint256:e{: Parser.type=e.toString(); :};
+UINT_TYPE::= Res_Uint:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Uint2:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Uint4:e{: AnalizadorSemantico.type=e.toString(); :}
+|Res_Uint8:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Uint16:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Uint32:e{: AnalizadorSemantico.type=e.toString(); :}
+|Res_Uint64:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Uint128:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Uint256:e{: AnalizadorSemantico.type=e.toString(); :};
 
-BYTE_TYPES::=Res_Bytes:e{: Parser.type=e.toString(); :}|Res_Bytes2:e{: Parser.type=e.toString(); :}|Res_Bytes4:e{: Parser.type=e.toString(); :}
-|Res_Bytes8:e{: Parser.type=e.toString(); :}|Res_Bytes16:e{: Parser.type=e.toString(); :}|Res_Bytes32:e{: Parser.type=e.toString(); :}
-|Res_Bytes64:e{: Parser.type=e.toString(); :}|Res_Bytes128:e{: Parser.type=e.toString(); :}|Res_Bytes256:e{: Parser.type=e.toString(); :};
+BYTE_TYPES::=Res_Bytes:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Bytes2:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Bytes4:e{: AnalizadorSemantico.type=e.toString(); :}
+|Res_Bytes8:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Bytes16:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Bytes32:e{: AnalizadorSemantico.type=e.toString(); :}
+|Res_Bytes64:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Bytes128:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Bytes256:e{: AnalizadorSemantico.type=e.toString(); :};
 
 IDENT::= Identificador IDENT_AUX | Res_This IDENT_AUX_THIS 
 ;
