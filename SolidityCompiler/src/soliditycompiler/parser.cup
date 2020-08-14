@@ -159,13 +159,13 @@ SENTENCIA_BASE ::= SENTENCIA_VARIABLE |
                    EXPRESSION_SENTENCIA
 ;
 
-SENTENCIA_VARIABLE ::= VAR_TYPE Identificador:e ASSIGNMENT_AUX EXPRESSION PuntoYComa {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global"); :} 
-                        | VAR_TYPE Identificador:e Coma SENTENCIA_VARIABLE_AUX {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global"); :} 
-                        | VAR_TYPE Identificador:e PuntoYComa {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global"); :}
+SENTENCIA_VARIABLE ::= VAR_TYPE Identificador:e ASSIGNMENT_AUX EXPRESSION PuntoYComa {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global",eright); :} 
+                        | VAR_TYPE Identificador:e Coma SENTENCIA_VARIABLE_AUX {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global",eright); :} 
+                        | VAR_TYPE Identificador:e PuntoYComa {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global",eright); :}
 ;
 
-SENTENCIA_VARIABLE_AUX ::= Identificador:e PuntoYComa {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global"); :} 
-                            | Identificador:e Coma SENTENCIA_VARIABLE_AUX {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global"); :}
+SENTENCIA_VARIABLE_AUX ::= Identificador:e PuntoYComa {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global",eright); :} 
+                            | Identificador:e Coma SENTENCIA_VARIABLE_AUX {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global",eright); :}
 ;
 
 EXPRESSION_SENTENCIA ::=  EXPRESSION PuntoYComa
@@ -313,10 +313,10 @@ SENTENCIAF::=   IF_SENTENCIA |
 PARAM_LIST::= PARAM_LIST_AUX | 
 ;
 
-PARAM_LIST_AUX ::= VAR_TYPE Identificador:e PARAM_LIST_AUX_HELP {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Parametro"); :}
+PARAM_LIST_AUX ::= VAR_TYPE Identificador:e PARAM_LIST_AUX_HELP {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Parametro",eright); :}
 ;
 
-PARAM_LIST_AUX_HELP ::= Coma VAR_TYPE Identificador:e PARAM_LIST_AUX_HELP {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Parametro"); :} |
+PARAM_LIST_AUX_HELP ::= Coma VAR_TYPE Identificador:e PARAM_LIST_AUX_HELP {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Parametro",eright); :} |
 ;
 
 

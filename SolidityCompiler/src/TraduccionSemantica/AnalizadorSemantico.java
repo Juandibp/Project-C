@@ -18,7 +18,7 @@ public class AnalizadorSemantico {
     public static String type="";
     public static String error=null;
     
-    public static boolean anadirSimbolo(String simbolo,String scope){
+    public static boolean anadirSimbolo(String simbolo,String scope,int linea){
         if(!existsSimbolo(simbolo)){
             LinkedList<String> listaCaract=new LinkedList<>();
             listaCaract.add(type);
@@ -26,7 +26,9 @@ public class AnalizadorSemantico {
             tablaSimbolos.put(simbolo,listaCaract);
             return true;
         }
-        error="Simbolo doble definido: "+simbolo;
+        if(error==null){
+            error="Simbolo doble definido: "+simbolo+"\nLinea: "+(linea+1);
+        }
         return false;
     }
     
