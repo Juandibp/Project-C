@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java_cup.runtime.Symbol;
 import javax.swing.JFileChooser;
-
+import TraduccionSemantica.AnalizadorSemantico;
 
 /**
  *
@@ -173,6 +173,7 @@ public class FormScanner extends javax.swing.JFrame {
             Reader lector = new BufferedReader(new FileReader(seleccionador.getSelectedFile()));
             LexerF lexer = new LexerF(lector);
             String resultado = "";
+            
             while (true) {
                 Tokens tokens = lexer.yylex();
                 if (tokens == null) {
@@ -230,12 +231,14 @@ public class FormScanner extends javax.swing.JFrame {
                       error+=", Simbolo: ";
                       error+=SEList.getLexema();
                       error+="\n";
+                      
                     }
                     txtResultadoSintactico.setText(error);
                     
                   }else{
                     txtResultadoSintactico.setText("Analisis realizado exitosamente");
-                    
+                    System.out.println(AnalizadorSemantico.tablaSimbolos.keySet());
+                    System.out.println(AnalizadorSemantico.type);
                   }
                 //}
             } catch (Exception e) {
@@ -253,7 +256,57 @@ public class FormScanner extends javax.swing.JFrame {
 
     private void buttonSemanticoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSemanticoActionPerformed
         // TODO add your handling code here:
-        textSemantico.setText("Analisis concluido y código generado exitosamente. \nTabla de simbolos:");
+        Parser.SEList.clear();
+        JFileChooser seleccionador = new JFileChooser(); //crea el file chooser
+        seleccionador.showOpenDialog(null);
+        Symbol j;
+        Parser s;
+        try{
+            Reader lector = new BufferedReader(new FileReader(seleccionador.getSelectedFile()));
+            LexerC lexer = new LexerC(lector);
+            s=new Parser(lexer);
+            try {
+                  s.parse();
+                  if(!Parser.SEList.isEmpty()){
+                    String error="Errores:\n";
+                    for (SError SEList : Parser.SEList) {
+                      error+="Error: ";
+                      error+=SEList.getDescripcion();
+                      error+=", linea: ";
+                      error+=(SEList.getLine()+1);
+                      error+=", Columna: ";
+                      error+=SEList.getColumna();
+                      error+=", Simbolo: ";
+                      error+=SEList.getLexema();
+                      error+="\n";
+                      
+                    }
+                    txtResultadoSintactico.setText(error);
+                    
+                  }
+                  else{
+                    if(AnalizadorSemantico.error!=null){
+                        textSemantico.setText(AnalizadorSemantico.error);
+                    }
+                    else{
+                        textSemantico.setText("Analisis concluido y código generado exitosamente. \nTabla de simbolos:\n"+AnalizadorSemantico.tablaSimbolos.toString());
+                    }
+                    //System.out.println(AnalizadorSemantico.tablaSimbolos.keySet());
+                    //System.out.println(AnalizadorSemantico.type);
+                  }
+                //}
+            } catch (Exception e) {
+                Symbol sym=s.getS();
+                if(sym.value!=null || !Parser.SEList.isEmpty()){
+                  txtResultadoSintactico.setText("Error de sintaxis. Linea: "+(sym.right+1)+" Columna: "+(sym.left + 1)+", Texto: "+sym.value);
+                }else{
+                  txtResultadoSintactico.setText("Analisis realizado exitosamente");
+                }
+            }
+        }catch (Exception ex){
+            
+        }
+        
     }//GEN-LAST:event_buttonSemanticoActionPerformed
 
     /**
