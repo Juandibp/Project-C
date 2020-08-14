@@ -9,14 +9,14 @@ package TraduccionSemantica;
  *
  * @author adria
  */
-public class RS_RETURN extends RS{
+public class RS_RETURNS extends RS{
     private String tipoReturn;
     private String nombreVar;
 
-    public RS_RETURN() {
+    public RS_RETURNS() {
     }
 
-    public RS_RETURN(String tipoReturn, String nombreVar) {
+    public RS_RETURNS(String tipoReturn, String nombreVar) {
         this.tipoReturn = tipoReturn;
         this.nombreVar = nombreVar;
     }
