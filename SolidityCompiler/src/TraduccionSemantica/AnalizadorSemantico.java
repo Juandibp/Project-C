@@ -16,6 +16,7 @@ import java.util.LinkedList;
 public class AnalizadorSemantico {
     public static HashMap<String,LinkedList<String>> tablaSimbolos = new HashMap<>();
     public static String type="";
+    public static String error=null;
     
     public static boolean anadirSimbolo(String simbolo,String scope){
         if(!existsSimbolo(simbolo)){
@@ -25,6 +26,7 @@ public class AnalizadorSemantico {
             tablaSimbolos.put(simbolo,listaCaract);
             return true;
         }
+        error="Simbolo doble definido: "+simbolo;
         return false;
     }
     

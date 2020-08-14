@@ -283,10 +283,16 @@ public class FormScanner extends javax.swing.JFrame {
                     }
                     txtResultadoSintactico.setText(error);
                     
-                  }else{
-                    textSemantico.setText("Analisis concluido y código generado exitosamente. \nTabla de simbolos:\n"+AnalizadorSemantico.tablaSimbolos.toString());
-                    System.out.println(AnalizadorSemantico.tablaSimbolos.keySet());
-                    System.out.println(AnalizadorSemantico.type);
+                  }
+                  else{
+                    if(AnalizadorSemantico.error!=null){
+                        textSemantico.setText(AnalizadorSemantico.error);
+                    }
+                    else{
+                        textSemantico.setText("Analisis concluido y código generado exitosamente. \nTabla de simbolos:\n"+AnalizadorSemantico.tablaSimbolos.toString());
+                    }
+                    //System.out.println(AnalizadorSemantico.tablaSimbolos.keySet());
+                    //System.out.println(AnalizadorSemantico.type);
                   }
                 //}
             } catch (Exception e) {
