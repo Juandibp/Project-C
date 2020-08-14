@@ -17,10 +17,11 @@ public class AnalizadorSemantico {
     public static HashMap<String,LinkedList<String>> tablaSimbolos = new HashMap<>();
     public static String type="";
     
-    public static boolean anadirSimbolo(String simbolo){
+    public static boolean anadirSimbolo(String simbolo,String scope){
         if(!existsSimbolo(simbolo)){
             LinkedList<String> listaCaract=new LinkedList<>();
             listaCaract.add(type);
+            listaCaract.add(scope);
             tablaSimbolos.put(simbolo,listaCaract);
             return true;
         }
