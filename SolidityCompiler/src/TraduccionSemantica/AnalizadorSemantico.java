@@ -17,6 +17,7 @@ public class AnalizadorSemantico {
     public static HashMap<String,LinkedList<String>> tablaSimbolos = new HashMap<>();
     public static String type="";
     public static String error=null;
+    public static LinkedList<RS> pilaSemantica=new LinkedList<>();
     
     public static boolean anadirSimbolo(String simbolo,String scope,int linea){
         if(!existsSimbolo(simbolo)){
