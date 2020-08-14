@@ -256,7 +256,51 @@ public class FormScanner extends javax.swing.JFrame {
 
     private void buttonSemanticoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSemanticoActionPerformed
         // TODO add your handling code here:
-        textSemantico.setText("Analisis concluido y código generado exitosamente. \nTabla de simbolos:");
+        Parser.SEList.clear();
+        JFileChooser seleccionador = new JFileChooser(); //crea el file chooser
+        seleccionador.showOpenDialog(null);
+        Symbol j;
+        Parser s;
+        try{
+            Reader lector = new BufferedReader(new FileReader(seleccionador.getSelectedFile()));
+            LexerC lexer = new LexerC(lector);
+            s=new Parser(lexer);
+            try {
+                  s.parse();
+                  if(!Parser.SEList.isEmpty()){
+                    String error="Errores:\n";
+                    for (SError SEList : Parser.SEList) {
+                      error+="Error: ";
+                      error+=SEList.getDescripcion();
+                      error+=", linea: ";
+                      error+=(SEList.getLine()+1);
+                      error+=", Columna: ";
+                      error+=SEList.getColumna();
+                      error+=", Simbolo: ";
+                      error+=SEList.getLexema();
+                      error+="\n";
+                      
+                    }
+                    txtResultadoSintactico.setText(error);
+                    
+                  }else{
+                    textSemantico.setText("Analisis concluido y código generado exitosamente. \nTabla de simbolos:\n"+AnalizadorSemantico.tablaSimbolos.toString());
+                    System.out.println(AnalizadorSemantico.tablaSimbolos.keySet());
+                    System.out.println(AnalizadorSemantico.type);
+                  }
+                //}
+            } catch (Exception e) {
+                Symbol sym=s.getS();
+                if(sym.value!=null || !Parser.SEList.isEmpty()){
+                  txtResultadoSintactico.setText("Error de sintaxis. Linea: "+(sym.right+1)+" Columna: "+(sym.left + 1)+", Texto: "+sym.value);
+                }else{
+                  txtResultadoSintactico.setText("Analisis realizado exitosamente");
+                }
+            }
+        }catch (Exception ex){
+            
+        }
+        
     }//GEN-LAST:event_buttonSemanticoActionPerformed
 
     /**
