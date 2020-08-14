@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java_cup.runtime.Symbol;
 import javax.swing.JFileChooser;
-
+import TraduccionSemantica.AnalizadorSemantico;
 
 /**
  *
@@ -173,6 +173,7 @@ public class FormScanner extends javax.swing.JFrame {
             Reader lector = new BufferedReader(new FileReader(seleccionador.getSelectedFile()));
             LexerF lexer = new LexerF(lector);
             String resultado = "";
+            
             while (true) {
                 Tokens tokens = lexer.yylex();
                 if (tokens == null) {
@@ -230,12 +231,14 @@ public class FormScanner extends javax.swing.JFrame {
                       error+=", Simbolo: ";
                       error+=SEList.getLexema();
                       error+="\n";
+                      
                     }
                     txtResultadoSintactico.setText(error);
                     
                   }else{
                     txtResultadoSintactico.setText("Analisis realizado exitosamente");
-                    
+                    System.out.println(AnalizadorSemantico.tablaSimbolos);
+                    System.out.println(AnalizadorSemantico.type);
                   }
                 //}
             } catch (Exception e) {
