@@ -18,11 +18,11 @@ public class RS_DO extends RS{
         this.valor = valor;
     }
     
-    private void setDir() {
+    public void setDir() {
         tipo = TIPO_DO.DIR;
     }
     
-    private void setConst() {
+    public void setConst() {
         tipo = TIPO_DO.CONST;
     }
 
