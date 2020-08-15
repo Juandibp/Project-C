@@ -26,4 +26,8 @@ public class RS_OPERADOR extends RS{
     public void setOperador(String operador) {
         this.operador = operador;
     }
+    
+    public String toString(){
+        return operador;
+    }
 }

@@ -36,5 +36,9 @@ public class RS_DO extends RS{
 
     public TIPO_DO getTipo() {
         return tipo;
-    }  
+    }
+    
+    public String toString(){
+        return valor;
+    }
 }

@@ -26,4 +26,8 @@ public class RS_ID extends RS{
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+    
+    public String toString(){
+        return nombre;
+    }
 }

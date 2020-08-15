@@ -34,9 +34,19 @@ public class AnalizadorSemantico {
     }
     
     public static boolean existsSimbolo(String simbolo){
-        if(tablaSimbolos.containsKey(simbolo)){
-            return true;
+        return (tablaSimbolos.containsKey(simbolo));
+    }
+    
+    public static boolean comprobarSimbolo(String simbolo){
+        if(existsSimbolo(simbolo)){
+            if (type.equals(getCarSimbolo(simbolo).get(0))){
+                return true;
+            }
+            if(error==null){
+                error="Simbolo con tipo incorrecto";
+            }
         }
+        
         return false;
     }
     
@@ -46,5 +56,10 @@ public class AnalizadorSemantico {
         }
         LinkedList<String> listaVacia=new LinkedList<>();
         return listaVacia;
+    }
+    
+    public static boolean limpiarPila(){
+        //pilaSemantica.pop();
+        return true;
     }
 }

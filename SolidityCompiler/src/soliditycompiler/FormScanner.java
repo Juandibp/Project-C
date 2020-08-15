@@ -257,6 +257,7 @@ public class FormScanner extends javax.swing.JFrame {
     private void buttonSemanticoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSemanticoActionPerformed
         // TODO add your handling code here:
         Parser.SEList.clear();
+        AnalizadorSemantico.pilaSemantica.clear();
         JFileChooser seleccionador = new JFileChooser(); //crea el file chooser
         seleccionador.showOpenDialog(null);
         Symbol j;
@@ -285,10 +286,12 @@ public class FormScanner extends javax.swing.JFrame {
                     
                   }
                   else{
+                    System.out.println(AnalizadorSemantico.pilaSemantica);
                     if(AnalizadorSemantico.error!=null){
                         textSemantico.setText(AnalizadorSemantico.error);
                     }
                     else{
+                        
                         textSemantico.setText("Analisis concluido y código generado exitosamente. \nTabla de simbolos:\n"+AnalizadorSemantico.tablaSimbolos.toString());
                     }
                     //System.out.println(AnalizadorSemantico.tablaSimbolos.keySet());
@@ -300,7 +303,7 @@ public class FormScanner extends javax.swing.JFrame {
                 if(sym.value!=null || !Parser.SEList.isEmpty()){
                   txtResultadoSintactico.setText("Error de sintaxis. Linea: "+(sym.right+1)+" Columna: "+(sym.left + 1)+", Texto: "+sym.value);
                 }else{
-                  txtResultadoSintactico.setText("Analisis realizado exitosamente");
+                  txtResultadoSintactico.setText("Error no determinado");
                 }
             }
         }catch (Exception ex){
