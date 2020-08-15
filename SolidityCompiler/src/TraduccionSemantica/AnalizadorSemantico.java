@@ -116,10 +116,11 @@ public class AnalizadorSemantico {
                 limpiarPila(linea,tipoN);
             }
         }
+        
         if(tope instanceof RS_DO){
             RS_DO convert=(RS_DO)tope;
             if( convert.getValor().startsWith("\"") ){
-                if(tipo.equals("string")){
+                if(!tipo.equals("string")){
                     if(error==null){
                         error="Simbolo no compatible: "+convert.getValor()+"\nLinea: "+linea;
                     }
@@ -127,7 +128,7 @@ public class AnalizadorSemantico {
                 }
                 limpiarPila(linea,"string");
             }else{
-                if(tipo.equals("int")){
+                if(!tipo.equals("int")){
                     if(error==null){
                         error="Simbolo no compatible: "+convert.getValor()+"\nLinea: "+linea;
                     }
@@ -136,6 +137,7 @@ public class AnalizadorSemantico {
                 limpiarPila(linea,"int");
             }
         }
+        
         if(tope instanceof RS_OPERADOR){
             limpiarPila(linea,tipo);
         }
