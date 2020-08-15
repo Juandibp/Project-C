@@ -25,6 +25,7 @@ public class AnalizadorSemantico {
             listaCaract.add(type);
             listaCaract.add(scope);
             tablaSimbolos.put(simbolo,listaCaract);
+            System.out.println(tablaSimbolos);
             return true;
         }
         if(error==null){
@@ -75,6 +76,38 @@ public class AnalizadorSemantico {
             }
         }
         if(tope instanceof RS_DO){
+            RS_DO convert=(RS_DO)tope;
+            if( convert.getValor().startsWith("\"") ){
+                System.out.println("Es string");
+            }
+            limpiarPila(linea);
+        }
+        if(tope instanceof RS_OPERADOR){
+            limpiarPila(linea);
+        }
+        return true;
+    }
+    public static boolean limpiarPila(int linea,String tipo){
+        System.out.println(pilaSemantica);
+        if(pilaSemantica.isEmpty()){
+            return true;
+        }
+        RS tope = pilaSemantica.pop();
+        if(tope instanceof RS_ID){
+            RS_ID convert=(RS_ID)tope;
+            if(!existsSimbolo(convert.getNombre())){
+                if(error==null){
+                    error="Simbolo no definido: "+convert.getNombre()+"\nLinea: "+linea;
+                }
+            }else{
+                limpiarPila(linea);
+            }
+        }
+        if(tope instanceof RS_DO){
+            RS_DO convert=(RS_DO)tope;
+            if( convert.getValor().startsWith("\"") ){
+                System.out.println("Es string");
+            }
             limpiarPila(linea);
         }
         if(tope instanceof RS_OPERADOR){
