@@ -72,23 +72,29 @@ public class AnalizadorSemantico {
                     error="Simbolo no definido: "+convert.getNombre()+"\nLinea: "+linea;
                 }
             }else{
-                limpiarPila(linea);
+                String tipo=(getCarSimbolo(convert.getNombre())).getFirst();
+                limpiarPila(linea,tipo);
             }
         }
         if(tope instanceof RS_DO){
             RS_DO convert=(RS_DO)tope;
             if( convert.getValor().startsWith("\"") ){
-                System.out.println("Es string");
+                limpiarPila(linea,"string");
+            }else{
+                //int
+                limpiarPila(linea,"int");
             }
-            limpiarPila(linea);
+            
         }
         if(tope instanceof RS_OPERADOR){
             limpiarPila(linea);
         }
         return true;
     }
+    
     public static boolean limpiarPila(int linea,String tipo){
         System.out.println(pilaSemantica);
+        System.out.println(tipo);
         if(pilaSemantica.isEmpty()){
             return true;
         }
@@ -100,18 +106,38 @@ public class AnalizadorSemantico {
                     error="Simbolo no definido: "+convert.getNombre()+"\nLinea: "+linea;
                 }
             }else{
-                limpiarPila(linea);
+                String tipoN=(getCarSimbolo(convert.getNombre())).getFirst();
+                if(!tipo.equals(tipoN)){
+                    if(error==null){
+                        error="Simbolo no compatible: "+convert.getNombre()+"\nLinea: "+linea;
+                    }
+                    return false;
+                }
+                limpiarPila(linea,tipoN);
             }
         }
         if(tope instanceof RS_DO){
             RS_DO convert=(RS_DO)tope;
             if( convert.getValor().startsWith("\"") ){
-                System.out.println("Es string");
+                if(tipo.equals("string")){
+                    if(error==null){
+                        error="Simbolo no compatible: "+convert.getValor()+"\nLinea: "+linea;
+                    }
+                    return false;
+                }
+                limpiarPila(linea,"string");
+            }else{
+                if(tipo.equals("int")){
+                    if(error==null){
+                        error="Simbolo no compatible: "+convert.getValor()+"\nLinea: "+linea;
+                    }
+                    return false;
+                }
+                limpiarPila(linea,"int");
             }
-            limpiarPila(linea);
         }
         if(tope instanceof RS_OPERADOR){
-            limpiarPila(linea);
+            limpiarPila(linea,tipo);
         }
         return true;
     }

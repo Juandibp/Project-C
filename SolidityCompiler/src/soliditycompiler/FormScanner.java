@@ -258,6 +258,7 @@ public class FormScanner extends javax.swing.JFrame {
     private void buttonSemanticoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSemanticoActionPerformed
         // TODO add your handling code here:
         Parser.SEList.clear();
+        txtResultadoSintactico.setText("");
         AnalizadorSemantico.pilaSemantica.clear();
         AnalizadorSemantico.tablaSimbolos=new HashMap<>();
         JFileChooser seleccionador = new JFileChooser(); //crea el file chooser
