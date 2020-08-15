@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import java_cup.runtime.Symbol;
 import javax.swing.JFileChooser;
 import TraduccionSemantica.AnalizadorSemantico;
+import java.util.HashMap;
 
 /**
  *
@@ -258,6 +259,7 @@ public class FormScanner extends javax.swing.JFrame {
         // TODO add your handling code here:
         Parser.SEList.clear();
         AnalizadorSemantico.pilaSemantica.clear();
+        AnalizadorSemantico.tablaSimbolos=new HashMap<>();
         JFileChooser seleccionador = new JFileChooser(); //crea el file chooser
         seleccionador.showOpenDialog(null);
         Symbol j;
@@ -286,7 +288,6 @@ public class FormScanner extends javax.swing.JFrame {
                     
                   }
                   else{
-                    System.out.println(AnalizadorSemantico.pilaSemantica);
                     if(AnalizadorSemantico.error!=null){
                         textSemantico.setText(AnalizadorSemantico.error);
                     }

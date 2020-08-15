@@ -58,8 +58,28 @@ public class AnalizadorSemantico {
         return listaVacia;
     }
     
-    public static boolean limpiarPila(){
-        //pilaSemantica.pop();
+    public static boolean limpiarPila(int linea){
+        System.out.println(pilaSemantica);
+        if(pilaSemantica.isEmpty()){
+            return true;
+        }
+        RS tope = pilaSemantica.pop();
+        if(tope instanceof RS_ID){
+            RS_ID convert=(RS_ID)tope;
+            if(!existsSimbolo(convert.getNombre())){
+                if(error==null){
+                    error="Simbolo no definido: "+convert.getNombre()+"\nLinea: "+linea;
+                }
+            }else{
+                limpiarPila(linea);
+            }
+        }
+        if(tope instanceof RS_DO){
+            limpiarPila(linea);
+        }
+        if(tope instanceof RS_OPERADOR){
+            limpiarPila(linea);
+        }
         return true;
     }
 }

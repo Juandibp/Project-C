@@ -94,7 +94,7 @@ INICIO ::= Res_Pragma Res_Solidity Potencia Flotante Flotante PuntoYComa CONTRAC
 CONTRACT_INICIO ::= CONTRACT CONTRACT_INICIO | 
 ;
 
-CONTRACT ::= Res_Contract IDENT AbreLlave CUERPO_CONTRATO CierraLlave {: AnalizadorSemantico.pilaSemantica.pop(); :}
+CONTRACT ::= Res_Contract Identificador AbreLlave CUERPO_CONTRATO CierraLlave
 ;
 
 CUERPO_CONTRATO ::= ENUM CUERPO_CONTRATO|
@@ -168,7 +168,7 @@ SENTENCIA_VARIABLE_AUX ::= Identificador:e PuntoYComa {: AnalizadorSemantico.ana
                             | Identificador:e Coma SENTENCIA_VARIABLE_AUX {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global",eright); :}
 ;
 
-EXPRESSION_SENTENCIA ::=  EXPRESSION PuntoYComa{: AnalizadorSemantico.limpiarPila(); :}
+EXPRESSION_SENTENCIA ::=  EXPRESSION PuntoYComa:e {: AnalizadorSemantico.limpiarPila(eright); :}
 ;
 
 CONTINUE_SENTENCIA ::= Res_Continue PuntoYComa
@@ -227,18 +227,18 @@ EXPRESSION_AUX ::= EXPRESSION AbreCorchete EXPRESSION_AUX CierraCorchete |
 OP_BIT ::= CorrerALaDerecha|CorrerALaIzquierda|AndBits|OrBits
 ;
 
-OP_ARITMETICO_PRIMER_ORDEN ::= Potencia:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.add(ope); :} | 
+OP_ARITMETICO_PRIMER_ORDEN ::= Potencia:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} | 
                                 OP_ARITMETICO_SEGUNDO_ORDEN
 ;
 
-OP_ARITMETICO_SEGUNDO_ORDEN ::= Multiplicacion:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.add(ope); :} | 
-                                Division:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.add(ope); :} | 
-                                Porcentaje:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.add(ope); :} | 
+OP_ARITMETICO_SEGUNDO_ORDEN ::= Multiplicacion:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} | 
+                                Division:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} | 
+                                Porcentaje:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} | 
                                 OP_ARITMETICO_TERCER_ORDEN
 ;
 
-OP_ARITMETICO_TERCER_ORDEN ::= Suma:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.add(ope); :} 
-                            | Resta:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.add(ope); :}
+OP_ARITMETICO_TERCER_ORDEN ::= Suma:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} 
+                            | Resta:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :}
 ;
 
 OP_BOOLEANO ::= MenorQue | 
@@ -259,7 +259,7 @@ ARGUMENTS_EXPRESSION_AUX ::= Coma EXPRESSION ARGUMENTS_EXPRESSION_AUX |
 
 EXPRESSION_PRIMARIA ::= LITERAL_BOOLEANO |
                         LITERAL_NUMERICO |
-                        Cadena:y {: RS_DO cade=new RS_DO(y.toString()); AnalizadorSemantico.pilaSemantica.add(cade); :} |
+                        Cadena:y {: RS_DO cade=new RS_DO(y.toString()); AnalizadorSemantico.pilaSemantica.push(cade); :} |
                         IDENT
 ;/* Cambio de IDENT a Identificador*/
 
@@ -268,7 +268,7 @@ LITERAL_BOOLEANO ::= Res_True |
                     Res_False
 ;
 
-LITERAL_NUMERICO ::= Numero:v LITERAL_NUMERICO_AUX {: RS_DO num=new RS_DO(v.toString()); AnalizadorSemantico.pilaSemantica.add(num); :} | 
+LITERAL_NUMERICO ::= Numero:v LITERAL_NUMERICO_AUX {: RS_DO num=new RS_DO(v.toString()); AnalizadorSemantico.pilaSemantica.push(num); :} | 
                     Hexadecimal LITERAL_NUMERICO_AUX | 
                     Cientifico LITERAL_NUMERICO_AUX | 
                     Flotante LITERAL_NUMERICO_AUX
@@ -368,11 +368,11 @@ ASSIGNMENT::= Identificador ASSIGNMENT_AUX EXPRESSION
 ;
 
 
-ASSIGNMENT_AUX ::= Asignacion:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.add(ope); :} | 
-                    Sume:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.add(ope); :}| 
-                    Reste:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.add(ope); :}| 
-                    Multiplique:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.add(ope); :}| 
-                    Divida:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.add(ope); :}
+ASSIGNMENT_AUX ::= Asignacion:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} | 
+                    Sume:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :}| 
+                    Reste:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :}| 
+                    Multiplique:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :}| 
+                    Divida:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :}
 ;
 
 PRIVACY::= Res_Public | 
@@ -395,7 +395,7 @@ BYTE_TYPES::=Res_Bytes:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Bytes2:
 |Res_Bytes8:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Bytes16:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Bytes32:e{: AnalizadorSemantico.type=e.toString(); :}
 |Res_Bytes64:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Bytes128:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Bytes256:e{: AnalizadorSemantico.type=e.toString(); :};
 
-IDENT::= Identificador:y IDENT_AUX {: RS_ID ide=new RS_ID(y.toString()); AnalizadorSemantico.pilaSemantica.add(ide); :} | Res_This IDENT_AUX_THIS 
+IDENT::= Identificador:y IDENT_AUX {: RS_ID ide=new RS_ID(y.toString()); AnalizadorSemantico.pilaSemantica.push(ide); :} | Res_This IDENT_AUX_THIS 
 ;
 
 IDENT_AUX::= IDENT_AUX_THIS | 
