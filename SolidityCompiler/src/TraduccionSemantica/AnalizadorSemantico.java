@@ -25,7 +25,7 @@ public class AnalizadorSemantico {
             listaCaract.add(type);
             listaCaract.add(scope);
             tablaSimbolos.put(simbolo,listaCaract);
-            System.out.println(tablaSimbolos);
+            //System.out.println(tablaSimbolos);
             return true;
         }
         if(error==null){
@@ -71,6 +71,7 @@ public class AnalizadorSemantico {
                 if(error==null){
                     error="Simbolo no definido: "+convert.getNombre()+"\nLinea: "+linea;
                 }
+                return false;
             }else{
                 String tipo=(getCarSimbolo(convert.getNombre())).getFirst();
                 limpiarPila(linea,tipo);
@@ -94,7 +95,7 @@ public class AnalizadorSemantico {
     
     public static boolean limpiarPila(int linea,String tipo){
         System.out.println(pilaSemantica);
-        System.out.println(tipo);
+        //System.out.println(tipo);
         if(pilaSemantica.isEmpty()){
             return true;
         }
@@ -105,6 +106,7 @@ public class AnalizadorSemantico {
                 if(error==null){
                     error="Simbolo no definido: "+convert.getNombre()+"\nLinea: "+linea;
                 }
+                return false;
             }else{
                 String tipoN=(getCarSimbolo(convert.getNombre())).getFirst();
                 if(!tipo.equals(tipoN)){
@@ -139,8 +141,71 @@ public class AnalizadorSemantico {
         }
         
         if(tope instanceof RS_OPERADOR){
+            //System.out.println(tope.toString());
+            RS_OPERADOR convert=(RS_OPERADOR)tope;
+            if(tipo.equals("string")){
+                
+                if(convert.getOperador().equals("*") || convert.getOperador().equals("/") || 
+                        convert.getOperador().equals("%") || convert.getOperador().equals("-")){
+                    if(error==null){
+                        error="Operacion no valida: "+convert.getOperador()+"\nLinea: "+linea;
+                    }
+                    return false;
+                }
+            }
+            if(convert.getOperador().equals("=")){
+                return validarAssignment(linea, tipo);
+            }
             limpiarPila(linea,tipo);
         }
+        return true;
+    }
+    
+    public static boolean validarAssignment(int linea, String tipo){
+        if(pilaSemantica.isEmpty()){
+            return false;
+        }
+        RS tope = pilaSemantica.pop();
+        
+        if(tope instanceof RS_ID){
+            RS_ID convert=(RS_ID)tope;
+            if(!existsSimbolo(convert.getNombre())){
+                if(error==null){
+                    error="Simbolo no definido: "+convert.getNombre()+"\nLinea: "+linea;
+                }
+                return false;
+            }else{
+                String tipoN=(getCarSimbolo(convert.getNombre())).getFirst();
+                System.out.println(tipoN);
+                System.out.println(tipo);
+                if(!tipo.equals(tipoN)){
+                    if(error==null){
+                        error="Simbolo no compatible: "+convert.getNombre()+"\nLinea: "+linea;
+                    }
+                    return false;
+                }
+                return true;
+            }
+        }
+        
+        if(tope instanceof RS_DO){
+            RS_DO convert=(RS_DO)tope;
+            if(error==null){
+                error="Simbolo no compatible: "+convert.getValor()+"\nLinea: "+linea;
+            }
+            return false;
+        }
+        
+        if(tope instanceof RS_OPERADOR){
+            //System.out.println(tope.toString());
+            RS_OPERADOR convert=(RS_OPERADOR)tope;
+            if(error==null){
+                error="Operacion no valida: "+convert.getOperador()+"\nLinea: "+linea;
+            }
+            return false;
+            
+        }
+        
         return true;
     }
 }

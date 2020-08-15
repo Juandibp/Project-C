@@ -260,6 +260,7 @@ public class FormScanner extends javax.swing.JFrame {
         Parser.SEList.clear();
         txtResultadoSintactico.setText("");
         AnalizadorSemantico.pilaSemantica.clear();
+        AnalizadorSemantico.error=null;
         AnalizadorSemantico.tablaSimbolos=new HashMap<>();
         JFileChooser seleccionador = new JFileChooser(); //crea el file chooser
         seleccionador.showOpenDialog(null);
@@ -286,14 +287,11 @@ public class FormScanner extends javax.swing.JFrame {
                       
                     }
                     txtResultadoSintactico.setText(error);
-                    
-                  }
-                  else{
+                  }else{
                     if(AnalizadorSemantico.error!=null){
                         textSemantico.setText(AnalizadorSemantico.error);
                     }
                     else{
-                        
                         textSemantico.setText("Analisis concluido y código generado exitosamente. \nTabla de simbolos:\n"+AnalizadorSemantico.tablaSimbolos.toString());
                     }
                     //System.out.println(AnalizadorSemantico.tablaSimbolos.keySet());
