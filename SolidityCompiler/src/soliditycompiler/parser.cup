@@ -77,7 +77,8 @@ non terminal String INICIO, CONTRACT_INICIO, CONTRACT, CUERPO_CONTRATO,IDENT, EN
              BOOLEAN_EXPRESSION, EXPRESSION_AUX, ARGUMENTS_EXPRESSION, ASSIGNMENT_AUX, EXPRESSION_PRIMARIA, EXPRESSION_PRIMARIA_AUX, OP_ARITMETICO_PRIMER_ORDEN, 
              OP_ARITMETICO_SEGUNDO_ORDEN, OP_ARITMETICO_TERCER_ORDEN, OP_BOOLEANO, LITERAL_BOOLEANO, LITERAL_NUMERICO, LITERAL_NUMERICO_AUX, STRUCT_AUX, CUERPO_FUNCION, PARAM_LIST, PARAM_LIST_AUX, PARAM_LIST_AUX_HELP,
              VAR_LIST, VAR_LIST_AUX, VAR_LIST_AUX_HELP, MODS, MOD_LIST, RETURNS_FUNCTION, RETURNS_FUNCTION_AUX, EXPRESSION_FOR_DOS, VARIABLE_AUX,
-             VARIABLE_AUX_AUX, IDENT_AUX, IDENT_AUX2, IDENT_AUX3, IDENT_AUX_THIS, ARGUMENTS_EXPRESSION_AUX, OP_BIT, EXP1,EXP2,EXP3,EXP3_2,EXP4,EXP5,EXP6,EXP7,EXP8,EXP9,EXP10, SENTENCIAF, SENTENCIA_VARIABLE, SENTENCIA_VARIABLE_AUX
+             VARIABLE_AUX_AUX, IDENT_AUX, IDENT_AUX2, IDENT_AUX3, IDENT_AUX_THIS, ARGUMENTS_EXPRESSION_AUX, OP_BIT, EXP1,EXP2,EXP3,EXP3_2,EXP4,EXP5,EXP6,EXP7,EXP8,EXP9,EXP10, SENTENCIAF, SENTENCIA_VARIABLE, SENTENCIA_VARIABLE_AUX,
+             IF_AUX, WHILE_AUX
 ;
 
 precedence left AbreCorchete;
@@ -128,7 +129,10 @@ SENTENCIA ::= IF_SENTENCIA |
               SENTENCIA_BASE
 ;
 
-IF_SENTENCIA ::=    Res_If AbreParentesis BOOLEAN_EXPRESSION CierraParentesis BLOQUE ELSE 
+IF_SENTENCIA ::=    IF_AUX AbreParentesis BOOLEAN_EXPRESSION CierraParentesis:e BLOQUE ELSE {: AnalizadorSemantico.limpiarPila(eright); :}
+;
+
+IF_AUX::= Res_If:e {: RS_IF res=new RS_IF("",""); AnalizadorSemantico.pilaSemantica.push(res); :}
 ;
 
 BOOLEAN_EXPRESSION ::= IDENT | EXPRESSION_PRIMARIA OP_BOOLEANO EXPRESSION_PRIMARIA
@@ -137,7 +141,10 @@ BOOLEAN_EXPRESSION ::= IDENT | EXPRESSION_PRIMARIA OP_BOOLEANO EXPRESSION_PRIMAR
 ELSE ::= Res_Else BLOQUE | 
 ;
 
-WHILE_SENTENCIA ::= Res_While AbreParentesis BOOLEAN_EXPRESSION CierraParentesis BLOQUE 
+WHILE_SENTENCIA ::= WHILE_AUX AbreParentesis BOOLEAN_EXPRESSION CierraParentesis:e BLOQUE {: AnalizadorSemantico.limpiarPila(eright); :}
+;
+
+WHILE_AUX ::= Res_While:e {: RS_WHILE res=new RS_WHILE("",""); AnalizadorSemantico.pilaSemantica.push(res); :}
 ;
 
 DOWHILE_SENTENCIA ::= Res_Do BLOQUE Res_While AbreParentesis BOOLEAN_EXPRESSION CierraParentesis PuntoYComa
@@ -171,18 +178,21 @@ SENTENCIA_VARIABLE_AUX ::= Identificador:e PuntoYComa {: AnalizadorSemantico.ana
 EXPRESSION_SENTENCIA ::=  EXPRESSION PuntoYComa:e {: AnalizadorSemantico.limpiarPila(eright); :}
 ;
 
-CONTINUE_SENTENCIA ::= Res_Continue PuntoYComa
+CONTINUE_SENTENCIA ::= Res_Continue:e PuntoYComa{}
 ;
 
-BREAK_SENTENCIA ::= Res_Break PuntoYComa
+BREAK_SENTENCIA ::= Res_Break:e PuntoYComa{}
 ;
  
-RETURN_SENTENCIA ::= Res_Return RETURN_SENTENCIA_AUX PuntoYComa
+RETURN_SENTENCIA ::= Res_Return:e RETURN_SENTENCIA_AUX PuntoYComa {:
+                    RS_RETURNS res=new RS_RETURNS();
+                    AnalizadorSemantico.pilaSemantica.push(res);
+                    AnalizadorSemantico.limpiarPila(eright); :}
 ;
 
-RETURN_SENTENCIA_AUX ::= EXPRESSION
+RETURN_SENTENCIA_AUX ::= Identificador
 ;
-
+/*SE CAMBIO A IDENTIFICADOR*/
 
 
 
@@ -341,7 +351,9 @@ MOD_LIST ::= Res_Payable | PRIVACY | Res_Internal
 RETURNS_FUNCTION ::= RETURNS_FUNCTION_AUX | 
 ;
 
-RETURNS_FUNCTION_AUX ::= Res_Returns AbreParentesis VAR_TYPE Identificador:e CierraParentesis{: :}
+RETURNS_FUNCTION_AUX ::= Res_Returns AbreParentesis VAR_TYPE Identificador:e CierraParentesis{: 
+                                RS_RETURNS res=new RS_RETURNS();
+                                 AnalizadorSemantico.pilaSemantica.push(res);:}
 ;
 
 VARIABLE ::= VAR_TYPE VARIABLE_AUX

@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java_cup.runtime.Symbol;
 import javax.swing.JFileChooser;
-import TraduccionSemantica.AnalizadorSemantico;
+import TraduccionSemantica.*;
 import java.util.HashMap;
 
 /**
@@ -290,6 +290,14 @@ public class FormScanner extends javax.swing.JFrame {
                   }else{
                     if(AnalizadorSemantico.error!=null){
                         textSemantico.setText(AnalizadorSemantico.error);
+                    }
+                    if(!AnalizadorSemantico.pilaSemantica.isEmpty()){
+                        RS tope=AnalizadorSemantico.pilaSemantica.pop();
+                        if(tope instanceof RS_RETURNS){
+                            textSemantico.setText("No se cerro el return de la función.");
+                        }else{
+                            textSemantico.setText("Ha ocurrido un error.");
+                        }
                     }
                     else{
                         textSemantico.setText("Analisis concluido y código generado exitosamente. \nTabla de simbolos:\n"+AnalizadorSemantico.tablaSimbolos.toString());

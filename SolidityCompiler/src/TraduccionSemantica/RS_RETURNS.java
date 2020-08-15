@@ -36,4 +36,8 @@ public class RS_RETURNS extends RS{
     public void setNombreVar(String nombreVar) {
         this.nombreVar = nombreVar;
     }
+    
+    public String toString(){
+        return "return";
+    }
 }

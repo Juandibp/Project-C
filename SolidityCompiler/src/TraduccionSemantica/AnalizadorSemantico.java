@@ -90,6 +90,24 @@ public class AnalizadorSemantico {
         if(tope instanceof RS_OPERADOR){
             limpiarPila(linea);
         }
+        if(tope instanceof RS_IF){
+            
+        }
+        if(tope instanceof RS_WHILE){
+            
+        }
+        if(tope instanceof RS_RETURNS){
+            if(pilaSemantica.isEmpty()){
+                return false;
+            }
+            RS topeS = pilaSemantica.pop();
+            if(tope instanceof  RS_RETURNS){
+                return true;
+            }
+            else{
+                pilaSemantica.push(topeS);
+            }
+        }
         return true;
     }
     
@@ -117,6 +135,7 @@ public class AnalizadorSemantico {
                 }
                 limpiarPila(linea,tipoN);
             }
+            
         }
         
         if(tope instanceof RS_DO){
@@ -158,6 +177,15 @@ public class AnalizadorSemantico {
             }
             limpiarPila(linea,tipo);
         }
+        if(tope instanceof RS_IF){
+            pilaSemantica.push(tope);
+        }
+        if(tope instanceof RS_WHILE){
+            pilaSemantica.push(tope);
+        }
+        if(tope instanceof RS_RETURNS){
+            pilaSemantica.push(tope);
+        }
         return true;
     }
     
@@ -176,8 +204,6 @@ public class AnalizadorSemantico {
                 return false;
             }else{
                 String tipoN=(getCarSimbolo(convert.getNombre())).getFirst();
-                System.out.println(tipoN);
-                System.out.println(tipo);
                 if(!tipo.equals(tipoN)){
                     if(error==null){
                         error="Simbolo no compatible: "+convert.getNombre()+"\nLinea: "+linea;
@@ -204,6 +230,9 @@ public class AnalizadorSemantico {
             }
             return false;
             
+        }
+        else{
+            pilaSemantica.push(tope);
         }
         
         return true;
