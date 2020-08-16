@@ -132,7 +132,7 @@ SENTENCIA ::= IF_SENTENCIA |
 IF_SENTENCIA ::=    IF_AUX AbreParentesis BOOLEAN_EXPRESSION CierraParentesis:e BLOQUE ELSE {: AnalizadorSemantico.limpiarPila(eright); :}
 ;
 
-IF_AUX::= Res_If:e {: RS_IF res=new RS_IF("",""); AnalizadorSemantico.pilaSemantica.push(res); :}
+IF_AUX::= Res_If:e {: RS_IF res=new RS_IF("",""); AnalizadorSemantico.pilaSemantica.push(res); AnalizadorSemantico.cantIf++; :}
 ;
 
 BOOLEAN_EXPRESSION ::= IDENT | EXPRESSION_PRIMARIA OP_BOOLEANO EXPRESSION_PRIMARIA
@@ -144,7 +144,7 @@ ELSE ::= Res_Else BLOQUE |
 WHILE_SENTENCIA ::= WHILE_AUX AbreParentesis BOOLEAN_EXPRESSION CierraParentesis:e BLOQUE {: AnalizadorSemantico.limpiarPila(eright); :}
 ;
 
-WHILE_AUX ::= Res_While:e {: RS_WHILE res=new RS_WHILE("",""); AnalizadorSemantico.pilaSemantica.push(res); :}
+WHILE_AUX ::= Res_While:e {: RS_WHILE res=new RS_WHILE("",""); AnalizadorSemantico.pilaSemantica.push(res); AnalizadorSemantico.cantWhile++; :}
 ;
 
 DOWHILE_SENTENCIA ::= Res_Do BLOQUE Res_While AbreParentesis BOOLEAN_EXPRESSION CierraParentesis PuntoYComa
