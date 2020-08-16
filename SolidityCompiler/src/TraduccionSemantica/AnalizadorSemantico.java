@@ -92,9 +92,13 @@ public class AnalizadorSemantico {
                 nuevaLista.add(simbolo);
                 nuevaLista.add(nuevaLista.get(0));
                 nuevaLista.add(nuevaLista.get(2));
-                
+                contenidoArchivo.get(0).add(nuevaLista);
             }else{
                 //No esta inicializada
+                LinkedList<String> nuevaLista=new LinkedList<>();
+                nuevaLista.add(simbolo);
+                nuevaLista.add(nuevaLista.get(0));
+                contenidoArchivo.get(0).add(nuevaLista);
             }
         }
     }
