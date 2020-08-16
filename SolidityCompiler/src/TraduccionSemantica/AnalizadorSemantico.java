@@ -74,9 +74,28 @@ public class AnalizadorSemantico {
         return listaVacia;
     }
     
+    public static void inicializarContenidoArchivo(){
+        LinkedList<LinkedList<String>> variablesDefinidas=new LinkedList<>();
+        contenidoArchivo.add(variablesDefinidas);
+        LinkedList<LinkedList<String>> variablesNoDefinidas=new LinkedList<>();
+        contenidoArchivo.add(variablesNoDefinidas);
+        LinkedList<LinkedList<String>> codigo=new LinkedList<>();
+        contenidoArchivo.add(codigo);
+    }
+    
     public static void pasarSimbolosAArchivo(){
         for (String simbolo: tablaSimbolos.keySet()){
-            
+            LinkedList<String> lista=getCarSimbolo(simbolo);
+            if(lista.size()>2){
+                //Esta inicializada
+                LinkedList<String> nuevaLista=new LinkedList<>();
+                nuevaLista.add(simbolo);
+                nuevaLista.add(nuevaLista.get(0));
+                nuevaLista.add(nuevaLista.get(2));
+                
+            }else{
+                //No esta inicializada
+            }
         }
     }
     
