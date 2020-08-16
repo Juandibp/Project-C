@@ -188,9 +188,13 @@ CONTINUE_SENTENCIA ::= Res_Continue:e PuntoYComa {:
                         :}
 ;
 
-BREAK_SENTENCIA ::= Res_Break:e PuntoYComa {: RS_CONTROL res=new RS_CONTROL("break");
+BREAK_SENTENCIA ::= Res_Break:e PuntoYComa {: 
+                        AnalizadorSemantico.accionContinue(e.right);
+                        /*
+                        RS_CONTROL res=new RS_CONTROL("break");
                         AnalizadorSemantico.pilaSemantica.push(res);
                         AnalizadorSemantico.limpiarPila(eright);
+                        */
                         :}
 ;
  

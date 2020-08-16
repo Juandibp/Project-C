@@ -306,13 +306,16 @@ public class AnalizadorSemantico {
         return null;
     }
     
+    
     /************************************************* ACCIONES SEMANTICAS ****************************************************/
     
     public static void accionContinue(int linea){
         if(exitsWhileAntes()){
             RS_WHILE registroWhile = (RS_WHILE) getLastWhile();
             String whileLabel = registroWhile.getWhile_label() + String.valueOf(cantWhile);
-            assemblyFile += "jmp " + whileLabel + ":\n";
+            LinkedList<String> instruccion = new LinkedList<>();
+            instruccion.add("jmp " + whileLabel);
+            contenidoArchivo.get(2).add(instruccion);
         }
         else{
             if(error==null){
@@ -325,12 +328,38 @@ public class AnalizadorSemantico {
         if(exitsWhileAntes()){
             RS_WHILE registroWhile = (RS_WHILE) getLastWhile();
             String whileExitLabel = registroWhile.getExit_label()+ String.valueOf(cantWhile);
-            assemblyFile += "jmp " + whileExitLabel + ":\n";
+            LinkedList<String> instruccion = new LinkedList<>();
+            instruccion.add("jmp " + whileExitLabel);
+            contenidoArchivo.get(2).add(instruccion);
         }
         else{
             if(error==null){
                 error="Break en un bloque no valido" + "\nLinea: "+linea;
             }
         }
+    }
+    
+    public static void accionGuardarConstante(String valor){
+        RS_DO nuevo = new RS_DO(valor);
+        nuevo.setConst();
+        pilaSemantica.push(nuevo);
+    }
+    
+    public static void accionGuardarVariable(String nombre, int linea){
+        RS_DO nuevo = new RS_DO(nombre);
+        nuevo.setDir();
+        if(existsSimbolo(nombre)){
+            pilaSemantica.add(nuevo);
+        }
+        else{
+            if(error==null){
+                error= nombre + ": variable no definida" + "\nLinea: "+linea;
+            }
+        }
+    }
+    
+    public static void accionGuardarOperador(String operador){
+        RS_OPERADOR nuevo = new RS_OPERADOR(operador);
+        pilaSemantica.push(nuevo);
     }
 }
