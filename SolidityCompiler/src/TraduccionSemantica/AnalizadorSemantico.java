@@ -9,6 +9,7 @@ package TraduccionSemantica;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+
 /**
  *
  * @author adria
@@ -20,6 +21,7 @@ public class AnalizadorSemantico {
     public static LinkedList<RS> pilaSemantica=new LinkedList<>();
     public static int cantIf = 0;
     public static int cantWhile = 0;
+    public static LinkedList<LinkedList <LinkedList <String>>> contenidoArchivo=new LinkedList<>();
     
     public static boolean anadirSimbolo(String simbolo,String scope,int linea){
         if(!existsSimbolo(simbolo)){
@@ -70,6 +72,12 @@ public class AnalizadorSemantico {
         }
         LinkedList<String> listaVacia=new LinkedList<>();
         return listaVacia;
+    }
+    
+    public static void pasarSimbolosAArchivo(){
+        for (String simbolo: tablaSimbolos.keySet()){
+            
+        }
     }
     
     public static boolean limpiarPila(int linea){
