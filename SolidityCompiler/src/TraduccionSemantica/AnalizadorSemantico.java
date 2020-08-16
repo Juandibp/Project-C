@@ -74,16 +74,16 @@ public class AnalizadorSemantico {
                 return false;
             }else{
                 String tipo=(getCarSimbolo(convert.getNombre())).getFirst();
-                limpiarPila(linea,tipo);
+                return limpiarPila(linea,tipo);
             }
         }
         if(tope instanceof RS_DO){
             RS_DO convert=(RS_DO)tope;
             if( convert.getValor().startsWith("\"") ){
-                limpiarPila(linea,"string");
+                return limpiarPila(linea,"string");
             }else{
                 //int
-                limpiarPila(linea,"int");
+                return limpiarPila(linea,"int");
             }
             
         }
@@ -107,6 +107,24 @@ public class AnalizadorSemantico {
             else{
                 pilaSemantica.push(topeS);
             }
+        }
+        if(tope instanceof RS_CONTROL){
+            if(pilaSemantica.isEmpty()){
+                return false;
+            }
+            RS topeS = pilaSemantica.pop();
+            if(tope instanceof  RS_IF){
+                pilaSemantica.push(topeS);
+                return true;
+            }
+            else{
+                if(error==null){
+                    RS_CONTROL ctrl=(RS_CONTROL)tope;
+                    error="Ubicacion no valida de simbolo: "+ctrl.getTipo()+"\nLinea: "+linea;
+                }
+                return false;
+            }
+            
         }
         return true;
     }
@@ -133,7 +151,7 @@ public class AnalizadorSemantico {
                     }
                     return false;
                 }
-                limpiarPila(linea,tipoN);
+                return limpiarPila(linea,tipoN);
             }
             
         }
@@ -147,7 +165,7 @@ public class AnalizadorSemantico {
                     }
                     return false;
                 }
-                limpiarPila(linea,"string");
+                return limpiarPila(linea,"string");
             }else{
                 if(!tipo.equals("int")){
                     if(error==null){
@@ -155,7 +173,7 @@ public class AnalizadorSemantico {
                     }
                     return false;
                 }
-                limpiarPila(linea,"int");
+                return limpiarPila(linea,"int");
             }
         }
         
@@ -163,7 +181,6 @@ public class AnalizadorSemantico {
             //System.out.println(tope.toString());
             RS_OPERADOR convert=(RS_OPERADOR)tope;
             if(tipo.equals("string")){
-                
                 if(convert.getOperador().equals("*") || convert.getOperador().equals("/") || 
                         convert.getOperador().equals("%") || convert.getOperador().equals("-")){
                     if(error==null){
@@ -175,7 +192,7 @@ public class AnalizadorSemantico {
             if(convert.getOperador().equals("=")){
                 return validarAssignment(linea, tipo);
             }
-            limpiarPila(linea,tipo);
+            return limpiarPila(linea,tipo);
         }
         if(tope instanceof RS_IF){
             pilaSemantica.push(tope);
