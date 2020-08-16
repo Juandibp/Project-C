@@ -17,13 +17,9 @@ import soliditycompiler.SError;
 %char
 L=[a-zA-Z_]+
 D=[0-9]+
-espacio=[ ,\t,\r,\n]+
+espacio=[ \t \r \n]+
 simbolo=[\\,/,!,;,#,$,%,=,?,¡,¿,|,_,-]+
-%{
-    public String lexeme;
-    public int line;
-    public int column;
-%}
+
 %{
     private Symbol symbol(int type, Object value){
         return new Symbol(type, yyline, yycolumn, value);
@@ -84,7 +80,7 @@ internal {return new Symbol(sym.Res_Internal, yychar, yyline, yytext());}
 mapping {return new Symbol(sym.Res_Mapping, yychar, yyline, yytext());}
 moddifier {return new Symbol(sym.Res_Moddifier, yychar, yyline, yytext());}
 payable {return new Symbol(sym.Res_Payable, yychar, yyline, yytext());}
-Pragma {return new Symbol(sym.Res_Pragma, yychar, yyline, yytext());}
+pragma {return new Symbol(sym.Res_Pragma, yychar, yyline, yytext());}
 private {return new Symbol(sym.Res_Private, yychar, yyline, yytext());}
 public {return new Symbol(sym.Res_Public, yychar, yyline, yytext());}
 return {return new Symbol(sym.Res_Return, yychar, yyline, yytext());}
@@ -165,6 +161,7 @@ years {return new Symbol(sym.Unit_Years, yychar, yyline, yytext());}
 "-" {return new Symbol(sym.Resta, yychar, yyline, yytext());}
 "*" {return new Symbol(sym.Multiplicacion, yychar, yyline, yytext());}
 "/" {return new Symbol(sym.Division, yychar, yyline, yytext());}
+"," {return new Symbol(sym.Coma, yychar, yyline, yytext());}
 ("hex\""|"hex'") ( {D} | "A" | "B" | "C" | "D" | "E" | "F" )+ ("\""|"'")("\\n")* {return new Symbol(sym.Hexadecimal, yychar, yyline, yytext());}
 ("\""|"'") ({L}|{D} | "\\n" | "\\xNN" | "\\uNNNN" | {simbolo} | " ")* ("\""|"'") {return new Symbol(sym.Cadena, yychar, yyline, yytext());} //string
 ("\""|"'") ({L}|{D} | "\\n" | "\\xNN" | "\\uNNNN" | "\\".| {simbolo} | " ")* ("\""|"'") {SError dato = new SError(yytext(), yyline, yycolumn, "Error Léxico", "String no válido"); ListaErrores.add(dato) ; return new Symbol(sym.Error, yychar, yyline, yytext());}
@@ -173,5 +170,5 @@ years {return new Symbol(sym.Unit_Years, yychar, yyline, yytext());}
 {D}+ {return new Symbol(sym.Numero, yychar, yyline, yytext());}
 {L}({L}|{D})* {return new Symbol(sym.Identificador, yychar, yyline, yytext());}
 {D}({L}|{D})* {SError dato = new SError(yytext(), yyline, yycolumn, "Error Léxico", "Identificador inválido"); ListaErrores.add(dato) ; return new Symbol(sym.Error, yychar, yyline, yytext());}
-{L}+ {simbolo} ( {simbolo}|{L})* {SError dato = new SError(yytext(), yyline, yycolumn, "Error Léxico", "Identificador inválido"); ListaErrores.add(dato) ; return new Symbol(sym.Error, yychar, yyline, yytext());}
+{L}+ {simbolo} ( {simbolo}|{L})+ {SError dato = new SError(yytext(), yyline, yycolumn, "Error Léxico", "Identificador inválido"); ListaErrores.add(dato) ; return new Symbol(sym.Error, yychar, yyline, yytext());}
  . {SError dato = new SError(yytext(), yyline, yycolumn, "Error Léxico", "token inválido"); ListaErrores.add(dato) ; return new Symbol(sym.Error, yychar, yyline, yytext());}
