@@ -18,6 +18,8 @@ public class AnalizadorSemantico {
     public static String type="";
     public static String error=null;
     public static LinkedList<RS> pilaSemantica=new LinkedList<>();
+    public static int cantIf = 0;
+    public static int cantWhile = 0;
     
     public static boolean anadirSimbolo(String simbolo,String scope,int linea){
         if(!existsSimbolo(simbolo)){
@@ -266,5 +268,13 @@ public class AnalizadorSemantico {
         }
         
         return true;
+    }
+    
+    
+    
+    /************************************************* ACCIONES SEMANTICAS ****************************************************/
+    
+    public static void accionContinue(){
+        
     }
 }
