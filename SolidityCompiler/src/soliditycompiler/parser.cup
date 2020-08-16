@@ -166,7 +166,7 @@ SENTENCIA_BASE ::= SENTENCIA_VARIABLE |
                    EXPRESSION_SENTENCIA
 ;
 
-SENTENCIA_VARIABLE ::= VAR_TYPE Identificador:e ASSIGNMENT_AUX EXPRESSION PuntoYComa {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global",eright); :} 
+SENTENCIA_VARIABLE ::= VAR_TYPE Identificador:e ASSIGNMENT_AUX EXPRESSION PuntoYComa {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global",eright); AnalizadorSemantico.anadirValor(e.toString()); :} 
                         | VAR_TYPE Identificador:e Coma SENTENCIA_VARIABLE_AUX {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global",eright); :} 
                         | VAR_TYPE Identificador:e PuntoYComa {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global",eright); :}
 ;
@@ -257,12 +257,12 @@ OP_ARITMETICO_TERCER_ORDEN ::= Suma:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toStr
                             | Resta:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :}
 ;
 
-OP_BOOLEANO ::= MenorQue | 
-                MayorQue | 
-                MenorOIgualQue | 
-                MayorOIgualQue | 
-                Comparacion | 
-                Diferencia | 
+OP_BOOLEANO ::= MenorQue:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} | 
+                MayorQue:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} | 
+                MenorOIgualQue:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} | 
+                MayorOIgualQue:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} | 
+                Comparacion:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} | 
+                Diferencia:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} | 
                 AndLogico | 
                 OrLogico
 ;

@@ -51,6 +51,17 @@ public class AnalizadorSemantico {
         return false;
     }
     
+    public static void anadirValor(String simbolo){
+        RS tope=pilaSemantica.pop();
+        pilaSemantica.pop();
+        System.out.println(tope);
+        if(tope instanceof RS_DO){
+            RS_DO convert=(RS_DO)tope;
+            tablaSimbolos.get(simbolo).add(convert.getValor());
+        }
+        System.out.println(tablaSimbolos);
+    }
+    
     public static LinkedList<String> getCarSimbolo(String simbolo){
         if(existsSimbolo(simbolo)){
             return tablaSimbolos.get(simbolo);
@@ -182,7 +193,9 @@ public class AnalizadorSemantico {
             RS_OPERADOR convert=(RS_OPERADOR)tope;
             if(tipo.equals("string")){
                 if(convert.getOperador().equals("*") || convert.getOperador().equals("/") || 
-                        convert.getOperador().equals("%") || convert.getOperador().equals("-")){
+                        convert.getOperador().equals("%") || convert.getOperador().equals("-")
+                        || convert.getOperador().equals(">") || convert.getOperador().equals("<")
+                        || convert.getOperador().equals(">=") || convert.getOperador().equals("<=")){
                     if(error==null){
                         error="Operacion no valida: "+convert.getOperador()+"\nLinea: "+linea;
                     }
