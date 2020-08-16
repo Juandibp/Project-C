@@ -20,6 +20,7 @@ public class AnalizadorSemantico {
     public static LinkedList<RS> pilaSemantica=new LinkedList<>();
     public static int cantIf = 0;
     public static int cantWhile = 0;
+    public static String assemblyFile = "";
     
     public static boolean anadirSimbolo(String simbolo,String scope,int linea){
         if(!existsSimbolo(simbolo)){
@@ -270,11 +271,59 @@ public class AnalizadorSemantico {
         return true;
     }
     
+    private static boolean exitsWhileAntes(){
+        if (pilaSemantica.isEmpty()){
+            return false;
+        }
+        else{
+            for (RS registroSemantico : pilaSemantica){
+                if(registroSemantico instanceof RS_WHILE){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     
+    private static RS getLastWhile(){
+        if (pilaSemantica.isEmpty()){
+            return null;
+        }
+        else{
+            for (RS registroSemantico : pilaSemantica){
+                if(registroSemantico instanceof RS_WHILE){
+                    return registroSemantico;
+                }
+            }
+        }
+        return null;
+    }
     
     /************************************************* ACCIONES SEMANTICAS ****************************************************/
     
-    public static void accionContinue(){
-        
+    public static void accionContinue(int linea){
+        if(exitsWhileAntes()){
+            RS_WHILE registroWhile = (RS_WHILE) getLastWhile();
+            String whileLabel = registroWhile.getWhile_label() + String.valueOf(cantWhile);
+            assemblyFile += "jmp " + whileLabel + ":\n";
+        }
+        else{
+            if(error==null){
+                error="Continue en un bloque no valido" + "\nLinea: "+linea;
+            }
+        }
+    }
+    
+    public static void accionBreak(int linea){
+        if(exitsWhileAntes()){
+            RS_WHILE registroWhile = (RS_WHILE) getLastWhile();
+            String whileExitLabel = registroWhile.getExit_label()+ String.valueOf(cantWhile);
+            assemblyFile += "jmp " + whileExitLabel + ":\n";
+        }
+        else{
+            if(error==null){
+                error="Break en un bloque no valido" + "\nLinea: "+linea;
+            }
+        }
     }
 }

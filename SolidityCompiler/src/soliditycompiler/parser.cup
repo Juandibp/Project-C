@@ -178,9 +178,13 @@ SENTENCIA_VARIABLE_AUX ::= Identificador:e PuntoYComa {: AnalizadorSemantico.ana
 EXPRESSION_SENTENCIA ::=  EXPRESSION PuntoYComa:e {: AnalizadorSemantico.limpiarPila(eright); :}
 ;
 
-CONTINUE_SENTENCIA ::= Res_Continue:e PuntoYComa {: RS_CONTROL res=new RS_CONTROL("continue");
+CONTINUE_SENTENCIA ::= Res_Continue:e PuntoYComa {: 
+                        AnalizadorSemantico.accionContinue(e.right);
+                        /*
+                        RS_CONTROL res=new RS_CONTROL("continue");
                         AnalizadorSemantico.pilaSemantica.push(res);
                         AnalizadorSemantico.limpiarPila(eright);
+                        */
                         :}
 ;
 
