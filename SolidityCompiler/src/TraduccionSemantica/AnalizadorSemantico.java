@@ -29,6 +29,16 @@ public class AnalizadorSemantico {
     public static RS_OPERADOR op;
     public static LinkedList<LinkedList <LinkedList <String>>> contenidoArchivo=new LinkedList<>();
     
+    public static void reiniciarVariables(){
+        tablaSimbolos=new HashMap<>();
+        type="";
+        error=null;
+        pilaSemantica.clear();
+        cantIf=0;
+        cantWhile=0;
+        op=null;
+        contenidoArchivo=new LinkedList<>();
+    }
     
     public static boolean existsSimbolo(String simbolo){
         return (tablaSimbolos.containsKey(simbolo));
@@ -146,10 +156,9 @@ public class AnalizadorSemantico {
                 return false;
             }
             RS topeS = pilaSemantica.pop();
-            if(tope instanceof  RS_RETURNS){
+            if(topeS instanceof  RS_FUNCION){
                 return true;
-            }
-            else{
+            }else{
                 pilaSemantica.push(topeS);
             }
         }
@@ -169,6 +178,9 @@ public class AnalizadorSemantico {
                 }
                 return false;
             }
+            
+        }
+        if(tope instanceof RS_TIPO){
             
         }
         return true;
@@ -603,6 +615,7 @@ public class AnalizadorSemantico {
             listaCaract.add(type);
             listaCaract.add(scope);
             tablaSimbolos.put(Id,listaCaract);
+            limpiarPila(linea);
             //System.out.println(tablaSimbolos);
         }
         if(error==null){

@@ -14,4 +14,8 @@ public class RS_FUNCION extends RS{
     public RS_FUNCION(boolean pReturns){
         returns=pReturns;
     }
+    
+    public String toString(){
+        return "funcion";
+    }
 }

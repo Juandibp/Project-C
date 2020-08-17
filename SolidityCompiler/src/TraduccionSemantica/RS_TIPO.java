@@ -26,4 +26,8 @@ public class RS_TIPO extends RS {
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
+    
+    public String toString(){
+        return tipo;
+    }
 }

@@ -360,7 +360,7 @@ MOD_LIST ::= Res_Payable | PRIVACY | Res_Internal
 RETURNS_FUNCTION ::= RETURNS_FUNCTION_AUX {: AnalizadorSemantico.accionFuncion(true); :} | {: AnalizadorSemantico.accionFuncion(false); :}
 ;
 
-RETURNS_FUNCTION_AUX ::= Res_Returns AbreParentesis VAR_TYPE Identificador CierraParentesis
+RETURNS_FUNCTION_AUX ::= Res_Returns:e AbreParentesis VAR_TYPE Identificador CierraParentesis{: AnalizadorSemantico.limpiarPila(eright); :}
 ;
 
 VARIABLE ::= VAR_TYPE VARIABLE_AUX
