@@ -283,7 +283,7 @@ ARGUMENTS_EXPRESSION_AUX ::= Coma EXPRESSION ARGUMENTS_EXPRESSION_AUX |
 
 EXPRESSION_PRIMARIA ::= LITERAL_BOOLEANO |
                         LITERAL_NUMERICO |
-                        Cadena:y {: RS_DO cade=new RS_DO(y.toString()); AnalizadorSemantico.pilaSemantica.push(cade); :} |
+                        Cadena:y {: AnalizadorSemantico.accionGuardarConstante(y.toString()); :} |
                         IDENT
 ;/* Cambio de IDENT a Identificador*/
 
@@ -292,7 +292,7 @@ LITERAL_BOOLEANO ::= Res_True |
                     Res_False
 ;
 
-LITERAL_NUMERICO ::= Numero:v LITERAL_NUMERICO_AUX {: RS_DO num=new RS_DO(v.toString()); AnalizadorSemantico.pilaSemantica.push(num); :} | 
+LITERAL_NUMERICO ::= Numero:y LITERAL_NUMERICO_AUX {: AnalizadorSemantico.accionGuardarConstante(y.toString()); :} | 
                     Hexadecimal LITERAL_NUMERICO_AUX | 
                     Cientifico LITERAL_NUMERICO_AUX | 
                     Flotante LITERAL_NUMERICO_AUX
