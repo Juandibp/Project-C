@@ -413,11 +413,11 @@ public class AnalizadorSemantico {
     }
     
     public static void evalBinaryAritmetico(){
-        /*
+        
         RS_DO rsdo2 = (RS_DO) pilaSemantica.pop();
         op = (RS_OPERADOR) pilaSemantica.pop();
         RS_DO rsdo1 = (RS_DO) pilaSemantica.pop();
-        RS_DO newrsdo;
+        RS_DO newrsdo = null;
         int resultado;
         if(rsdo1.getTipo() == TIPO_DO.CONST && rsdo2.getTipo() ==TIPO_DO.CONST){
             switch (op.getOperador()) {
@@ -441,6 +441,37 @@ public class AnalizadorSemantico {
             if(rsdo1.getTipo() == TIPO_DO.DIR && rsdo2.getTipo()==TIPO_DO.CONST){
                 if(existsSimbolo(rsdo1.getValor())){
                     //Falta obtener valor de rsdo1 de tabla de simbolos
+                    switch (op.getOperador()) {
+                        case "+":
+                            //resultado = Integer.parseInt(obtenerValorSimbolo(rsdo1.getValor())) + Integer.parseInt(rsdo2.getValor());
+                            //newrsdo = new RS_DO(String.valueOf(resultado));
+
+
+                            LinkedList<String> instruccion = new LinkedList<>();
+                            String cmpins = "mov eax," + obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + rsdo2.getValor()+ '\n' + "add eax, ebx\n";
+                            instruccion.add(cmpins);
+                            contenidoArchivo.get(2).add(instruccion);
+                            instruccion.clear(); //ojo que no sabemos si es por referencia
+
+
+                            break;
+                        case "-":
+                            //resultado = Integer.parseInt(obtenerValorSimbolo(rsdo1.getValor())) - Integer.parseInt(rsdo2.getValor());
+                            //newrsdo = new RS_DO(String.valueOf(resultado));
+                            
+                            LinkedList<String> instruccion = new LinkedList<>();
+                            String cmpins = "mov eax," + obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + rsdo2.getValor()+ '\n' + "sub eax, ebx\n";
+                            instruccion.add(cmpins);
+                            contenidoArchivo.get(2).add(instruccion);
+                            instruccion.clear(); //ojo que no sabemos si es por referencia
+                            
+                            
+                            newrsdo.setConst();
+                            break;
+                    
+                        default:
+                            break;
+                    }
                 }
                 else{
                     if(error==null){
@@ -451,6 +482,38 @@ public class AnalizadorSemantico {
             if(rsdo1.getTipo() == TIPO_DO.CONST && rsdo2.getTipo()==TIPO_DO.DIR){
                 if(existsSimbolo(rsdo2.getValor())){
                     //Falta obtener valor de rsdo2 de tabla de simbolos
+                    switch (op.getOperador()) {
+                        case "+":
+                           // resultado = Integer.parseInt(rsdo1.getValor()) + Integer.parseInt(obtenerValorSimbolo(rsdo2.getValor()));
+                            //newrsdo = new RS_DO(String.valueOf(resultado));
+
+
+                            LinkedList<String> instruccion = new LinkedList<>();
+                            String cmpins = "mov eax," + rsdo1.getValor()+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "add eax, ebx\n";
+                            instruccion.add(cmpins);
+                            contenidoArchivo.get(2).add(instruccion);
+                            instruccion.clear(); //ojo que no sabemos si es por referencia
+
+
+                            break;
+                        case "-":
+                            //resultado = Integer.parseInt(rsdo1.getValor()) - Integer.parseInt(obtenerValorSimbolo(rsdo2.getValor()));
+                           // newrsdo = new RS_DO(String.valueOf(resultado));
+                            
+                            LinkedList<String> instruccion = new LinkedList<>();
+                            String cmpins = "mov eax," + rsdo1.getValor()+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "sub eax, ebx\n";
+                            instruccion.add(cmpins);
+                            contenidoArchivo.get(2).add(instruccion);
+                            instruccion.clear(); //ojo que no sabemos si es por referencia
+                            
+                            
+                            //newrsdo.setConst();
+                            break;
+                    
+                        default:
+                            break;
+                    }
+
                 }
                 else{
                     if(error==null){
@@ -461,16 +524,48 @@ public class AnalizadorSemantico {
             else{
                 if(existsSimbolo(rsdo1.getValor()) && existsSimbolo(rsdo2.getValor())){
                     //Falta obtener valor de rsfo1 y rsdo2 de tabla de simbolos
+
+                    switch (op.getOperador()) {
+                        case "+":
+                           // resultado = Integer.parseInt(rsdo1.getValor()) + Integer.parseInt(obtenerValorSimbolo(rsdo2.getValor()));
+                            //newrsdo = new RS_DO(String.valueOf(resultado));
+
+
+                            LinkedList<String> instruccion = new LinkedList<>();
+                            String cmpins = "mov eax," + obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "add eax, ebx\n";
+                            instruccion.add(cmpins);
+                            contenidoArchivo.get(2).add(instruccion);
+                            instruccion.clear(); //ojo que no sabemos si es por referencia
+
+
+                            break;
+                        case "-":
+                            //resultado = Integer.parseInt(rsdo1.getValor()) - Integer.parseInt(obtenerValorSimbolo(rsdo2.getValor()));
+                           // newrsdo = new RS_DO(String.valueOf(resultado));
+                            
+                            LinkedList<String> instruccion = new LinkedList<>();
+                            String cmpins = "mov eax," +obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "sub eax, ebx\n";
+                            instruccion.add(cmpins);
+                            contenidoArchivo.get(2).add(instruccion);
+                            instruccion.clear(); //ojo que no sabemos si es por referencia
+                            
+                            
+                            //newrsdo.setConst();
+                            break;
+                    
+                        default:
+                            break;
+                    }
                 }
                 else{
                     if(error==null){
-                        error= rsdo1.getValor() + "y " +rsdo2.getValor() + ": variables no definida"; //falta linea
+                        error= rsdo1.getValor() + " y " +rsdo2.getValor() + ": variables no definida"; //falta linea
                     }
                 }
             }
         }
         pilaSemantica.push(newrsdo); //falta terminar de inicializarlo arriba
-                */
+                
     }
     
     public static void evalBinaryBooleano(){
