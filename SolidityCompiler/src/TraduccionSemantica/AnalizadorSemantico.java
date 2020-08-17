@@ -362,4 +362,52 @@ public class AnalizadorSemantico {
         RS_OPERADOR nuevo = new RS_OPERADOR(operador);
         pilaSemantica.push(nuevo);
     }
+    
+    public static void evalBinaryAritmetico(){
+    
+    }
+    
+    public static void evalBinaryBooleano(){
+        
+    }
+    
+    public static void accionGuardarTipo(){
+    
+    }
+    
+    public static void accionGuardarId(){
+        
+    }
+    
+    public static void accionGuardarEnTablaSim(){
+        
+    }
+    
+    public static void accionStartIf(){
+        
+    }
+    
+    public static void accionTestIf(){
+        
+    }
+    
+    public static void accionStartElse(){
+        
+    }
+    
+    public static void accionEndIf(){
+        
+    }
+    
+    public static void accionStartWhile(){
+        
+    }
+    
+    public static void accionTestWhile(){
+        
+    }
+    
+    public static void accionEndWhile(){
+        
+    }
 }
