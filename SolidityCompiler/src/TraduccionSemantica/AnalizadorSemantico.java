@@ -58,9 +58,9 @@ public class AnalizadorSemantico {
     }
     
     public static void anadirValor(String simbolo){
-        RS tope=pilaSemantica.pop();
-        pilaSemantica.pop();
-        System.out.println(tope);
+        RS tope=pilaSemantica.pop();//VAlor
+        pilaSemantica.pop();//=
+        pilaSemantica.pop();//Type
         if(tope instanceof RS_DO){
             RS_DO convert=(RS_DO)tope;
             tablaSimbolos.get(simbolo).add(convert.getValor());
@@ -91,17 +91,16 @@ public class AnalizadorSemantico {
             if(lista.size()>2){
                 //Esta inicializada
                 LinkedList<String> nuevaLista=new LinkedList<>();
-                
-                nuevaLista.add(nuevaLista.get(0));
+                nuevaLista.add(lista.get(0));
                 nuevaLista.add(simbolo);
-                nuevaLista.add(nuevaLista.get(2));
+                nuevaLista.add(lista.get(2));
                 contenidoArchivo.get(0).add(nuevaLista);
             }else{
                 //No esta inicializada
                 LinkedList<String> nuevaLista=new LinkedList<>();
-                nuevaLista.add(nuevaLista.get(0));
+                nuevaLista.add(lista.get(0));
                 nuevaLista.add(simbolo);
-                contenidoArchivo.get(0).add(nuevaLista);
+                contenidoArchivo.get(1).add(nuevaLista);
             }
         }
     }
@@ -651,11 +650,15 @@ public class AnalizadorSemantico {
             listaCaract.add(type);
             listaCaract.add(scope);
             tablaSimbolos.put(Id,listaCaract);
-            limpiarPila(linea);
+            RS tope=pilaSemantica.pop();
+            if(tope instanceof RS_DO){
+                pilaSemantica.push(tope);
+            }
             //System.out.println(tablaSimbolos);
-        }
-        if(error==null){
-            error="Simbolo doble definido: "+Id+"\nLinea: "+(linea+1);
+        }else{
+            if(error==null){
+                error="Simbolo doble definido: "+Id+"\nLinea: "+(linea+1);
+            }
         }
     }
     
@@ -796,7 +799,9 @@ public class AnalizadorSemantico {
 
 
     public static void translateToNasm(){
-        String pathPackage = "D:\\GitHub\\Project-C\\";
+        //String pathPackage = "D:\\GitHub\\Project-C\\";
+        //ARIEL:
+        String pathPackage = "C:\\Users\\Ariel\\Documents\\GitHub\\Project-C\\";
         String pathASM = pathPackage + "code.asm";
         
         try {
@@ -822,6 +827,8 @@ public class AnalizadorSemantico {
             translator.write("segment .data\n \n");
 
             //Write Variables inicializadas
+            System.out.println("PRINT DENTRO NASM");
+            System.out.println(contenidoArchivo);
             for(LinkedList<String> node : contenidoArchivo.get(0)){
                 if(node.get(0)=="int"){
                     String value = node.get(1)+":\t dd\t" + node.get(2);
