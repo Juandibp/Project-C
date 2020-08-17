@@ -333,6 +333,20 @@ public class AnalizadorSemantico {
         return null;
     }
     
+    private static RS getLastIf(){
+        if(pilaSemantica.isEmpty()){
+            return null;
+        }
+        else{
+            for(RS registroSemantico : pilaSemantica){
+                if(registroSemantico instanceof RS_IF){
+                    return registroSemantico;
+                }
+            }
+        }
+        return null;
+    }
+    
     
     /************************************************* ACCIONES SEMANTICAS ****************************************************/
     
@@ -434,11 +448,23 @@ public class AnalizadorSemantico {
     }
     
     public static void accionStartElse(){
-        //Codigo para generar el else
+        RS_IF rsIf = (RS_IF) getLastIf();
+        String ifExitLabel = rsIf.getExit_label();
+        String ifElseLabel = rsIf.getElse_label();
+        LinkedList<String> instruccion = new LinkedList<>();
+        instruccion.add("jmp " + ifExitLabel);
+        contenidoArchivo.get(2).add(instruccion);
+        instruccion.clear();
+        instruccion.add(ifElseLabel + ":");
+        contenidoArchivo.get(2).add(instruccion);
     }
     
     public static void accionEndIf(){
-        //Generar exit label
+        RS_IF rsIf = (RS_IF) getLastIf();
+        String ifExitLabel = rsIf.getExit_label();
+        LinkedList<String> instruccion = new LinkedList<>();
+        instruccion.add(ifExitLabel + ":");
+        contenidoArchivo.get(2).add(instruccion);
         pilaSemantica.pop();
     }
     
@@ -496,7 +522,7 @@ public class AnalizadorSemantico {
                     translator.write("\n");
                 }
                 if(node.get(0)== "string"){
-                    String value = node.get(1)+":\t db\t" + node.get(2)+ ",0"; //faltan las comillas en el string
+                    String value = node.get(1)+":\t db\t" + "\"" + node.get(2) + "\"" + ",0";
                     
                     System.out.println(value);
                     translator.write(value);
@@ -538,7 +564,7 @@ public class AnalizadorSemantico {
                     translator.write("\n");
             }
 
-            translator.write("\n \n")
+            translator.write("\n \n");
 
             translator.close();
             System.out.println("Successfully wrote to translated file.");
