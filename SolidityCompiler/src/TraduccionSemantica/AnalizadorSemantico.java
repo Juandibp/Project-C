@@ -401,11 +401,19 @@ public class AnalizadorSemantico {
         pilaSemantica.push(nuevo);
     }
     
-    public static void accionFuncion(){
+    public static void accionFuncion(boolean pReturns){
+        RS_FUNCION nuevo=new RS_FUNCION(pReturns);
+        pilaSemantica.push(nuevo);
 
     }
 
+    public static void accionReturns(){
+        RS_RETURNS nuevo=new RS_RETURNS();
+        pilaSemantica.push(nuevo);
+    }
+    
     public static void evalBinaryAritmetico(){
+        /*
         RS_DO rsdo2 = (RS_DO) pilaSemantica.pop();
         op = (RS_OPERADOR) pilaSemantica.pop();
         RS_DO rsdo1 = (RS_DO) pilaSemantica.pop();
@@ -462,6 +470,7 @@ public class AnalizadorSemantico {
             }
         }
         pilaSemantica.push(newrsdo); //falta terminar de inicializarlo arriba
+                */
     }
     
     public static void evalBinaryBooleano(){

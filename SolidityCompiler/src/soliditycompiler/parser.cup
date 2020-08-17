@@ -195,8 +195,7 @@ BREAK_SENTENCIA ::= Res_Break:e PuntoYComa {:
 ;
  
 RETURN_SENTENCIA ::= Res_Return:e RETURN_SENTENCIA_AUX PuntoYComa {:
-                    RS_RETURNS res=new RS_RETURNS();
-                    AnalizadorSemantico.pilaSemantica.push(res);
+                    AnalizadorSemantico.accionReturns();
                     AnalizadorSemantico.limpiarPila(eright); :}
 ;
 
@@ -358,12 +357,10 @@ MOD_LIST ::= Res_Payable | PRIVACY | Res_Internal
 ;
 
 
-RETURNS_FUNCTION ::= RETURNS_FUNCTION_AUX | 
+RETURNS_FUNCTION ::= RETURNS_FUNCTION_AUX {: AnalizadorSemantico.accionFuncion(true); :} | {: AnalizadorSemantico.accionFuncion(false); :}
 ;
 
-RETURNS_FUNCTION_AUX ::= Res_Returns AbreParentesis VAR_TYPE Identificador:e CierraParentesis{: 
-                                RS_RETURNS res=new RS_RETURNS();
-                                 AnalizadorSemantico.pilaSemantica.push(res);:}
+RETURNS_FUNCTION_AUX ::= Res_Returns AbreParentesis VAR_TYPE Identificador CierraParentesis
 ;
 
 VARIABLE ::= VAR_TYPE VARIABLE_AUX
