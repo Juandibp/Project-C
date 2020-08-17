@@ -419,6 +419,8 @@ public class AnalizadorSemantico {
         RS_DO rsdo1 = (RS_DO) pilaSemantica.pop();
         RS_DO newrsdo = null;
         int resultado;
+        LinkedList<String> instruccion;
+        String cmpins;
         if(rsdo1.getTipo() == TIPO_DO.CONST && rsdo2.getTipo() ==TIPO_DO.CONST){
             switch (op.getOperador()) {
                 case "+":
@@ -447,8 +449,8 @@ public class AnalizadorSemantico {
                             //newrsdo = new RS_DO(String.valueOf(resultado));
 
 
-                            LinkedList<String> instruccion = new LinkedList<>();
-                            String cmpins = "mov eax," + obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + rsdo2.getValor()+ '\n' + "add eax, ebx\n";
+                            instruccion = new LinkedList<>();
+                            cmpins = "mov eax," + obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + rsdo2.getValor()+ '\n' + "add eax, ebx\n";
                             instruccion.add(cmpins);
                             contenidoArchivo.get(2).add(instruccion);
                             instruccion.clear(); //ojo que no sabemos si es por referencia
@@ -459,8 +461,8 @@ public class AnalizadorSemantico {
                             //resultado = Integer.parseInt(obtenerValorSimbolo(rsdo1.getValor())) - Integer.parseInt(rsdo2.getValor());
                             //newrsdo = new RS_DO(String.valueOf(resultado));
                             
-                            LinkedList<String> instruccion = new LinkedList<>();
-                            String cmpins = "mov eax," + obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + rsdo2.getValor()+ '\n' + "sub eax, ebx\n";
+                            instruccion = new LinkedList<>();
+                            cmpins = "mov eax," + obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + rsdo2.getValor()+ '\n' + "sub eax, ebx\n";
                             instruccion.add(cmpins);
                             contenidoArchivo.get(2).add(instruccion);
                             instruccion.clear(); //ojo que no sabemos si es por referencia
@@ -488,8 +490,8 @@ public class AnalizadorSemantico {
                             //newrsdo = new RS_DO(String.valueOf(resultado));
 
 
-                            LinkedList<String> instruccion = new LinkedList<>();
-                            String cmpins = "mov eax," + rsdo1.getValor()+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "add eax, ebx\n";
+                            instruccion = new LinkedList<>();
+                            cmpins = "mov eax," + rsdo1.getValor()+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "add eax, ebx\n";
                             instruccion.add(cmpins);
                             contenidoArchivo.get(2).add(instruccion);
                             instruccion.clear(); //ojo que no sabemos si es por referencia
@@ -500,8 +502,8 @@ public class AnalizadorSemantico {
                             //resultado = Integer.parseInt(rsdo1.getValor()) - Integer.parseInt(obtenerValorSimbolo(rsdo2.getValor()));
                            // newrsdo = new RS_DO(String.valueOf(resultado));
                             
-                            LinkedList<String> instruccion = new LinkedList<>();
-                            String cmpins = "mov eax," + rsdo1.getValor()+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "sub eax, ebx\n";
+                            instruccion = new LinkedList<>();
+                            cmpins = "mov eax," + rsdo1.getValor()+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "sub eax, ebx\n";
                             instruccion.add(cmpins);
                             contenidoArchivo.get(2).add(instruccion);
                             instruccion.clear(); //ojo que no sabemos si es por referencia
@@ -531,8 +533,8 @@ public class AnalizadorSemantico {
                             //newrsdo = new RS_DO(String.valueOf(resultado));
 
 
-                            LinkedList<String> instruccion = new LinkedList<>();
-                            String cmpins = "mov eax," + obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "add eax, ebx\n";
+                            instruccion = new LinkedList<>();
+                            cmpins = "mov eax," + obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "add eax, ebx\n";
                             instruccion.add(cmpins);
                             contenidoArchivo.get(2).add(instruccion);
                             instruccion.clear(); //ojo que no sabemos si es por referencia
@@ -543,8 +545,8 @@ public class AnalizadorSemantico {
                             //resultado = Integer.parseInt(rsdo1.getValor()) - Integer.parseInt(obtenerValorSimbolo(rsdo2.getValor()));
                            // newrsdo = new RS_DO(String.valueOf(resultado));
                             
-                            LinkedList<String> instruccion = new LinkedList<>();
-                            String cmpins = "mov eax," +obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "sub eax, ebx\n";
+                            instruccion = new LinkedList<>();
+                            cmpins = "mov eax," +obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "sub eax, ebx\n";
                             instruccion.add(cmpins);
                             contenidoArchivo.get(2).add(instruccion);
                             instruccion.clear(); //ojo que no sabemos si es por referencia
@@ -564,6 +566,7 @@ public class AnalizadorSemantico {
                 }
             }
         }
+        //if(newrsdo!=null)
         pilaSemantica.push(newrsdo); //falta terminar de inicializarlo arriba
                 
     }
