@@ -830,15 +830,17 @@ public class AnalizadorSemantico {
             System.out.println("PRINT DENTRO NASM");
             System.out.println(contenidoArchivo);
             for(LinkedList<String> node : contenidoArchivo.get(0)){
-                if(node.get(0)=="int"){
+                System.out.println("NODO DECLARADO:");
+                System.out.println(node);
+                if("int".equals(node.get(0))){
                     String value = node.get(1)+":\t dd\t" + node.get(2);
                     
                     System.out.println(value);
                     translator.write(value);
                     translator.write("\n");
                 }
-                if(node.get(0)== "string"){
-                    String value = node.get(1)+":\t db\t"+ "\"" + node.get(2)+ "\"" + ",0";
+                if("string".equals(node.get(0))){
+                    String value = node.get(1)+":\t db\t" + node.get(2)+ ",0";
                     System.out.println(value);
                     translator.write(value);
                     translator.write("\n");
@@ -850,14 +852,16 @@ public class AnalizadorSemantico {
 
             //Write variables sin inicializar
             for(LinkedList<String> node : contenidoArchivo.get(1)){
-                if(node.get(0)=="int"){
+                System.out.println("NODO SIN DECLARAR:");
+                System.out.println(node);
+                if("int".equals(node.get(0))){
                     String value = node.get(1)+":\t resd\t 1";
                     
                     System.out.println(value);
                     translator.write(value);
                     translator.write("\n");
                 }
-                if(node.get(0)== "string"){
+                if("string".equals(node.get(0))){
                     String value = node.get(1)+":\t resb\t 255";
                     
                     System.out.println(value);
