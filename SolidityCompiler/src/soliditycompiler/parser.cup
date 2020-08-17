@@ -132,7 +132,7 @@ SENTENCIA ::= IF_SENTENCIA |
 IF_SENTENCIA ::=    IF_AUX AbreParentesis BOOLEAN_EXPRESSION CierraParentesis:e BLOQUE ELSE {: AnalizadorSemantico.limpiarPila(eright); :}
 ;
 
-IF_AUX::= Res_If:e {: RS_IF res=new RS_IF("",""); AnalizadorSemantico.pilaSemantica.push(res); AnalizadorSemantico.cantIf++; :}
+IF_AUX::= Res_If:e {: AnalizadorSemantico.accionStartIf(); :}
 ;
 
 BOOLEAN_EXPRESSION ::= IDENT | EXPRESSION_PRIMARIA OP_BOOLEANO EXPRESSION_PRIMARIA
@@ -144,7 +144,7 @@ ELSE ::= Res_Else BLOQUE |
 WHILE_SENTENCIA ::= WHILE_AUX AbreParentesis BOOLEAN_EXPRESSION CierraParentesis:e BLOQUE {: AnalizadorSemantico.limpiarPila(eright); :}
 ;
 
-WHILE_AUX ::= Res_While:e {: RS_WHILE res=new RS_WHILE("",""); AnalizadorSemantico.pilaSemantica.push(res); AnalizadorSemantico.cantWhile++; :}
+WHILE_AUX ::= Res_While:e {: AnalizadorSemantico.accionStartWhile(); :}
 ;
 
 DOWHILE_SENTENCIA ::= Res_Do BLOQUE Res_While AbreParentesis BOOLEAN_EXPRESSION CierraParentesis PuntoYComa
@@ -166,20 +166,20 @@ SENTENCIA_BASE ::= SENTENCIA_VARIABLE |
                    EXPRESSION_SENTENCIA
 ;
 
-SENTENCIA_VARIABLE ::= VAR_TYPE Identificador:e ASSIGNMENT_AUX EXPRESSION PuntoYComa {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global",eright); AnalizadorSemantico.anadirValor(e.toString()); :} 
-                        | VAR_TYPE Identificador:e Coma SENTENCIA_VARIABLE_AUX {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global",eright); :} 
-                        | VAR_TYPE Identificador:e PuntoYComa {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global",eright); :}
+SENTENCIA_VARIABLE ::= VAR_TYPE Identificador:e ASSIGNMENT_AUX EXPRESSION PuntoYComa {: AnalizadorSemantico.accionGuardarEnTablaSim(e.toString(),"Global",eright); AnalizadorSemantico.anadirValor(e.toString()); :} 
+                        | VAR_TYPE Identificador:e Coma SENTENCIA_VARIABLE_AUX {: AnalizadorSemantico.accionGuardarEnTablaSim(e.toString(),"Global",eright); :} 
+                        | VAR_TYPE Identificador:e PuntoYComa {: AnalizadorSemantico.accionGuardarEnTablaSim(e.toString(),"Global",eright); :}
 ;
 
-SENTENCIA_VARIABLE_AUX ::= Identificador:e PuntoYComa {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global",eright); :} 
-                            | Identificador:e Coma SENTENCIA_VARIABLE_AUX {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Global",eright); :}
+SENTENCIA_VARIABLE_AUX ::= Identificador:e PuntoYComa {: AnalizadorSemantico.accionGuardarEnTablaSim(e.toString(),"Global",eright); :} 
+                            | Identificador:e Coma SENTENCIA_VARIABLE_AUX {: AnalizadorSemantico.accionGuardarEnTablaSim(e.toString(),"Global",eright); :}
 ;
 
 EXPRESSION_SENTENCIA ::=  EXPRESSION PuntoYComa:e {: AnalizadorSemantico.limpiarPila(eright); :}
 ;
 
 CONTINUE_SENTENCIA ::= Res_Continue:e PuntoYComa {: 
-                        AnalizadorSemantico.accionContinue(e.right);
+                        AnalizadorSemantico.accionContinue(eright);
                         /*
                         RS_CONTROL res=new RS_CONTROL("continue");
                         AnalizadorSemantico.pilaSemantica.push(res);
@@ -189,7 +189,7 @@ CONTINUE_SENTENCIA ::= Res_Continue:e PuntoYComa {:
 ;
 
 BREAK_SENTENCIA ::= Res_Break:e PuntoYComa {: 
-                        AnalizadorSemantico.accionContinue(e.right);
+                        AnalizadorSemantico.accionContinue(eright);
                         /*
                         RS_CONTROL res=new RS_CONTROL("break");
                         AnalizadorSemantico.pilaSemantica.push(res);
@@ -251,26 +251,26 @@ EXPRESSION_AUX ::= EXPRESSION AbreCorchete EXPRESSION_AUX CierraCorchete |
 OP_BIT ::= CorrerALaDerecha|CorrerALaIzquierda|AndBits|OrBits
 ;
 
-OP_ARITMETICO_PRIMER_ORDEN ::= Potencia:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} | 
+OP_ARITMETICO_PRIMER_ORDEN ::= Potencia | 
                                 OP_ARITMETICO_SEGUNDO_ORDEN
 ;
 
-OP_ARITMETICO_SEGUNDO_ORDEN ::= Multiplicacion:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} | 
-                                Division:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} | 
-                                Porcentaje:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} | 
+OP_ARITMETICO_SEGUNDO_ORDEN ::= Multiplicacion | 
+                                Division | 
+                                Porcentaje | 
                                 OP_ARITMETICO_TERCER_ORDEN
 ;
 
-OP_ARITMETICO_TERCER_ORDEN ::= Suma:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} 
-                            | Resta:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :}
+OP_ARITMETICO_TERCER_ORDEN ::= Suma:v {: AnalizadorSemantico.accionGuardarOperador(v.toString()); :} 
+                            | Resta:v {: AnalizadorSemantico.accionGuardarOperador(v.toString()); :}
 ;
 
-OP_BOOLEANO ::= MenorQue:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} | 
-                MayorQue:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} | 
-                MenorOIgualQue:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} | 
-                MayorOIgualQue:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} | 
-                Comparacion:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} | 
-                Diferencia:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} | 
+OP_BOOLEANO ::= MenorQue:v {: AnalizadorSemantico.accionGuardarOperador(v.toString()); :} | 
+                MayorQue:v {: AnalizadorSemantico.accionGuardarOperador(v.toString()); :} | 
+                MenorOIgualQue:v {: AnalizadorSemantico.accionGuardarOperador(v.toString()); :} | 
+                MayorOIgualQue:v {: AnalizadorSemantico.accionGuardarOperador(v.toString()); :} | 
+                Comparacion:v {: AnalizadorSemantico.accionGuardarOperador(v.toString()); :} | 
+                Diferencia:v {: AnalizadorSemantico.accionGuardarOperador(v.toString()); :} | 
                 AndLogico | 
                 OrLogico
 ;
@@ -338,10 +338,10 @@ SENTENCIAF::=   IF_SENTENCIA |
 PARAM_LIST::= PARAM_LIST_AUX | 
 ;
 
-PARAM_LIST_AUX ::= VAR_TYPE Identificador:e PARAM_LIST_AUX_HELP {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Parametro",eright); :}
+PARAM_LIST_AUX ::= VAR_TYPE Identificador:e PARAM_LIST_AUX_HELP {: AnalizadorSemantico.accionGuardarEnTablaSim(e.toString(),"Parametro",eright); :}
 ;
 
-PARAM_LIST_AUX_HELP ::= Coma VAR_TYPE Identificador:e PARAM_LIST_AUX_HELP {: AnalizadorSemantico.anadirSimbolo(e.toString(),"Parametro",eright); :} |
+PARAM_LIST_AUX_HELP ::= Coma VAR_TYPE Identificador:e PARAM_LIST_AUX_HELP {: AnalizadorSemantico.accionGuardarEnTablaSim(e.toString(),"Parametro",eright); :} |
 ;
 
 
@@ -395,10 +395,10 @@ ASSIGNMENT::= Identificador ASSIGNMENT_AUX EXPRESSION
 
 
 ASSIGNMENT_AUX ::= Asignacion:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :} | 
-                    Sume:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :}| 
-                    Reste:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :}| 
-                    Multiplique:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :}| 
-                    Divida:v {: RS_OPERADOR ope=new RS_OPERADOR(v.toString()); AnalizadorSemantico.pilaSemantica.push(ope); :}
+                    Sume| 
+                    Reste| 
+                    Multiplique| 
+                    Divida
 ;
 
 PRIVACY::= Res_Public | 
@@ -421,7 +421,7 @@ BYTE_TYPES::=Res_Bytes:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Bytes2:
 |Res_Bytes8:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Bytes16:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Bytes32:e{: AnalizadorSemantico.type=e.toString(); :}
 |Res_Bytes64:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Bytes128:e{: AnalizadorSemantico.type=e.toString(); :}|Res_Bytes256:e{: AnalizadorSemantico.type=e.toString(); :};
 
-IDENT::= Identificador:y IDENT_AUX {: RS_ID ide=new RS_ID(y.toString()); AnalizadorSemantico.pilaSemantica.push(ide); :} | Res_This IDENT_AUX_THIS 
+IDENT::= Identificador:y IDENT_AUX {: AnalizadorSemantico.accionGuardarId(y.toString()); :} | Res_This IDENT_AUX_THIS 
 ;
 
 IDENT_AUX::= IDENT_AUX_THIS | 
