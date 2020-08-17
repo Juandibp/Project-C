@@ -6,13 +6,16 @@
  */
 package TraduccionSemantica;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 
 /**
  *
- * @author adria
+ * @author Adrian, Juandi, Ariel
  */
 public class AnalizadorSemantico {
     public static HashMap<String,LinkedList<String>> tablaSimbolos = new HashMap<>();
@@ -455,4 +458,56 @@ public class AnalizadorSemantico {
         //label exit
         pilaSemantica.pop();
     }
+
+
+    public static void translateToNasm(){
+        String pathPackage = "D:\\GitHub\\Project-C\\";
+        String pathASM = pathPackage + "code.asm";
+        
+        try {
+            
+            File translated =  new File(pathASM);
+            if(translated.exists()){
+                translated.delete();
+            } else{
+                if(translated.createNewFile()){
+                    System.out.println("File created: " + translated.getName());
+                } else {
+                    System.out.println("File already exists.");
+                }
+            }
+
+        } catch (IOException e) {
+            System.out.println("An error Ocurred creating the file.");
+            e.printStackTrace();
+        }
+
+        try {
+            FileWriter translator = new FileWriter(pathASM);
+            translator.write("segment .data\n \n");
+
+            //Write Variables inicializadas
+            
+            translator.write("\n \n");
+            translator.write("segment .bss\n \n");
+
+            //Write variables sin inicializar
+
+            translator.write("\n \n");
+            translator.write("segment .text\n \n");
+
+            //Write Code
+
+            translator.write("\n \n")
+
+            translator.close();
+            System.out.println("Successfully wrote to translated file.");
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+
+    }
+
+
 }
