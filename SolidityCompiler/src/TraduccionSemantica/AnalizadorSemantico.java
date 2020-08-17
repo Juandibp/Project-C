@@ -96,6 +96,14 @@ public class AnalizadorSemantico {
         }
     }
     
+    public static String obtenerValorSimbolo(String simbolo){
+        LinkedList<String> lista=getCarSimbolo(simbolo);
+        if(lista.size()>2){
+            return lista.get(2);
+        }
+        return "";
+    }
+    
     public static boolean limpiarPila(int linea){
         System.out.println(pilaSemantica);
         if(pilaSemantica.isEmpty()){
