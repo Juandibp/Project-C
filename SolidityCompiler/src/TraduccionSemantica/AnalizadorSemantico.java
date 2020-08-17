@@ -395,43 +395,64 @@ public class AnalizadorSemantico {
         
     }
     
-    public static void accionGuardarTipo(){
-    
+    public static void accionGuardarTipo(String tipo){
+        type=tipo;
+        RS_TIPO nuevo=new RS_TIPO(tipo);
+        pilaSemantica.push(nuevo);
     }
     
-    public static void accionGuardarId(){
-        
+    public static void accionGuardarId(String Id){
+        RS_ID nuevo=new RS_ID(Id);
+        pilaSemantica.push(nuevo);
     }
     
-    public static void accionGuardarEnTablaSim(){
-        
+    public static void accionGuardarEnTablaSim(String Id, String scope, int linea){
+        if(!existsSimbolo(Id)){
+            LinkedList<String> listaCaract=new LinkedList<>();
+            listaCaract.add(type);
+            listaCaract.add(scope);
+            tablaSimbolos.put(Id,listaCaract);
+            //System.out.println(tablaSimbolos);
+        }
+        if(error==null){
+            error="Simbolo doble definido: "+Id+"\nLinea: "+(linea+1);
+        }
     }
     
     public static void accionStartIf(){
-        
+        String exitLabel=""+cantIf;
+        String elseLabel=""+cantIf;
+        RS_IF nuevo=new RS_IF(exitLabel,elseLabel);
+        pilaSemantica.push(nuevo);
     }
     
     public static void accionTestIf(){
-        
+        //Codigo para evaluar el condicional
     }
     
     public static void accionStartElse(){
-        
+        //Codigo para generar el else
     }
     
     public static void accionEndIf(){
-        
+        //Generar exit label
+        pilaSemantica.pop();
     }
     
     public static void accionStartWhile(){
-        
+        String whileLabel=""+cantWhile;
+        String exitLabel=""+cantWhile;
+        RS_WHILE nuevo=new RS_WHILE(whileLabel,exitLabel);
+        pilaSemantica.push(nuevo);
     }
     
     public static void accionTestWhile(){
-        
+        //Codigo de la evaluacion del while
     }
     
     public static void accionEndWhile(){
-        
+        //Jump while
+        //label exit
+        pilaSemantica.pop();
     }
 }
