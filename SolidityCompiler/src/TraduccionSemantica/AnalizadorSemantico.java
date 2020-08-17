@@ -487,23 +487,62 @@ public class AnalizadorSemantico {
             translator.write("segment .data\n \n");
 
             //Write Variables inicializadas
+            for(LinkedList<String> node : contenidoArchivo.get(0)){
+                if(node.get(0)=="int"){
+                    String value = node.get(1)+":\t dd\t" + node.get(2);
+                    
+                    System.out.println(value);
+                    translator.write(value);
+                    translator.write("\n");
+                }
+                if(node.get(0)== "string"){
+                    String value = node.get(1)+":\t db\t"+ "\"" + node.get(2)+ "\"" + ",0";
+                    System.out.println(value);
+                    translator.write(value);
+                    translator.write("\n");
+                }
+            }
             
             translator.write("\n \n");
             translator.write("segment .bss\n \n");
 
             //Write variables sin inicializar
+            for(LinkedList<String> node : contenidoArchivo.get(1)){
+                if(node.get(0)=="int"){
+                    String value = node.get(1)+":\t resd\t 1";
+                    
+                    System.out.println(value);
+                    translator.write(value);
+                    translator.write("\n");
+                }
+                if(node.get(0)== "string"){
+                    String value = node.get(1)+":\t resb\t 255";
+                    
+                    System.out.println(value);
+                    translator.write(value);
+                    translator.write("\n");
+                }
+
+            }
 
             translator.write("\n \n");
             translator.write("segment .text\n \n");
 
             //Write Code
+            for(LinkedList<String> node : contenidoArchivo.get(2)){
+                String value = node.get(0);
+                    
+                    System.out.println(value);
+                    translator.write(value);
+                    translator.write("\n");
+            }
 
-            translator.write("\n \n")
+            translator.write("\n \n");
 
             translator.close();
             System.out.println("Successfully wrote to translated file.");
         } catch (IOException e) {
-            System.out.println("An error occurred.");
+            System.out.println("An error occurred while writing to file.");
             e.printStackTrace();
         }
 
