@@ -301,11 +301,136 @@ public class AnalizadorSemantico {
         return true;
     }
     
+    private static boolean exitsWhileAntes(){
+        if (pilaSemantica.isEmpty()){
+            return false;
+        }
+        else{
+            for (RS registroSemantico : pilaSemantica){
+                if(registroSemantico instanceof RS_WHILE){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    private static RS getLastWhile(){
+        if (pilaSemantica.isEmpty()){
+            return null;
+        }
+        else{
+            for (RS registroSemantico : pilaSemantica){
+                if(registroSemantico instanceof RS_WHILE){
+                    return registroSemantico;
+                }
+            }
+        }
+        return null;
+    }
     
     
     /************************************************* ACCIONES SEMANTICAS ****************************************************/
     
-    public static void accionContinue(){
+    public static void accionContinue(int linea){
+        if(exitsWhileAntes()){
+            RS_WHILE registroWhile = (RS_WHILE) getLastWhile();
+            String whileLabel = registroWhile.getWhile_label() + String.valueOf(cantWhile);
+            LinkedList<String> instruccion = new LinkedList<>();
+            instruccion.add("jmp " + whileLabel);
+            contenidoArchivo.get(2).add(instruccion);
+        }
+        else{
+            if(error==null){
+                error="Continue en un bloque no valido" + "\nLinea: "+linea;
+            }
+        }
+    }
+    
+    public static void accionBreak(int linea){
+        if(exitsWhileAntes()){
+            RS_WHILE registroWhile = (RS_WHILE) getLastWhile();
+            String whileExitLabel = registroWhile.getExit_label()+ String.valueOf(cantWhile);
+            LinkedList<String> instruccion = new LinkedList<>();
+            instruccion.add("jmp " + whileExitLabel);
+            contenidoArchivo.get(2).add(instruccion);
+        }
+        else{
+            if(error==null){
+                error="Break en un bloque no valido" + "\nLinea: "+linea;
+            }
+        }
+    }
+    
+    public static void accionGuardarConstante(String valor){
+        RS_DO nuevo = new RS_DO(valor);
+        nuevo.setConst();
+        pilaSemantica.push(nuevo);
+    }
+    
+    public static void accionGuardarVariable(String nombre, int linea){
+        RS_DO nuevo = new RS_DO(nombre);
+        nuevo.setDir();
+        if(existsSimbolo(nombre)){
+            pilaSemantica.add(nuevo);
+        }
+        else{
+            if(error==null){
+                error= nombre + ": variable no definida" + "\nLinea: "+linea;
+            }
+        }
+    }
+    
+    public static void accionGuardarOperador(String operador){
+        RS_OPERADOR nuevo = new RS_OPERADOR(operador);
+        pilaSemantica.push(nuevo);
+    }
+    
+    public static void evalBinaryAritmetico(){
+    
+    }
+    
+    public static void evalBinaryBooleano(){
+        
+    }
+    
+    public static void accionGuardarTipo(){
+    
+    }
+    
+    public static void accionGuardarId(){
+        
+    }
+    
+    public static void accionGuardarEnTablaSim(){
+        
+    }
+    
+    public static void accionStartIf(){
+        
+    }
+    
+    public static void accionTestIf(){
+        
+    }
+    
+    public static void accionStartElse(){
+        
+    }
+    
+    public static void accionEndIf(){
+        
+    }
+    
+    public static void accionStartWhile(){
+        
+    }
+    
+    public static void accionTestWhile(){
+        
+    }
+    
+    public static void accionEndWhile(){
         
     }
 }
