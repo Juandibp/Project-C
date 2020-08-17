@@ -496,8 +496,7 @@ public class AnalizadorSemantico {
                     translator.write("\n");
                 }
                 if(node.get(0)== "string"){
-                    String value = node.get(1)+":\t db\t" + node.get(2)+ ",0"; //faltan las comillas en el string
-                    
+                    String value = node.get(1)+":\t db\t"+ "\"" + node.get(2)+ "\"" + ",0";
                     System.out.println(value);
                     translator.write(value);
                     translator.write("\n");
@@ -517,7 +516,7 @@ public class AnalizadorSemantico {
                     translator.write("\n");
                 }
                 if(node.get(0)== "string"){
-                    String value = node.get(1)+":\t resb\t 255"; //faltan las comillas en el string
+                    String value = node.get(1)+":\t resb\t 255";
                     
                     System.out.println(value);
                     translator.write(value);
