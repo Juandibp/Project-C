@@ -26,20 +26,6 @@ public class AnalizadorSemantico {
     public static int cantWhile = 0;
     public static LinkedList<LinkedList <LinkedList <String>>> contenidoArchivo=new LinkedList<>();
     
-    public static boolean anadirSimbolo(String simbolo,String scope,int linea){
-        if(!existsSimbolo(simbolo)){
-            LinkedList<String> listaCaract=new LinkedList<>();
-            listaCaract.add(type);
-            listaCaract.add(scope);
-            tablaSimbolos.put(simbolo,listaCaract);
-            //System.out.println(tablaSimbolos);
-            return true;
-        }
-        if(error==null){
-            error="Simbolo doble definido: "+simbolo+"\nLinea: "+(linea+1);
-        }
-        return false;
-    }
     
     public static boolean existsSimbolo(String simbolo){
         return (tablaSimbolos.containsKey(simbolo));
@@ -423,8 +409,8 @@ public class AnalizadorSemantico {
     }
     
     public static void accionStartIf(){
-        String exitLabel=""+cantIf;
-        String elseLabel=""+cantIf;
+        String exitLabel="exitLabelIf"+cantIf;
+        String elseLabel="elseLabel"+cantIf;
         RS_IF nuevo=new RS_IF(exitLabel,elseLabel);
         pilaSemantica.push(nuevo);
     }
@@ -443,8 +429,8 @@ public class AnalizadorSemantico {
     }
     
     public static void accionStartWhile(){
-        String whileLabel=""+cantWhile;
-        String exitLabel=""+cantWhile;
+        String whileLabel="whileLabel"+cantWhile;
+        String exitLabel="exitLabelWhile"+cantWhile;
         RS_WHILE nuevo=new RS_WHILE(whileLabel,exitLabel);
         pilaSemantica.push(nuevo);
     }
