@@ -402,15 +402,16 @@ public class AnalizadorSemantico {
         op = (RS_OPERADOR) pilaSemantica.pop();
         RS_DO rsdo1 = (RS_DO) pilaSemantica.pop();
         RS_DO newrsdo;
-        if(rsdo1.getTipo() == TIPO_DO.CONST && rsdo2.getTipo==TIPO_DO.CONST){
+        int resultado;
+        if(rsdo1.getTipo() == TIPO_DO.CONST && rsdo2.getTipo() ==TIPO_DO.CONST){
             switch (op.getOperador()) {
                 case "+":
-                    int resultado = Integer.parseInt(rsdo1.getValor()) + Integer.parseInt(rsdo2.getValor());
+                    resultado = Integer.parseInt(rsdo1.getValor()) + Integer.parseInt(rsdo2.getValor());
                     newrsdo = new RS_DO(String.valueOf(resultado));
                     newrsdo.setConst();
                     break;
                 case "-":
-                    int resultado = Integer.parseInt(rsdo1.getValor()) - Integer.parseInt(rsdo2.getValor());
+                    resultado = Integer.parseInt(rsdo1.getValor()) - Integer.parseInt(rsdo2.getValor());
                     newrsdo = new RS_DO(String.valueOf(resultado));
                     newrsdo.setConst();
                     break;
@@ -421,7 +422,7 @@ public class AnalizadorSemantico {
             
         } 
         else{
-            if(rsdo1.getTipo() == TIPO_DO.DIR && rsdo2.getTipo==TIPO_DO.CONST){
+            if(rsdo1.getTipo() == TIPO_DO.DIR && rsdo2.getTipo()==TIPO_DO.CONST){
                 if(existsSimbolo(rsdo1.getValor())){
                     //Falta obtener valor de rsdo1 de tabla de simbolos
                 }
@@ -431,7 +432,7 @@ public class AnalizadorSemantico {
                     }
                 }
             }
-            if(rsdo1.getTipo() == TIPO_DO.CONST && rsdo2.getTipo==TIPO_DO.DIR){
+            if(rsdo1.getTipo() == TIPO_DO.CONST && rsdo2.getTipo()==TIPO_DO.DIR){
                 if(existsSimbolo(rsdo2.getValor())){
                     //Falta obtener valor de rsdo2 de tabla de simbolos
                 }
@@ -452,7 +453,7 @@ public class AnalizadorSemantico {
                 }
             }
         }
-        pilaSemantica.push(newrsdo);
+        pilaSemantica.push(newrsdo); //falta terminar de inicializarlo arriba
     }
     
     public static void evalBinaryBooleano(){
@@ -503,8 +504,8 @@ public class AnalizadorSemantico {
     
     public static void accionTestIf(){
         //Codigo para evaluar el condicional
-        RD_DO rsdo = (RS_DO) pilaSemantica.pop();
-        String jumptype;
+        RS_DO rsdo = (RS_DO) pilaSemantica.pop();
+        String jumptype = "";
         switch (op.getOperador()) {
             case ">":
                 
@@ -535,7 +536,7 @@ public class AnalizadorSemantico {
                 break;
         }
         LinkedList<String> instruccion = new LinkedList<>();
-        String jmpins = jumptype + " " +(RS_IF) getLastIf().getElse_label();
+        String jmpins = jumptype + " " + ((RS_IF) getLastIf()).getElse_label();
         instruccion.add(jmpins);
         contenidoArchivo.get(2).add(instruccion);
         instruccion.clear();
@@ -574,8 +575,8 @@ public class AnalizadorSemantico {
     public static void accionTestWhile(){
         //Codigo de la evaluacion del while
          //Codigo para evaluar el condicional
-         RD_DO rsdo = (RS_DO) pilaSemantica.pop();
-         String jumptype;
+         RS_DO rsdo = (RS_DO) pilaSemantica.pop();
+         String jumptype = "";
          switch (op.getOperador()) {
              case ">":
                  
@@ -606,7 +607,7 @@ public class AnalizadorSemantico {
                  break;
          }
          LinkedList<String> instruccion = new LinkedList<>();
-         String jmpins = jumptype + " " +(RS_WHILE) getLastWhile().getExit_label();
+         String jmpins = jumptype + " " + ((RS_WHILE) getLastWhile()).getExit_label();
          instruccion.add(jmpins);
          contenidoArchivo.get(2).add(instruccion);
          instruccion.clear();
@@ -615,12 +616,12 @@ public class AnalizadorSemantico {
     public static void accionEndWhile(){
         //Jump while
         LinkedList<String> instruccion = new LinkedList<>();
-        String jmpins = "jmp " +(RS_WHILE) getLastWhile().getWhile_label();
+        String jmpins = "jmp " + ((RS_WHILE) getLastWhile()).getWhile_label();
         instruccion.add(jmpins);
         contenidoArchivo.get(2).add(instruccion);
         instruccion.clear();
 
-        jmpins = (RS_WHILE) getLastWhile().getExit_label() + ":";
+        jmpins = ((RS_WHILE) getLastWhile()).getExit_label() + ":";
         instruccion.add(jmpins);
         contenidoArchivo.get(2).add(instruccion);
         instruccion.clear();
