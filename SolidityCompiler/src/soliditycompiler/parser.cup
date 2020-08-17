@@ -78,7 +78,7 @@ non terminal String INICIO, CONTRACT_INICIO, CONTRACT, CUERPO_CONTRATO,IDENT, EN
              OP_ARITMETICO_SEGUNDO_ORDEN, OP_ARITMETICO_TERCER_ORDEN, OP_BOOLEANO, LITERAL_BOOLEANO, LITERAL_NUMERICO, LITERAL_NUMERICO_AUX, STRUCT_AUX, CUERPO_FUNCION, PARAM_LIST, PARAM_LIST_AUX, PARAM_LIST_AUX_HELP,
              VAR_LIST, VAR_LIST_AUX, VAR_LIST_AUX_HELP, MODS, MOD_LIST, RETURNS_FUNCTION, RETURNS_FUNCTION_AUX, EXPRESSION_FOR_DOS, VARIABLE_AUX,
              VARIABLE_AUX_AUX, IDENT_AUX, IDENT_AUX2, IDENT_AUX3, IDENT_AUX_THIS, ARGUMENTS_EXPRESSION_AUX, OP_BIT, EXP1,EXP2,EXP3,EXP3_2,EXP4,EXP5,EXP6,EXP7,EXP8,EXP9,EXP10, SENTENCIAF, SENTENCIA_VARIABLE, SENTENCIA_VARIABLE_AUX,
-             IF_AUX, WHILE_AUX
+             IF_AUX, WHILE_AUX, BOOLEAN_EXPRESSION_WHILE, BOOLEAN_EXPRESSION_IF
 ;
 
 precedence left AbreCorchete;
@@ -129,7 +129,7 @@ SENTENCIA ::= IF_SENTENCIA |
               SENTENCIA_BASE
 ;
 
-IF_SENTENCIA ::=    IF_AUX AbreParentesis BOOLEAN_EXPRESSION CierraParentesis:e BLOQUE ELSE {: AnalizadorSemantico.limpiarPila(eright); :}
+IF_SENTENCIA ::=    IF_AUX AbreParentesis BOOLEAN_EXPRESSION_IF CierraParentesis:e BLOQUE ELSE {: AnalizadorSemantico.limpiarPila(eright); :}
 ;
 
 IF_AUX::= Res_If:e {: AnalizadorSemantico.accionStartIf(); :}
@@ -138,10 +138,16 @@ IF_AUX::= Res_If:e {: AnalizadorSemantico.accionStartIf(); :}
 BOOLEAN_EXPRESSION ::= IDENT | EXPRESSION_PRIMARIA OP_BOOLEANO EXPRESSION_PRIMARIA
 ;
 
-ELSE ::= Res_Else BLOQUE | 
+BOOLEAN_EXPRESSION_IF ::= IDENT | EXPRESSION_PRIMARIA OP_BOOLEANO EXPRESSION_PRIMARIA {: AnalizadorSemantico.accionTestIf(); :}
 ;
 
-WHILE_SENTENCIA ::= WHILE_AUX AbreParentesis BOOLEAN_EXPRESSION CierraParentesis:e BLOQUE {: AnalizadorSemantico.limpiarPila(eright); :}
+BOOLEAN_EXPRESSION_WHILE ::= IDENT | EXPRESSION_PRIMARIA OP_BOOLEANO EXPRESSION_PRIMARIA{: AnalizadorSemantico.accionTestWhile(); :}
+;
+
+ELSE ::= Res_Else BLOQUE {: AnalizadorSemantico.accionStartElse(); :} | 
+;
+
+WHILE_SENTENCIA ::= WHILE_AUX AbreParentesis BOOLEAN_EXPRESSION_WHILE CierraParentesis:e BLOQUE {: AnalizadorSemantico.accionEndWhile(); AnalizadorSemantico.limpiarPila(eright); :}
 ;
 
 WHILE_AUX ::= Res_While:e {: AnalizadorSemantico.accionStartWhile(); :}
@@ -180,21 +186,11 @@ EXPRESSION_SENTENCIA ::=  EXPRESSION PuntoYComa:e {: AnalizadorSemantico.limpiar
 
 CONTINUE_SENTENCIA ::= Res_Continue:e PuntoYComa {: 
                         AnalizadorSemantico.accionContinue(eright);
-                        /*
-                        RS_CONTROL res=new RS_CONTROL("continue");
-                        AnalizadorSemantico.pilaSemantica.push(res);
-                        AnalizadorSemantico.limpiarPila(eright);
-                        */
                         :}
 ;
 
 BREAK_SENTENCIA ::= Res_Break:e PuntoYComa {: 
                         AnalizadorSemantico.accionContinue(eright);
-                        /*
-                        RS_CONTROL res=new RS_CONTROL("break");
-                        AnalizadorSemantico.pilaSemantica.push(res);
-                        AnalizadorSemantico.limpiarPila(eright);
-                        */
                         :}
 ;
  
