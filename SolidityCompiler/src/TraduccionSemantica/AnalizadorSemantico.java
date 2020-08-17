@@ -157,9 +157,31 @@ public class AnalizadorSemantico {
             }
             RS topeS = pilaSemantica.pop();
             if(topeS instanceof  RS_FUNCION){
-                return true;
+                RS_FUNCION convert=(RS_FUNCION) topeS;
+                if(convert.returns){
+                    return true;
+                }
+                else{
+                    
+                }
             }else{
                 pilaSemantica.push(topeS);
+                RS funcion=getLastFuncion();
+                if(funcion==null){
+                    if(error==null){
+                        error="Return fuera de función.\nLinea: "+linea;
+                    }
+                    return false;
+                }
+                RS_FUNCION convert=(RS_FUNCION) funcion;
+                if(convert.returns){
+                    return true;
+                }else{
+                    if(error==null){
+                        error="Return en función sin return.\nLinea: "+linea;
+                    }
+                    return false;
+                }
             }
         }
         if(tope instanceof RS_CONTROL){
@@ -335,6 +357,20 @@ public class AnalizadorSemantico {
         else{
             for (RS registroSemantico : pilaSemantica){
                 if(registroSemantico instanceof RS_WHILE){
+                    return registroSemantico;
+                }
+            }
+        }
+        return null;
+    }
+    
+    private static RS getLastFuncion(){
+        if (pilaSemantica.isEmpty()){
+            return null;
+        }
+        else{
+            for (RS registroSemantico : pilaSemantica){
+                if(registroSemantico instanceof RS_FUNCION){
                     return registroSemantico;
                 }
             }
