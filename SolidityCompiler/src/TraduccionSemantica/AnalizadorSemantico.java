@@ -538,7 +538,7 @@ public class AnalizadorSemantico {
                     translator.write("\n");
             }
 
-            translator.write("\n \n")
+            translator.write("\n \n");
 
             translator.close();
             System.out.println("Successfully wrote to translated file.");
