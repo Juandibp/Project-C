@@ -30,4 +30,8 @@ public class RS_IF extends RS {
     public void setElse_label(String else_label) {
         this.else_label = else_label;
     }
+    
+    public String toString(){
+        return "IF";
+    }
 }

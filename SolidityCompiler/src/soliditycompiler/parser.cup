@@ -129,7 +129,7 @@ SENTENCIA ::= IF_SENTENCIA |
               SENTENCIA_BASE
 ;
 
-IF_SENTENCIA ::=    IF_AUX AbreParentesis BOOLEAN_EXPRESSION_IF CierraParentesis:e BLOQUE ELSE {: AnalizadorSemantico.limpiarPila(eright); :}
+IF_SENTENCIA ::=    IF_AUX AbreParentesis BOOLEAN_EXPRESSION_IF CierraParentesis:e BLOQUE ELSE {: AnalizadorSemantico.accionEndIf(); :}
 ;
 
 IF_AUX::= Res_If:e {: AnalizadorSemantico.accionStartIf(); :}
@@ -138,16 +138,16 @@ IF_AUX::= Res_If:e {: AnalizadorSemantico.accionStartIf(); :}
 BOOLEAN_EXPRESSION ::= IDENT | EXPRESSION_PRIMARIA OP_BOOLEANO EXPRESSION_PRIMARIA
 ;
 
-BOOLEAN_EXPRESSION_IF ::= IDENT | EXPRESSION_PRIMARIA OP_BOOLEANO EXPRESSION_PRIMARIA {: AnalizadorSemantico.accionTestIf(); :}
+BOOLEAN_EXPRESSION_IF ::= IDENT | EXPRESSION_PRIMARIA OP_BOOLEANO EXPRESSION_PRIMARIA {: AnalizadorSemantico.evalBinaryBooleano(); AnalizadorSemantico.accionTestIf(); :}
 ;
 
-BOOLEAN_EXPRESSION_WHILE ::= IDENT | EXPRESSION_PRIMARIA OP_BOOLEANO EXPRESSION_PRIMARIA{: AnalizadorSemantico.accionTestWhile(); :}
+BOOLEAN_EXPRESSION_WHILE ::= IDENT | EXPRESSION_PRIMARIA OP_BOOLEANO EXPRESSION_PRIMARIA{: AnalizadorSemantico.evalBinaryBooleano(); AnalizadorSemantico.accionTestWhile(); :}
 ;
 
 ELSE ::= Res_Else BLOQUE {: AnalizadorSemantico.accionStartElse(); :} | 
 ;
 
-WHILE_SENTENCIA ::= WHILE_AUX AbreParentesis BOOLEAN_EXPRESSION_WHILE CierraParentesis:e BLOQUE {: AnalizadorSemantico.accionEndWhile(); AnalizadorSemantico.limpiarPila(eright); :}
+WHILE_SENTENCIA ::= WHILE_AUX AbreParentesis BOOLEAN_EXPRESSION_WHILE CierraParentesis:e BLOQUE {: AnalizadorSemantico.accionEndWhile(); :}
 ;
 
 WHILE_AUX ::= Res_While:e {: AnalizadorSemantico.accionStartWhile(); :}
