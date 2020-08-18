@@ -873,9 +873,9 @@ public class AnalizadorSemantico {
 
 
     public static void translateToNasm(){
-        //String pathPackage = "D:\\GitHub\\Project-C\\";
+        String pathPackage = "D:\\GitHub\\Project-C\\";
         //ARIEL:
-        String pathPackage = "C:\\Users\\Ariel\\Documents\\GitHub\\Project-C\\";
+        //String pathPackage = "C:\\Users\\Ariel\\Documents\\GitHub\\Project-C\\";
         String pathASM = pathPackage + "code.asm";
         
         try {
@@ -940,8 +940,11 @@ public class AnalizadorSemantico {
             }
 
             translator.write("\n \n");
-            translator.write("segment .text\n \n");
-
+            translator.write("segment .text\n\n");
+            translator.write("global asm_main\n");
+            translator.write("asm_main:\n");
+            translator.write("enter\t 0,0\n");
+            translator.write("pusha\n");
             //Write Code
             for(LinkedList<String> node : contenidoArchivo.get(2)){
                 String value = node.get(0);
@@ -952,7 +955,10 @@ public class AnalizadorSemantico {
             }
 
             translator.write("\n \n");
-
+            translator.write("popa\n");
+            translator.write("mov\t eax,0\n");
+            translator.write("leave\n");
+            translator.write("ret");
             translator.close();
             System.out.println("Successfully wrote to translated file.");
         } catch (IOException e) {
