@@ -807,16 +807,19 @@ public class AnalizadorSemantico {
     }
     
     public static void accionStartWhile(){
+        System.out.println("EMPIEZA WHILE");
         String whileLabel="whileLabel"+cantWhile;
         String exitLabel="exitLabelWhile"+cantWhile;
         RS_WHILE nuevo=new RS_WHILE(whileLabel,exitLabel);
         pilaSemantica.push(nuevo);
+        System.out.println("PUSH WHILE");
     }
     
     public static void accionTestWhile(){
         //Codigo de la evaluacion del while
          //Codigo para evaluar el condicional
-         RS_DO rsdo = (RS_DO) pilaSemantica.pop();
+        System.out.println("EMPIEZA TEST WHILE");
+         System.out.println("POP TEST WHILE");
          String jumptype = "";
          switch (op.getOperador()) {
              case ">":
@@ -851,31 +854,33 @@ public class AnalizadorSemantico {
          String jmpins = jumptype + " " + ((RS_WHILE) getLastWhile()).getExit_label();
          instruccion.add(jmpins);
          codigo.add(instruccion);
-         
+         System.out.println("TERMINA TEST WHILE");
     }
     
     public static void accionEndWhile(){
         //Jump while
+        System.out.println("EMPIEZA END WHILE");
         LinkedList<String> instruccion = new LinkedList<>();
+        LinkedList<String> instruccion2 = new LinkedList<>();
         String jmpins = "jmp " + ((RS_WHILE) getLastWhile()).getWhile_label();
         instruccion.add(jmpins);
         codigo.add(instruccion);
         
-
         jmpins = ((RS_WHILE) getLastWhile()).getExit_label() + ":";
-        instruccion.add(jmpins);
-        codigo.add(instruccion);
+        instruccion2.add(jmpins);
+        codigo.add(instruccion2);
         
         
         //label exit
         pilaSemantica.pop();
+        System.out.println("TERMINA END WHILE");
     }
 
 
     public static void translateToNasm(){
-        String pathPackage = "D:\\GitHub\\Project-C\\";
+        //String pathPackage = "D:\\GitHub\\Project-C\\";
         //ARIEL:
-        //String pathPackage = "C:\\Users\\Ariel\\Documents\\GitHub\\Project-C\\";
+        String pathPackage = "C:\\Users\\Ariel\\Documents\\GitHub\\Project-C\\";
         String pathASM = pathPackage + "code.asm";
         
         try {
@@ -944,7 +949,8 @@ public class AnalizadorSemantico {
             translator.write("global asm_main\n");
             translator.write("asm_main:\n");
             translator.write("enter\t 0,0\n");
-            translator.write("pusha\n");
+            translator.write("pusha\n\n");
+            translator.write(";;Empieza codigo generado\n");
             //Write Code
             for(LinkedList<String> node : contenidoArchivo.get(2)){
                 String value = node.get(0);
@@ -954,6 +960,7 @@ public class AnalizadorSemantico {
                     translator.write("\n");
             }
 
+            translator.write(";;Termina codigo generado");
             translator.write("\n \n");
             translator.write("popa\n");
             translator.write("mov\t eax,0\n");
