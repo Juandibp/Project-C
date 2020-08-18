@@ -134,7 +134,7 @@ public class AnalizadorSemantico {
                     RS_OPERADOR convertS = (RS_OPERADOR)topeS;
                     if(convertS.toString().equals("=")){
                         String tipo=getCarSimbolo(convert.getNombre()).get(0);
-                        validarAssignment(linea,tipo);
+                        //validarAssignment(linea,(tope);
                     }else{
                         if(convertS.toString().equals("+") || convertS.toString().equals("-")){
                             pilaSemantica.push(topeS);
@@ -159,12 +159,7 @@ public class AnalizadorSemantico {
             if(topeS instanceof RS_OPERADOR){
                 RS_OPERADOR convertS = (RS_OPERADOR)topeS;
                 if(convertS.toString().equals("=")){
-                    if( convert.getValor().startsWith("\"") ){
-                        validarAssignment(linea,"string");
-                    }else{
-                        //int
-                        validarAssignment(linea,"int");
-                    }
+                    validarAssignment(linea,convert);
                 }else{
                     if(convertS.toString().equals("+") || convertS.toString().equals("-")){
                         pilaSemantica.push(topeS);
@@ -248,7 +243,7 @@ public class AnalizadorSemantico {
         return true;
     }
     
-    public static boolean validarAssignment(int linea, RS_DO MeCagoEnFranco){
+    public static boolean validarAssignment(int linea, RS_DO rsdo1){
         if(pilaSemantica.isEmpty()){
             return false;
         }
@@ -282,39 +277,49 @@ public class AnalizadorSemantico {
                 return false;
             }else{
                 String tipoN=(getCarSimbolo(convert.getValor())).getFirst();
-                String tipo =(getCarSimbolo(MeCagoEnFranco.getValor())).getFirst();
-                if(!tipo.equals(tipoN)){
-                    if(error==null){
-                        error="Simbolo no compatible: "+convert.getValor()+"\nLinea: "+linea;
+                if(rsdo1.getTipo()==TIPO_DO.CONST){
+                    if(rsdo1.getValor().startsWith("\"")){
+                        if(tipoN.equals("string")){
+                            LinkedList<String> instruccion = new LinkedList<>();
+                            String jmpins = "mov " + convert.getValor() + ", "  + rsdo1.getValor();
+                            instruccion.add(jmpins);
+                            codigo.add(instruccion);
+                            return true;
+                        }
+                        return false;
+                    }else{
+                        if(tipoN.equals("int")){
+                            LinkedList<String> instruccion = new LinkedList<>();
+                            String jmpins = "mov " + convert.getValor() + ", "  + rsdo1.getValor();
+                            instruccion.add(jmpins);
+                            codigo.add(instruccion);
+                            return true;
+                        }
+                        return false;
                     }
-                    return false;
+                }else{
+                    String tipo =(getCarSimbolo(rsdo1.getValor())).getFirst();
+                    if(!tipo.equals(tipoN)){
+                        if(error==null){
+                            error="Simbolo no compatible: "+convert.getValor()+"\nLinea: "+linea;
+                        }
+                        return false;
+                    }
+                    //GENERAR CODIGO
+                    LinkedList<String> instruccion = new LinkedList<>();
+                    String jmpins = "mov " + convert.getValor() + ", "  + rsdo1.getValor();
+                    instruccion.add(jmpins);
+                    codigo.add(instruccion);
+                    return true;
                 }
-                //GENERAR CODIGO
-
-
-                LinkedList<String> instruccion = new LinkedList<>();
-                String jmpins = "mov " + convert.getValor() + ', ' + MeCagoEnFranco.getValor();
-                instruccion.add(jmpins);
-                codigo.add(instruccion);
-
-                return true;
             }
-        }
-        
-        if(tope instanceof RS_OPERADOR){
-            //System.out.println(tope.toString());
-            RS_OPERADOR convert=(RS_OPERADOR)tope;
+        }else{
             if(error==null){
-                error="Operacion no valida: "+convert.getOperador()+"\nLinea: "+linea;
+                error="Operacion no valida\nLinea: "+linea;
             }
             return false;
             
         }
-        else{
-            pilaSemantica.push(tope);
-        }
-        
-        return true;
     }
     
     private static boolean exitsWhileAntes(){
@@ -462,12 +467,7 @@ public class AnalizadorSemantico {
                     if(topeS instanceof RS_OPERADOR){
                         RS_OPERADOR convertS = (RS_OPERADOR)topeS;
                         if(convertS.toString().equals("=")){
-                            if(newrsdo.getValor().startsWith("\"") ){
-                                validarAssignment(0,"string");
-                            }else{
-                            //int
-                                validarAssignment(0,"int");
-                            }
+                            validarAssignment(0,newrsdo);
                         }else{
                             if(convertS.toString().equals("+") || convertS.toString().equals("-")){
                                 pilaSemantica.push(topeS);
@@ -493,12 +493,7 @@ public class AnalizadorSemantico {
                     if(topeS instanceof RS_OPERADOR){
                         RS_OPERADOR convertS = (RS_OPERADOR)topeS;
                         if(convertS.toString().equals("=")){
-                            if(newrsdo.getValor().startsWith("\"") ){
-                                validarAssignment(0,"string");
-                            }else{
-                            //int
-                                validarAssignment(0,"int");
-                            }
+                            validarAssignment(0,newrsdo);
                         }else{
                             if(convertS.toString().equals("+") || convertS.toString().equals("-")){
                                 pilaSemantica.push(topeS);
@@ -537,7 +532,7 @@ public class AnalizadorSemantico {
                                 RS_OPERADOR convertS = (RS_OPERADOR)topeS;
                                 if(convertS.toString().equals("=")){
                                     String tipo=getCarSimbolo(rsdo1.getValor()).get(0);
-                                    validarAssignment(0,tipo);
+                                    validarAssignment(0,rsdo1);
                                 }else{
                                     if(convertS.toString().equals("+") || convertS.toString().equals("-")){
                                         pilaSemantica.push(topeS);
@@ -564,8 +559,7 @@ public class AnalizadorSemantico {
                             if(topeS instanceof RS_OPERADOR){
                                 RS_OPERADOR convertS = (RS_OPERADOR)topeS;
                                 if(convertS.toString().equals("=")){
-                                    String tipo=getCarSimbolo(rsdo1.getValor()).get(0);
-                                    validarAssignment(0,tipo);
+                                    validarAssignment(0,rsdo1);
                                 }else{
                                     if(convertS.toString().equals("+") || convertS.toString().equals("-")){
                                         pilaSemantica.push(topeS);
@@ -634,8 +628,7 @@ public class AnalizadorSemantico {
                                 if(topeS instanceof RS_OPERADOR){
                                     RS_OPERADOR convertS = (RS_OPERADOR)topeS;
                                     if(convertS.toString().equals("=")){
-                                        String tipo=getCarSimbolo(rsdo1.getValor()).get(0);
-                                        validarAssignment(0,tipo);
+                                        validarAssignment(0,rsdo1);
                                     }else{
                                         if(convertS.toString().equals("+") || convertS.toString().equals("-")){
                                             pilaSemantica.push(topeS);
@@ -662,8 +655,7 @@ public class AnalizadorSemantico {
                                 if(topeS instanceof RS_OPERADOR){
                                     RS_OPERADOR convertS = (RS_OPERADOR)topeS;
                                     if(convertS.toString().equals("=")){
-                                        String tipo=getCarSimbolo(rsdo1.getValor()).get(0);
-                                        validarAssignment(0,tipo);
+                                        validarAssignment(0,rsdo1);
                                     }else{
                                         if(convertS.toString().equals("+") || convertS.toString().equals("-")){
                                             pilaSemantica.push(topeS);
@@ -698,14 +690,10 @@ public class AnalizadorSemantico {
         op = (RS_OPERADOR) pilaSemantica.pop();
         RS_DO rsdo1 = (RS_DO) pilaSemantica.pop();
 
-
         LinkedList<String> instruccion = new LinkedList<>();
         String cmpins = "cmp " + rsdo1.getValor()+ ", " + rsdo2.getValor();
         instruccion.add(cmpins);
         codigo.add(instruccion);
-        //
-
-
     }
     
     public static void accionGuardarTipo(String tipo){
@@ -746,32 +734,31 @@ public class AnalizadorSemantico {
     
     public static void accionTestIf(){
         //Codigo para evaluar el condicional
-        RS_DO rsdo = (RS_DO) pilaSemantica.pop();
         String jumptype = "";
         switch (op.getOperador()) {
             case ">":
                 
-                jumptype = "JG";
+                jumptype = "jg";
                 break;
             case "<":
                 
-                jumptype = "JL";
+                jumptype = "jl";
                 break;
             case ">=":
                 
-                jumptype = "JGE";
+                jumptype = "jge";
                 break;
             case "<=":
                 
-                jumptype = "JLE";
+                jumptype = "jle";
                 break;
             case "==":
                 
-                jumptype = "JE";
+                jumptype = "je";
                 break;
             case "!=":
                 
-                jumptype = "JNE";
+                jumptype = "jne";
                 break;
         
             default:
@@ -781,29 +768,38 @@ public class AnalizadorSemantico {
         String jmpins = jumptype + " " + ((RS_IF) getLastIf()).getElse_label();
         instruccion.add(jmpins);
         codigo.add(instruccion);
-        
-
-
     }
     
     public static void accionStartElse(){
         RS_IF rsIf = (RS_IF) getLastIf();
         String ifExitLabel = rsIf.getExit_label();
-        String ifElseLabel = rsIf.getElse_label();
+        
         LinkedList<String> instruccion = new LinkedList<>();
+        instruccion.clear();
         instruccion.add("jmp " + ifExitLabel);
+        
         codigo.add(instruccion);
         
-        instruccion.add(ifElseLabel + ":");
-        codigo.add(instruccion);
+        
     }
     
     public static void accionEndIf(){
         RS_IF rsIf = (RS_IF) getLastIf();
-        String ifExitLabel = rsIf.getExit_label();
         LinkedList<String> instruccion = new LinkedList<>();
-        instruccion.add(ifExitLabel + ":");
+        LinkedList<String> instruccion2 = new LinkedList<>();
+        LinkedList<String> instruccion3 = new LinkedList<>();
+        String ifExitLabel = rsIf.getExit_label();
+        String jmpExit="jmp "+ifExitLabel;
+        instruccion.add(jmpExit);
         codigo.add(instruccion);
+        //instruccion.clear();
+        String ifElseLabel = rsIf.getElse_label();
+        instruccion2.add(ifElseLabel + ":");
+        codigo.add(instruccion2);
+        //instruccion.clear();
+        instruccion3.add(ifExitLabel + ":");
+        codigo.add(instruccion3);
+        //instruccion.clear();
         pilaSemantica.pop();
     }
     
