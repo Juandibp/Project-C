@@ -442,7 +442,15 @@ public class AnalizadorSemantico {
     }
 
     public static void accionReturns(){
+        System.out.println("RETURNS");
+        System.out.println(pilaSemantica);
+        RS_DO id=(RS_DO)pilaSemantica.pop();
+        System.out.println(pilaSemantica);
         RS_RETURNS nuevo=new RS_RETURNS();
+        LinkedList<String> instruccion3 = new LinkedList<>();
+        String codeReturn = "push "+id.getValor();
+        instruccion3.add(codeReturn);
+        codigo.add(instruccion3);
         pilaSemantica.push(nuevo);
     }
     
@@ -784,17 +792,8 @@ public class AnalizadorSemantico {
         //LinkedList<String> instruccion2 = new LinkedList<>();
         LinkedList<String> instruccion3 = new LinkedList<>();
         String ifExitLabel = rsIf.getExit_label();
-        //String jmpExit="jmp "+ifExitLabel;
-        //instruccion.add(jmpExit);
-        //codigo.add(instruccion);
-        //instruccion.clear();
-        //String ifElseLabel = rsIf.getElse_label();
-        //instruccion2.add(ifElseLabel + ":");
-        //codigo.add(instruccion2);
-        //instruccion.clear();
         instruccion3.add(ifExitLabel + ":");
         codigo.add(instruccion3);
-        //instruccion.clear();
         pilaSemantica.pop();
     }
     

@@ -203,7 +203,7 @@ RETURN_SENTENCIA ::= Res_Return:e RETURN_SENTENCIA_AUX PuntoYComa {:
                     AnalizadorSemantico.limpiarPila(eright); :}
 ;
 
-RETURN_SENTENCIA_AUX ::= Identificador
+RETURN_SENTENCIA_AUX ::= Identificador:e {: AnalizadorSemantico.accionGuardarVariable(e.toString(),eright); :}
 ;
 /*SE CAMBIO A IDENTIFICADOR*/
 
