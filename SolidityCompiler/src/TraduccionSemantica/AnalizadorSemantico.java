@@ -28,6 +28,7 @@ public class AnalizadorSemantico {
     public static int cantWhile = 0;
     public static RS_OPERADOR op;
     public static LinkedList<LinkedList <LinkedList <String>>> contenidoArchivo=new LinkedList<>();
+    public static LinkedList <LinkedList <String>> codigo=new LinkedList<>();
     
     public static void reiniciarVariables(){
         tablaSimbolos=new HashMap<>();
@@ -38,6 +39,7 @@ public class AnalizadorSemantico {
         cantWhile=0;
         op=null;
         contenidoArchivo=new LinkedList<>();
+        codigo=new LinkedList<>();
     }
     
     public static boolean existsSimbolo(String simbolo){
@@ -81,9 +83,9 @@ public class AnalizadorSemantico {
         contenidoArchivo.add(variablesDefinidas);
         LinkedList<LinkedList<String>> variablesNoDefinidas=new LinkedList<>();
         contenidoArchivo.add(variablesNoDefinidas);
-        LinkedList<LinkedList<String>> codigo=new LinkedList<>();
         contenidoArchivo.add(codigo);
     }
+
     
     public static void pasarSimbolosAArchivo(){
         for (String simbolo: tablaSimbolos.keySet()){
@@ -127,22 +129,61 @@ public class AnalizadorSemantico {
                 }
                 return false;
             }else{
-                String tipo=(getCarSimbolo(convert.getNombre())).getFirst();
-                return limpiarPila(linea,tipo);
+                RS topeS=pilaSemantica.pop();
+                if(topeS instanceof RS_OPERADOR){
+                    RS_OPERADOR convertS = (RS_OPERADOR)topeS;
+                    if(convertS.toString().equals("=")){
+                        String tipo=getCarSimbolo(convert.getNombre()).get(0);
+                        validarAssignment(linea,tipo);
+                    }else{
+                        if(convertS.toString().equals("+") || convertS.toString().equals("-")){
+                            pilaSemantica.push(topeS);
+                            pilaSemantica.push(tope);
+                            evalBinaryAritmetico();
+                            return true;
+                        }else{
+                            pilaSemantica.push(topeS);
+                            pilaSemantica.push(tope);
+                            evalBinaryBooleano();
+                            return true;
+                        }
+                    }
+                }
+                //String tipo=(getCarSimbolo(convert.getNombre())).getFirst();
+                //return limpiarPila(linea,tipo);
             }
         }
         if(tope instanceof RS_DO){
             RS_DO convert=(RS_DO)tope;
-            if( convert.getValor().startsWith("\"") ){
-                return limpiarPila(linea,"string");
-            }else{
-                //int
-                return limpiarPila(linea,"int");
+            RS topeS=pilaSemantica.pop();
+            if(topeS instanceof RS_OPERADOR){
+                RS_OPERADOR convertS = (RS_OPERADOR)topeS;
+                if(convertS.toString().equals("=")){
+                    if( convert.getValor().startsWith("\"") ){
+                        validarAssignment(linea,"string");
+                    }else{
+                        //int
+                        validarAssignment(linea,"int");
+                    }
+                }else{
+                    if(convertS.toString().equals("+") || convertS.toString().equals("-")){
+                        pilaSemantica.push(topeS);
+                        pilaSemantica.push(tope);
+                        evalBinaryAritmetico();
+                        return true;
+                    }else{
+                        pilaSemantica.push(topeS);
+                        pilaSemantica.push(tope);
+                        evalBinaryBooleano();
+                        return true;
+                    }
+                }
             }
-            
         }
         if(tope instanceof RS_OPERADOR){
-            limpiarPila(linea);
+            if(error==null){
+                error="No se ha cerrado la operacion";
+            }
         }
         if(tope instanceof RS_IF){
             
@@ -207,91 +248,11 @@ public class AnalizadorSemantico {
         return true;
     }
     
-    public static boolean limpiarPila(int linea,String tipo){
-        System.out.println(pilaSemantica);
-        //System.out.println(tipo);
-        if(pilaSemantica.isEmpty()){
-            return true;
-        }
-        RS tope = pilaSemantica.pop();
-        if(tope instanceof RS_ID){
-            RS_ID convert=(RS_ID)tope;
-            if(!existsSimbolo(convert.getNombre())){
-                if(error==null){
-                    error="Simbolo no definido: "+convert.getNombre()+"\nLinea: "+linea;
-                }
-                return false;
-            }else{
-                String tipoN=(getCarSimbolo(convert.getNombre())).getFirst();
-                if(!tipo.equals(tipoN)){
-                    if(error==null){
-                        error="Simbolo no compatible: "+convert.getNombre()+"\nLinea: "+linea;
-                    }
-                    return false;
-                }
-                return limpiarPila(linea,tipoN);
-            }
-            
-        }
-        
-        if(tope instanceof RS_DO){
-            RS_DO convert=(RS_DO)tope;
-            if( convert.getValor().startsWith("\"") ){
-                if(!tipo.equals("string")){
-                    if(error==null){
-                        error="Simbolo no compatible: "+convert.getValor()+"\nLinea: "+linea;
-                    }
-                    return false;
-                }
-                return limpiarPila(linea,"string");
-            }else{
-                if(!tipo.equals("int")){
-                    if(error==null){
-                        error="Simbolo no compatible: "+convert.getValor()+"\nLinea: "+linea;
-                    }
-                    return false;
-                }
-                return limpiarPila(linea,"int");
-            }
-        }
-        
-        if(tope instanceof RS_OPERADOR){
-            //System.out.println(tope.toString());
-            RS_OPERADOR convert=(RS_OPERADOR)tope;
-            if(tipo.equals("string")){
-                if(convert.getOperador().equals("*") || convert.getOperador().equals("/") || 
-                        convert.getOperador().equals("%") || convert.getOperador().equals("-")
-                        || convert.getOperador().equals(">") || convert.getOperador().equals("<")
-                        || convert.getOperador().equals(">=") || convert.getOperador().equals("<=")){
-                    if(error==null){
-                        error="Operacion no valida: "+convert.getOperador()+"\nLinea: "+linea;
-                    }
-                    return false;
-                }
-            }
-            if(convert.getOperador().equals("=")){
-                return validarAssignment(linea, tipo);
-            }
-            return limpiarPila(linea,tipo);
-        }
-        if(tope instanceof RS_IF){
-            pilaSemantica.push(tope);
-        }
-        if(tope instanceof RS_WHILE){
-            pilaSemantica.push(tope);
-        }
-        if(tope instanceof RS_RETURNS){
-            pilaSemantica.push(tope);
-        }
-        return true;
-    }
-    
     public static boolean validarAssignment(int linea, String tipo){
         if(pilaSemantica.isEmpty()){
             return false;
         }
         RS tope = pilaSemantica.pop();
-        
         if(tope instanceof RS_ID){
             RS_ID convert=(RS_ID)tope;
             if(!existsSimbolo(convert.getNombre())){
@@ -313,10 +274,22 @@ public class AnalizadorSemantico {
         
         if(tope instanceof RS_DO){
             RS_DO convert=(RS_DO)tope;
-            if(error==null){
-                error="Simbolo no compatible: "+convert.getValor()+"\nLinea: "+linea;
+            if(!existsSimbolo(convert.getValor())){
+                if(error==null){
+                    error="Simbolo no definido: "+convert.getValor()+"\nLinea: "+linea;
+                }
+                return false;
+            }else{
+                String tipoN=(getCarSimbolo(convert.getValor())).getFirst();
+                if(!tipo.equals(tipoN)){
+                    if(error==null){
+                        error="Simbolo no compatible: "+convert.getValor()+"\nLinea: "+linea;
+                    }
+                    return false;
+                }
+                //GENERAR CODIGO
+                return true;
             }
-            return false;
         }
         
         if(tope instanceof RS_OPERADOR){
@@ -400,7 +373,7 @@ public class AnalizadorSemantico {
             String whileLabel = registroWhile.getWhile_label() + String.valueOf(cantWhile);
             LinkedList<String> instruccion = new LinkedList<>();
             instruccion.add("jmp " + whileLabel);
-            contenidoArchivo.get(2).add(instruccion);
+            codigo.add(instruccion);
         }
         else{
             if(error==null){
@@ -415,7 +388,7 @@ public class AnalizadorSemantico {
             String whileExitLabel = registroWhile.getExit_label()+ String.valueOf(cantWhile);
             LinkedList<String> instruccion = new LinkedList<>();
             instruccion.add("jmp " + whileExitLabel);
-            contenidoArchivo.get(2).add(instruccion);
+            codigo.add(instruccion);
         }
         else{
             if(error==null){
@@ -434,7 +407,7 @@ public class AnalizadorSemantico {
         RS_DO nuevo = new RS_DO(nombre);
         nuevo.setDir();
         if(existsSimbolo(nombre)){
-            pilaSemantica.add(nuevo);
+            pilaSemantica.push(nuevo);
         }
         else{
             if(error==null){
@@ -465,22 +438,74 @@ public class AnalizadorSemantico {
         op = (RS_OPERADOR) pilaSemantica.pop();
         RS_DO rsdo1 = (RS_DO) pilaSemantica.pop();
         RS_DO newrsdo = null;
+        RS topeS=null;
         int resultado;
         LinkedList<String> instruccion;
         String cmpins;
         if(rsdo1.getTipo() == TIPO_DO.CONST && rsdo2.getTipo() ==TIPO_DO.CONST){
+            System.out.println("CONST-CONST");
             switch (op.getOperador()) {
                 case "+":
                     resultado = Integer.parseInt(rsdo1.getValor()) + Integer.parseInt(rsdo2.getValor());
                     newrsdo = new RS_DO(String.valueOf(resultado));
                     newrsdo.setConst();
-                    break;
+                    topeS=pilaSemantica.pop();
+                    if(topeS instanceof RS_OPERADOR){
+                        RS_OPERADOR convertS = (RS_OPERADOR)topeS;
+                        if(convertS.toString().equals("=")){
+                            if(newrsdo.getValor().startsWith("\"") ){
+                                validarAssignment(0,"string");
+                            }else{
+                            //int
+                                validarAssignment(0,"int");
+                            }
+                        }else{
+                            if(convertS.toString().equals("+") || convertS.toString().equals("-")){
+                                pilaSemantica.push(topeS);
+                                pilaSemantica.push(newrsdo);
+                                evalBinaryAritmetico();
+                            }else{
+                                pilaSemantica.push(topeS);
+                                pilaSemantica.push(newrsdo);
+                                evalBinaryBooleano();
+                            }
+                        }
+                        break;
+                    }else{
+                        pilaSemantica.push(topeS);
+                        break;
+                    }
+                    
                 case "-":
                     resultado = Integer.parseInt(rsdo1.getValor()) - Integer.parseInt(rsdo2.getValor());
                     newrsdo = new RS_DO(String.valueOf(resultado));
                     newrsdo.setConst();
-                    break;
-            
+                    topeS=pilaSemantica.pop();
+                    if(topeS instanceof RS_OPERADOR){
+                        RS_OPERADOR convertS = (RS_OPERADOR)topeS;
+                        if(convertS.toString().equals("=")){
+                            if(newrsdo.getValor().startsWith("\"") ){
+                                validarAssignment(0,"string");
+                            }else{
+                            //int
+                                validarAssignment(0,"int");
+                            }
+                        }else{
+                            if(convertS.toString().equals("+") || convertS.toString().equals("-")){
+                                pilaSemantica.push(topeS);
+                                pilaSemantica.push(newrsdo);
+                                evalBinaryAritmetico();
+                            }else{
+                                pilaSemantica.push(topeS);
+                                pilaSemantica.push(newrsdo);
+                                evalBinaryBooleano();
+                            }
+                        }
+                        break;
+                    }else{
+                        pilaSemantica.push(topeS);
+                        break;
+                    }
                 default:
                     break;
             }
@@ -488,36 +513,66 @@ public class AnalizadorSemantico {
         } 
         else{
             if(rsdo1.getTipo() == TIPO_DO.DIR && rsdo2.getTipo()==TIPO_DO.CONST){
+                System.out.println("DIR-CONST");
                 if(existsSimbolo(rsdo1.getValor())){
                     //Falta obtener valor de rsdo1 de tabla de simbolos
                     switch (op.getOperador()) {
                         case "+":
-                            //resultado = Integer.parseInt(obtenerValorSimbolo(rsdo1.getValor())) + Integer.parseInt(rsdo2.getValor());
-                            //newrsdo = new RS_DO(String.valueOf(resultado));
-
-
                             instruccion = new LinkedList<>();
                             cmpins = "mov eax," + obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + rsdo2.getValor()+ '\n' + "add eax, ebx\n";
                             instruccion.add(cmpins);
-                            contenidoArchivo.get(2).add(instruccion);
-                             //ojo que no sabemos si es por referencia
-
-
-                            break;
+                            codigo.add(instruccion);
+                            //instruccion.clear(); //ojo que no sabemos si es por referencia
+                            topeS=pilaSemantica.pop();
+                            if(topeS instanceof RS_OPERADOR){
+                                RS_OPERADOR convertS = (RS_OPERADOR)topeS;
+                                if(convertS.toString().equals("=")){
+                                    String tipo=getCarSimbolo(rsdo1.getValor()).get(0);
+                                    validarAssignment(0,tipo);
+                                }else{
+                                    if(convertS.toString().equals("+") || convertS.toString().equals("-")){
+                                        pilaSemantica.push(topeS);
+                                        pilaSemantica.push(rsdo1);
+                                        evalBinaryAritmetico();
+                                    }else{
+                                        pilaSemantica.push(topeS);
+                                        pilaSemantica.push(rsdo1);
+                                        evalBinaryBooleano();
+                                    }
+                                }
+                                break;
+                            }else{
+                                pilaSemantica.push(topeS);
+                                break;
+                            }
                         case "-":
-                            //resultado = Integer.parseInt(obtenerValorSimbolo(rsdo1.getValor())) - Integer.parseInt(rsdo2.getValor());
-                            //newrsdo = new RS_DO(String.valueOf(resultado));
-                            
                             instruccion = new LinkedList<>();
                             cmpins = "mov eax," + obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + rsdo2.getValor()+ '\n' + "sub eax, ebx\n";
                             instruccion.add(cmpins);
-                            contenidoArchivo.get(2).add(instruccion);
-                             //ojo que no sabemos si es por referencia
-                            
-                            
-                            newrsdo.setConst();
-                            break;
-                    
+                            codigo.add(instruccion);
+                            //instruccion.clear(); //ojo que no sabemos si es por referencia
+                            topeS=pilaSemantica.pop();
+                            if(topeS instanceof RS_OPERADOR){
+                                RS_OPERADOR convertS = (RS_OPERADOR)topeS;
+                                if(convertS.toString().equals("=")){
+                                    String tipo=getCarSimbolo(rsdo1.getValor()).get(0);
+                                    validarAssignment(0,tipo);
+                                }else{
+                                    if(convertS.toString().equals("+") || convertS.toString().equals("-")){
+                                        pilaSemantica.push(topeS);
+                                        pilaSemantica.push(rsdo1);
+                                        evalBinaryAritmetico();
+                                    }else{
+                                        pilaSemantica.push(topeS);
+                                        pilaSemantica.push(rsdo1);
+                                        evalBinaryBooleano();
+                                    }
+                                }
+                                break;
+                            }else{
+                                pilaSemantica.push(topeS);
+                                break;
+                            }
                         default:
                             break;
                     }
@@ -527,95 +582,106 @@ public class AnalizadorSemantico {
                         error= rsdo1.getValor() + ": variable no definida"; //falta linea
                     }
                 }
-            }
-            if(rsdo1.getTipo() == TIPO_DO.CONST && rsdo2.getTipo()==TIPO_DO.DIR){
-                if(existsSimbolo(rsdo2.getValor())){
+            }else{
+                System.out.println("CONST-DIR AUN NO HACE RECURSIVA");
+                if(rsdo1.getTipo() == TIPO_DO.CONST && rsdo2.getTipo()==TIPO_DO.DIR){
+                    if(existsSimbolo(rsdo2.getValor())){
                     //Falta obtener valor de rsdo2 de tabla de simbolos
-                    switch (op.getOperador()) {
-                        case "+":
-                           // resultado = Integer.parseInt(rsdo1.getValor()) + Integer.parseInt(obtenerValorSimbolo(rsdo2.getValor()));
-                            //newrsdo = new RS_DO(String.valueOf(resultado));
-
-
-                            instruccion = new LinkedList<>();
-                            cmpins = "mov eax," + rsdo1.getValor()+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "add eax, ebx\n";
-                            instruccion.add(cmpins);
-                            contenidoArchivo.get(2).add(instruccion);
-                             //ojo que no sabemos si es por referencia
-
-
-                            break;
-                        case "-":
-                            //resultado = Integer.parseInt(rsdo1.getValor()) - Integer.parseInt(obtenerValorSimbolo(rsdo2.getValor()));
-                           // newrsdo = new RS_DO(String.valueOf(resultado));
-                            
-                            instruccion = new LinkedList<>();
-                            cmpins = "mov eax," + rsdo1.getValor()+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "sub eax, ebx\n";
-                            instruccion.add(cmpins);
-                            contenidoArchivo.get(2).add(instruccion);
-                             //ojo que no sabemos si es por referencia
-                            
-                            
-                            //newrsdo.setConst();
-                            break;
-                    
-                        default:
-                            break;
+                        switch (op.getOperador()) {
+                            case "+":
+                                instruccion = new LinkedList<>();
+                                cmpins = "mov eax," + rsdo1.getValor()+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "add eax, ebx\n";
+                                instruccion.add(cmpins);
+                                codigo.add(instruccion);
+                                //instruccion.clear(); //ojo que no sabemos si es por referencia
+                                break;
+                            case "-":
+                                instruccion = new LinkedList<>();
+                                cmpins = "mov eax," + rsdo1.getValor()+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "sub eax, ebx\n";
+                                instruccion.add(cmpins);
+                                codigo.add(instruccion);
+                                //instruccion.clear(); //ojo que no sabemos si es por referencia
+                                break;                    
+                            default:
+                                break;
+                        }
+                    }else{
+                        if(error==null){
+                            error= rsdo2.getValor() + ": variable no definida"; //falta linea
+                        }
                     }
-
-                }
-                else{
-                    if(error==null){
-                        error= rsdo2.getValor() + ": variable no definida"; //falta linea
-                    }
-                }
-            }
-            else{
-                if(existsSimbolo(rsdo1.getValor()) && existsSimbolo(rsdo2.getValor())){
+                }else{
+                    System.out.println("DIR-DIR");
+                    if(existsSimbolo(rsdo1.getValor()) && existsSimbolo(rsdo2.getValor())){
                     //Falta obtener valor de rsfo1 y rsdo2 de tabla de simbolos
-
-                    switch (op.getOperador()) {
-                        case "+":
-                           // resultado = Integer.parseInt(rsdo1.getValor()) + Integer.parseInt(obtenerValorSimbolo(rsdo2.getValor()));
-                            //newrsdo = new RS_DO(String.valueOf(resultado));
-
-
-                            instruccion = new LinkedList<>();
-                            cmpins = "mov eax," + obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "add eax, ebx\n";
-                            instruccion.add(cmpins);
-                            contenidoArchivo.get(2).add(instruccion);
-                             //ojo que no sabemos si es por referencia
-
-
-                            break;
-                        case "-":
-                            //resultado = Integer.parseInt(rsdo1.getValor()) - Integer.parseInt(obtenerValorSimbolo(rsdo2.getValor()));
-                           // newrsdo = new RS_DO(String.valueOf(resultado));
-                            
-                            instruccion = new LinkedList<>();
-                            cmpins = "mov eax," +obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "sub eax, ebx\n";
-                            instruccion.add(cmpins);
-                            contenidoArchivo.get(2).add(instruccion);
-                             //ojo que no sabemos si es por referencia
-                            
-                            
-                            //newrsdo.setConst();
-                            break;
-                    
-                        default:
-                            break;
-                    }
-                }
-                else{
-                    if(error==null){
-                        error= rsdo1.getValor() + " y " +rsdo2.getValor() + ": variables no definida"; //falta linea
+                        switch (op.getOperador()) {
+                            case "+":
+                                instruccion = new LinkedList<>();
+                                cmpins = "mov eax," + obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "add eax, ebx\n";
+                                instruccion.add(cmpins);
+                                codigo.add(instruccion);
+                                //instruccion.clear(); //ojo que no sabemos si es por referencia
+                                topeS=pilaSemantica.pop();
+                                if(topeS instanceof RS_OPERADOR){
+                                    RS_OPERADOR convertS = (RS_OPERADOR)topeS;
+                                    if(convertS.toString().equals("=")){
+                                        String tipo=getCarSimbolo(rsdo1.getValor()).get(0);
+                                        validarAssignment(0,tipo);
+                                    }else{
+                                        if(convertS.toString().equals("+") || convertS.toString().equals("-")){
+                                            pilaSemantica.push(topeS);
+                                            pilaSemantica.push(rsdo1);
+                                            evalBinaryAritmetico();
+                                        }else{
+                                            pilaSemantica.push(topeS);
+                                            pilaSemantica.push(rsdo1);
+                                            evalBinaryBooleano();
+                                        }
+                                    }
+                                    break;
+                                }else{
+                                    pilaSemantica.push(topeS);
+                                    break;
+                                }
+                            case "-":
+                                instruccion = new LinkedList<>();
+                                cmpins = "mov eax," +obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "sub eax, ebx\n";
+                                instruccion.add(cmpins);
+                                codigo.add(instruccion);
+                                //instruccion.clear(); //ojo que no sabemos si es por referencia
+                                topeS=pilaSemantica.pop();
+                                if(topeS instanceof RS_OPERADOR){
+                                    RS_OPERADOR convertS = (RS_OPERADOR)topeS;
+                                    if(convertS.toString().equals("=")){
+                                        String tipo=getCarSimbolo(rsdo1.getValor()).get(0);
+                                        validarAssignment(0,tipo);
+                                    }else{
+                                        if(convertS.toString().equals("+") || convertS.toString().equals("-")){
+                                            pilaSemantica.push(topeS);
+                                            pilaSemantica.push(rsdo1);
+                                            evalBinaryAritmetico();
+                                        }else{
+                                            pilaSemantica.push(topeS);
+                                            pilaSemantica.push(rsdo1);
+                                            evalBinaryBooleano();
+                                        }
+                                    }
+                                    break;
+                                }else{
+                                    pilaSemantica.push(topeS);
+                                    break;
+                                }
+                            default:
+                                break;
+                        }
+                    }else{
+                        if(error==null){
+                            error= rsdo1.getValor() + " y " +rsdo2.getValor() + ": variables no definida"; //falta linea
+                        }
                     }
                 }
             }
         }
-        //if(newrsdo!=null)
-        pilaSemantica.push(newrsdo); //falta terminar de inicializarlo arriba
-                
     }
     
     public static void evalBinaryBooleano(){
@@ -627,8 +693,8 @@ public class AnalizadorSemantico {
         LinkedList<String> instruccion = new LinkedList<>();
         String cmpins = "cmp " + rsdo1.getValor()+ ", " + rsdo2.getValor();
         instruccion.add(cmpins);
-        contenidoArchivo.get(2).add(instruccion);
-        
+        codigo.add(instruccion);
+        instruccion.clear();
 
 
     }
@@ -705,8 +771,8 @@ public class AnalizadorSemantico {
         LinkedList<String> instruccion = new LinkedList<>();
         String jmpins = jumptype + " " + ((RS_IF) getLastIf()).getElse_label();
         instruccion.add(jmpins);
-        contenidoArchivo.get(2).add(instruccion);
-        
+        codigo.add(instruccion);
+        instruccion.clear();
 
 
     }
@@ -717,10 +783,10 @@ public class AnalizadorSemantico {
         String ifElseLabel = rsIf.getElse_label();
         LinkedList<String> instruccion = new LinkedList<>();
         instruccion.add("jmp " + ifExitLabel);
-        contenidoArchivo.get(2).add(instruccion);
-        
+        codigo.add(instruccion);
+        instruccion.clear();
         instruccion.add(ifElseLabel + ":");
-        contenidoArchivo.get(2).add(instruccion);
+        codigo.add(instruccion);
     }
     
     public static void accionEndIf(){
@@ -728,7 +794,7 @@ public class AnalizadorSemantico {
         String ifExitLabel = rsIf.getExit_label();
         LinkedList<String> instruccion = new LinkedList<>();
         instruccion.add(ifExitLabel + ":");
-        contenidoArchivo.get(2).add(instruccion);
+        codigo.add(instruccion);
         pilaSemantica.pop();
     }
     
@@ -776,8 +842,8 @@ public class AnalizadorSemantico {
          LinkedList<String> instruccion = new LinkedList<>();
          String jmpins = jumptype + " " + ((RS_WHILE) getLastWhile()).getExit_label();
          instruccion.add(jmpins);
-         contenidoArchivo.get(2).add(instruccion);
-         
+         codigo.add(instruccion);
+         instruccion.clear();
     }
     
     public static void accionEndWhile(){
@@ -785,13 +851,13 @@ public class AnalizadorSemantico {
         LinkedList<String> instruccion = new LinkedList<>();
         String jmpins = "jmp " + ((RS_WHILE) getLastWhile()).getWhile_label();
         instruccion.add(jmpins);
-        contenidoArchivo.get(2).add(instruccion);
-        
+        codigo.add(instruccion);
+        instruccion.clear();
 
         jmpins = ((RS_WHILE) getLastWhile()).getExit_label() + ":";
         instruccion.add(jmpins);
-        contenidoArchivo.get(2).add(instruccion);
-        
+        codigo.add(instruccion);
+        instruccion.clear();
         
         //label exit
         pilaSemantica.pop();
@@ -799,9 +865,9 @@ public class AnalizadorSemantico {
 
 
     public static void translateToNasm(){
-        String pathPackage = "D:\\GitHub\\Project-C\\";
+        //String pathPackage = "D:\\GitHub\\Project-C\\";
         //ARIEL:
-        //String pathPackage = "C:\\Users\\Ariel\\Documents\\GitHub\\Project-C\\";
+        String pathPackage = "C:\\Users\\Ariel\\Documents\\GitHub\\Project-C\\";
         String pathASM = pathPackage + "code.asm";
         
         try {
@@ -827,11 +893,7 @@ public class AnalizadorSemantico {
             translator.write("segment .data\n \n");
 
             //Write Variables inicializadas
-            System.out.println("PRINT DENTRO NASM");
-            System.out.println(contenidoArchivo);
             for(LinkedList<String> node : contenidoArchivo.get(0)){
-                System.out.println("NODO DECLARADO:");
-                System.out.println(node);
                 if("int".equals(node.get(0))){
                     String value = node.get(1)+":\t dd\t" + node.get(2);
                     
@@ -852,8 +914,6 @@ public class AnalizadorSemantico {
 
             //Write variables sin inicializar
             for(LinkedList<String> node : contenidoArchivo.get(1)){
-                System.out.println("NODO SIN DECLARAR:");
-                System.out.println(node);
                 if("int".equals(node.get(0))){
                     String value = node.get(1)+":\t resd\t 1";
                     

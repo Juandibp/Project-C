@@ -414,7 +414,7 @@ BYTE_TYPES::=Res_Bytes|Res_Bytes2|Res_Bytes4
 |Res_Bytes8|Res_Bytes16|Res_Bytes32
 |Res_Bytes64|Res_Bytes128|Res_Bytes256;
 
-IDENT::= Identificador IDENT_AUX  | Res_This IDENT_AUX_THIS 
+IDENT::= Identificador:e IDENT_AUX {: AnalizadorSemantico.accionGuardarVariable(e.toString(),eright); :}  | Res_This IDENT_AUX_THIS 
 ;
 
 IDENT_AUX::= IDENT_AUX_THIS | 
