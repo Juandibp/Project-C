@@ -248,12 +248,12 @@ public class AnalizadorSemantico {
         return true;
     }
     
-    public static boolean validarAssignment(int linea, String tipo){
+    public static boolean validarAssignment(int linea, RS_DO MeCagoEnFranco){
         if(pilaSemantica.isEmpty()){
             return false;
         }
         RS tope = pilaSemantica.pop();
-        if(tope instanceof RS_ID){
+        /*if(tope instanceof RS_ID){
             RS_ID convert=(RS_ID)tope;
             if(!existsSimbolo(convert.getNombre())){
                 if(error==null){
@@ -271,7 +271,7 @@ public class AnalizadorSemantico {
 
                 return true;
             }
-        }
+        }*/
         
         if(tope instanceof RS_DO){
             RS_DO convert=(RS_DO)tope;
@@ -282,6 +282,7 @@ public class AnalizadorSemantico {
                 return false;
             }else{
                 String tipoN=(getCarSimbolo(convert.getValor())).getFirst();
+                String tipo =(getCarSimbolo(MeCagoEnFranco.getValor())).getFirst();
                 if(!tipo.equals(tipoN)){
                     if(error==null){
                         error="Simbolo no compatible: "+convert.getValor()+"\nLinea: "+linea;
@@ -289,6 +290,13 @@ public class AnalizadorSemantico {
                     return false;
                 }
                 //GENERAR CODIGO
+
+
+                LinkedList<String> instruccion = new LinkedList<>();
+                String jmpins = "mov " + convert.getValor() + ', ' + MeCagoEnFranco.getValor();
+                instruccion.add(jmpins);
+                codigo.add(instruccion);
+
                 return true;
             }
         }
