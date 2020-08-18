@@ -771,36 +771,40 @@ public class AnalizadorSemantico {
     }
     
     public static void accionStartElse(){
-        RS_IF rsIf = (RS_IF) getLastIf();
-        String ifExitLabel = rsIf.getExit_label();
-        
-        LinkedList<String> instruccion = new LinkedList<>();
-        instruccion.clear();
-        instruccion.add("jmp " + ifExitLabel);
-        
-        codigo.add(instruccion);
-        
-        
-    }
-    
-    public static void accionEndIf(){
-        RS_IF rsIf = (RS_IF) getLastIf();
-        LinkedList<String> instruccion = new LinkedList<>();
         LinkedList<String> instruccion2 = new LinkedList<>();
-        LinkedList<String> instruccion3 = new LinkedList<>();
-        String ifExitLabel = rsIf.getExit_label();
-        String jmpExit="jmp "+ifExitLabel;
-        instruccion.add(jmpExit);
-        codigo.add(instruccion);
-        //instruccion.clear();
+        RS_IF rsIf = (RS_IF) getLastIf();
         String ifElseLabel = rsIf.getElse_label();
         instruccion2.add(ifElseLabel + ":");
         codigo.add(instruccion2);
+    }
+    
+    public static void accionEndIf2(){
+        RS_IF rsIf = (RS_IF) getLastIf();
+        LinkedList<String> instruccion = new LinkedList<>();
+        //LinkedList<String> instruccion2 = new LinkedList<>();
+        LinkedList<String> instruccion3 = new LinkedList<>();
+        String ifExitLabel = rsIf.getExit_label();
+        //String jmpExit="jmp "+ifExitLabel;
+        //instruccion.add(jmpExit);
+        //codigo.add(instruccion);
+        //instruccion.clear();
+        //String ifElseLabel = rsIf.getElse_label();
+        //instruccion2.add(ifElseLabel + ":");
+        //codigo.add(instruccion2);
         //instruccion.clear();
         instruccion3.add(ifExitLabel + ":");
         codigo.add(instruccion3);
         //instruccion.clear();
         pilaSemantica.pop();
+    }
+    
+    public static void accionEndIf1(){
+        RS_IF rsIf = (RS_IF) getLastIf();
+        LinkedList<String> instruccion = new LinkedList<>();
+        String ifExitLabel = rsIf.getExit_label();
+        String jmpExit="jmp "+ifExitLabel;
+        instruccion.add(jmpExit);
+        codigo.add(instruccion);
     }
     
     public static void accionStartWhile(){
