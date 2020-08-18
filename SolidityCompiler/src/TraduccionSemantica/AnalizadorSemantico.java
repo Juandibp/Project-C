@@ -813,6 +813,9 @@ public class AnalizadorSemantico {
         RS_WHILE nuevo=new RS_WHILE(whileLabel,exitLabel);
         pilaSemantica.push(nuevo);
         System.out.println("PUSH WHILE");
+        LinkedList<String> instruccion2 = new LinkedList<>();
+        instruccion2.add(whileLabel + ":");
+        codigo.add(instruccion2);
     }
     
     public static void accionTestWhile(){
@@ -824,27 +827,27 @@ public class AnalizadorSemantico {
          switch (op.getOperador()) {
              case ">":
                  
-                 jumptype = "JG";
+                 jumptype = "jg";
                  break;
              case "<":
                  
-                 jumptype = "JL";
+                 jumptype = "jl";
                  break;
              case ">=":
                  
-                 jumptype = "JGE";
+                 jumptype = "jge";
                  break;
              case "<=":
                  
-                 jumptype = "JLE";
+                 jumptype = "jle";
                  break;
              case "==":
                  
-                 jumptype = "JE";
+                 jumptype = "je";
                  break;
              case "!=":
                  
-                 jumptype = "JNE";
+                 jumptype = "jne";
                  break;
          
              default:
