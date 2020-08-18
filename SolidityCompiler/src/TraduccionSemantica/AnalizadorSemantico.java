@@ -268,6 +268,7 @@ public class AnalizadorSemantico {
                     }
                     return false;
                 }
+
                 return true;
             }
         }
@@ -522,7 +523,7 @@ public class AnalizadorSemantico {
                             cmpins = "mov eax," + obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + rsdo2.getValor()+ '\n' + "add eax, ebx\n";
                             instruccion.add(cmpins);
                             codigo.add(instruccion);
-                            //instruccion.clear(); //ojo que no sabemos si es por referencia
+                            // //ojo que no sabemos si es por referencia
                             topeS=pilaSemantica.pop();
                             if(topeS instanceof RS_OPERADOR){
                                 RS_OPERADOR convertS = (RS_OPERADOR)topeS;
@@ -550,7 +551,7 @@ public class AnalizadorSemantico {
                             cmpins = "mov eax," + obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + rsdo2.getValor()+ '\n' + "sub eax, ebx\n";
                             instruccion.add(cmpins);
                             codigo.add(instruccion);
-                            //instruccion.clear(); //ojo que no sabemos si es por referencia
+                            // //ojo que no sabemos si es por referencia
                             topeS=pilaSemantica.pop();
                             if(topeS instanceof RS_OPERADOR){
                                 RS_OPERADOR convertS = (RS_OPERADOR)topeS;
@@ -593,14 +594,14 @@ public class AnalizadorSemantico {
                                 cmpins = "mov eax," + rsdo1.getValor()+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "add eax, ebx\n";
                                 instruccion.add(cmpins);
                                 codigo.add(instruccion);
-                                //instruccion.clear(); //ojo que no sabemos si es por referencia
+                                // //ojo que no sabemos si es por referencia
                                 break;
                             case "-":
                                 instruccion = new LinkedList<>();
                                 cmpins = "mov eax," + rsdo1.getValor()+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "sub eax, ebx\n";
                                 instruccion.add(cmpins);
                                 codigo.add(instruccion);
-                                //instruccion.clear(); //ojo que no sabemos si es por referencia
+                                // //ojo que no sabemos si es por referencia
                                 break;                    
                             default:
                                 break;
@@ -620,7 +621,7 @@ public class AnalizadorSemantico {
                                 cmpins = "mov eax," + obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "add eax, ebx\n";
                                 instruccion.add(cmpins);
                                 codigo.add(instruccion);
-                                //instruccion.clear(); //ojo que no sabemos si es por referencia
+                                // //ojo que no sabemos si es por referencia
                                 topeS=pilaSemantica.pop();
                                 if(topeS instanceof RS_OPERADOR){
                                     RS_OPERADOR convertS = (RS_OPERADOR)topeS;
@@ -648,7 +649,7 @@ public class AnalizadorSemantico {
                                 cmpins = "mov eax," +obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "sub eax, ebx\n";
                                 instruccion.add(cmpins);
                                 codigo.add(instruccion);
-                                //instruccion.clear(); //ojo que no sabemos si es por referencia
+                                // //ojo que no sabemos si es por referencia
                                 topeS=pilaSemantica.pop();
                                 if(topeS instanceof RS_OPERADOR){
                                     RS_OPERADOR convertS = (RS_OPERADOR)topeS;
@@ -694,7 +695,7 @@ public class AnalizadorSemantico {
         String cmpins = "cmp " + rsdo1.getValor()+ ", " + rsdo2.getValor();
         instruccion.add(cmpins);
         codigo.add(instruccion);
-        instruccion.clear();
+        //
 
 
     }
@@ -772,7 +773,7 @@ public class AnalizadorSemantico {
         String jmpins = jumptype + " " + ((RS_IF) getLastIf()).getElse_label();
         instruccion.add(jmpins);
         codigo.add(instruccion);
-        instruccion.clear();
+        
 
 
     }
@@ -784,7 +785,7 @@ public class AnalizadorSemantico {
         LinkedList<String> instruccion = new LinkedList<>();
         instruccion.add("jmp " + ifExitLabel);
         codigo.add(instruccion);
-        instruccion.clear();
+        
         instruccion.add(ifElseLabel + ":");
         codigo.add(instruccion);
     }
@@ -843,7 +844,7 @@ public class AnalizadorSemantico {
          String jmpins = jumptype + " " + ((RS_WHILE) getLastWhile()).getExit_label();
          instruccion.add(jmpins);
          codigo.add(instruccion);
-         instruccion.clear();
+         
     }
     
     public static void accionEndWhile(){
@@ -852,12 +853,12 @@ public class AnalizadorSemantico {
         String jmpins = "jmp " + ((RS_WHILE) getLastWhile()).getWhile_label();
         instruccion.add(jmpins);
         codigo.add(instruccion);
-        instruccion.clear();
+        
 
         jmpins = ((RS_WHILE) getLastWhile()).getExit_label() + ":";
         instruccion.add(jmpins);
         codigo.add(instruccion);
-        instruccion.clear();
+        
         
         //label exit
         pilaSemantica.pop();
