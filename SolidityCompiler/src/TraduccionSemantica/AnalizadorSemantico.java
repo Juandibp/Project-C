@@ -500,7 +500,7 @@ public class AnalizadorSemantico {
                             cmpins = "mov eax," + obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + rsdo2.getValor()+ '\n' + "add eax, ebx\n";
                             instruccion.add(cmpins);
                             contenidoArchivo.get(2).add(instruccion);
-                            instruccion.clear(); //ojo que no sabemos si es por referencia
+                             //ojo que no sabemos si es por referencia
 
 
                             break;
@@ -512,7 +512,7 @@ public class AnalizadorSemantico {
                             cmpins = "mov eax," + obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + rsdo2.getValor()+ '\n' + "sub eax, ebx\n";
                             instruccion.add(cmpins);
                             contenidoArchivo.get(2).add(instruccion);
-                            instruccion.clear(); //ojo que no sabemos si es por referencia
+                             //ojo que no sabemos si es por referencia
                             
                             
                             newrsdo.setConst();
@@ -541,7 +541,7 @@ public class AnalizadorSemantico {
                             cmpins = "mov eax," + rsdo1.getValor()+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "add eax, ebx\n";
                             instruccion.add(cmpins);
                             contenidoArchivo.get(2).add(instruccion);
-                            instruccion.clear(); //ojo que no sabemos si es por referencia
+                             //ojo que no sabemos si es por referencia
 
 
                             break;
@@ -553,7 +553,7 @@ public class AnalizadorSemantico {
                             cmpins = "mov eax," + rsdo1.getValor()+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "sub eax, ebx\n";
                             instruccion.add(cmpins);
                             contenidoArchivo.get(2).add(instruccion);
-                            instruccion.clear(); //ojo que no sabemos si es por referencia
+                             //ojo que no sabemos si es por referencia
                             
                             
                             //newrsdo.setConst();
@@ -584,7 +584,7 @@ public class AnalizadorSemantico {
                             cmpins = "mov eax," + obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "add eax, ebx\n";
                             instruccion.add(cmpins);
                             contenidoArchivo.get(2).add(instruccion);
-                            instruccion.clear(); //ojo que no sabemos si es por referencia
+                             //ojo que no sabemos si es por referencia
 
 
                             break;
@@ -596,7 +596,7 @@ public class AnalizadorSemantico {
                             cmpins = "mov eax," +obtenerValorSimbolo(rsdo1.getValor())+ '\n' + "mov ebx," + obtenerValorSimbolo(rsdo2.getValor())+ '\n' + "sub eax, ebx\n";
                             instruccion.add(cmpins);
                             contenidoArchivo.get(2).add(instruccion);
-                            instruccion.clear(); //ojo que no sabemos si es por referencia
+                             //ojo que no sabemos si es por referencia
                             
                             
                             //newrsdo.setConst();
@@ -628,7 +628,7 @@ public class AnalizadorSemantico {
         String cmpins = "cmp " + rsdo1.getValor()+ ", " + rsdo2.getValor();
         instruccion.add(cmpins);
         contenidoArchivo.get(2).add(instruccion);
-        instruccion.clear();
+        
 
 
     }
@@ -706,7 +706,7 @@ public class AnalizadorSemantico {
         String jmpins = jumptype + " " + ((RS_IF) getLastIf()).getElse_label();
         instruccion.add(jmpins);
         contenidoArchivo.get(2).add(instruccion);
-        instruccion.clear();
+        
 
 
     }
@@ -718,7 +718,7 @@ public class AnalizadorSemantico {
         LinkedList<String> instruccion = new LinkedList<>();
         instruccion.add("jmp " + ifExitLabel);
         contenidoArchivo.get(2).add(instruccion);
-        instruccion.clear();
+        
         instruccion.add(ifElseLabel + ":");
         contenidoArchivo.get(2).add(instruccion);
     }
@@ -777,7 +777,7 @@ public class AnalizadorSemantico {
          String jmpins = jumptype + " " + ((RS_WHILE) getLastWhile()).getExit_label();
          instruccion.add(jmpins);
          contenidoArchivo.get(2).add(instruccion);
-         instruccion.clear();
+         
     }
     
     public static void accionEndWhile(){
@@ -786,12 +786,12 @@ public class AnalizadorSemantico {
         String jmpins = "jmp " + ((RS_WHILE) getLastWhile()).getWhile_label();
         instruccion.add(jmpins);
         contenidoArchivo.get(2).add(instruccion);
-        instruccion.clear();
+        
 
         jmpins = ((RS_WHILE) getLastWhile()).getExit_label() + ":";
         instruccion.add(jmpins);
         contenidoArchivo.get(2).add(instruccion);
-        instruccion.clear();
+        
         
         //label exit
         pilaSemantica.pop();
@@ -799,9 +799,9 @@ public class AnalizadorSemantico {
 
 
     public static void translateToNasm(){
-        //String pathPackage = "D:\\GitHub\\Project-C\\";
+        String pathPackage = "D:\\GitHub\\Project-C\\";
         //ARIEL:
-        String pathPackage = "C:\\Users\\Ariel\\Documents\\GitHub\\Project-C\\";
+        //String pathPackage = "C:\\Users\\Ariel\\Documents\\GitHub\\Project-C\\";
         String pathASM = pathPackage + "code.asm";
         
         try {
